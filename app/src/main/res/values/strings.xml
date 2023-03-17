@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Laiks</string>
+    <string name="back_button">Back to start</string>
+    <string name="hour_plus_button">Hour Up</string>
+    <string name="hour_minus_button">Hour Down</string>
+    <string name="minutes_separator">:</string>
 </resources>
