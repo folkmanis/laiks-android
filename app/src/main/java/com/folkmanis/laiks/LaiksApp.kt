@@ -10,11 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.folkmanis.laiks.ui.ClockScreen
+import com.folkmanis.laiks.ui.ClockViewModel
 import java.time.LocalDateTime
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LaiksApp(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ClockViewModel = viewModel()
 ) {
 
     Scaffold(
