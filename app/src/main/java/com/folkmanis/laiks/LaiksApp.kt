@@ -7,18 +7,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.folkmanis.laiks.ui.ClockScreen
 import com.folkmanis.laiks.ui.ClockViewModel
-import java.time.LocalDateTime
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LaiksApp(
     modifier: Modifier = Modifier,
-    viewModel: ClockViewModel = viewModel()
+    viewModel: ClockViewModel = viewModel(
+        factory = ClockViewModel.Factory
+    )
 ) {
+
+    val uiState = viewModel
+        .uiState
+        .collectAsState()
 
     Scaffold(
         topBar = {
@@ -31,10 +37,12 @@ fun LaiksApp(
         modifier = modifier,
     ) { innerPadding ->
         ClockScreen(
-            offset = 3,
-            onOffsetChange = {},
+            offset = uiState.value.offset,
+            time = uiState.value.time,
+            onOffsetChange = {
+                viewModel.updateOffset(it)
+            },
             modifier = Modifier.padding(innerPadding),
-            time = LocalDateTime.now().toLocalTime(),
         )
     }
 
