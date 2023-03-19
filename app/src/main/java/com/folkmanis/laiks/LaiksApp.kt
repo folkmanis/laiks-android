@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.folkmanis.laiks.ui.ClockScreen
 import com.folkmanis.laiks.ui.ClockViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.takeWhile
 
 @Composable
 fun LaiksApp(

@@ -1,10 +1,12 @@
 package com.folkmanis.laiks
 
+import com.folkmanis.laiks.data.ClockTicksRepository
 import com.folkmanis.laiks.utilities.timeToHours
 import com.folkmanis.laiks.utilities.timeToMinutes
 import org.junit.Test
 import java.time.LocalTime
 import org.junit.Assert.assertEquals
+import java.time.LocalDateTime
 
 class TimeTest {
 
@@ -48,6 +50,52 @@ class TimeTest {
         val testTime = LocalTime.of(0, 10)
         val expectedHour = "0"
         assertEquals(expectedHour, timeToHours(testTime))
+    }
+
+    @Test
+    fun clockTickReprository_nextMinute_fromDate() {
+        val expectedDelay = 1000L
+        val dateNow = LocalDateTime.of(
+            2023,
+            3,
+            19,
+            23,
+            59,
+            59,
+        )
+        val repo = ClockTicksRepository()
+        assertEquals(expectedDelay, repo.delayToNextMinute(dateNow))
+    }
+
+    @Test
+    fun clockTickReprository_nextMinute_fromZero() {
+        val expectedDelay = 60000L
+        val dateNow = LocalDateTime.of(
+            2023,
+            3,
+            19,
+            23,
+            59,
+            0,
+        )
+        val repo = ClockTicksRepository()
+        assertEquals(expectedDelay, repo.delayToNextMinute(dateNow))
+    }
+
+    @Test
+    fun clockTickReprository_nextSecond_fromDate() {
+        val expectedDelay = 500L
+        val dateNow = LocalDateTime.of(
+            2023,
+            3,
+            19,
+            23,
+            59,
+            0,
+            500_000_000
+        )
+        val repo = ClockTicksRepository()
+        assertEquals(expectedDelay, repo.delayToNextSecond(dateNow))
     }
 
 }

@@ -101,7 +101,7 @@ fun TimeComponent(
 
         TimeSymbols(
             text = stringResource(id = R.string.minutes_separator),
-            modifier = modifier.alpha(alpha)
+//            modifier = modifier.alpha(alpha)
         )
 
         TimeSymbols(text = minutes)
