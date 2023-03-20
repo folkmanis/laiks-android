@@ -3,7 +3,6 @@ package com.folkmanis.laiks
 import android.app.Application
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import com.folkmanis.laiks.data.ClockTicksRepository
 import com.folkmanis.laiks.data.UserPreferencesRepository
 
 private const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
@@ -13,12 +12,9 @@ private val Context.dataStore by preferencesDataStore(
 
 class LaiksApplication : Application() {
     lateinit var userPreferencesRepository: UserPreferencesRepository
-    lateinit var clocksTicksRepository: ClockTicksRepository
     override fun onCreate() {
         super.onCreate()
         userPreferencesRepository =
             UserPreferencesRepository(dataStore)
-        clocksTicksRepository =
-            ClockTicksRepository()
     }
 }

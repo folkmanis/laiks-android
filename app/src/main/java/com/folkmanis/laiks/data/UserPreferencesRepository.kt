@@ -17,7 +17,7 @@ class UserPreferencesRepository(
 
     private companion object {
         val TIME_OFFSET_KEY = intPreferencesKey("time_offset")
-        val TAG = "User Preferences Datastore"
+        const val TAG = "User Preferences Datastore"
     }
 
     val savedTimeOffset: Flow<Int> = datastore.data

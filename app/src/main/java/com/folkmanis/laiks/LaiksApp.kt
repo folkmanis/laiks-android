@@ -7,13 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.ui.ClockScreen
 import com.folkmanis.laiks.ui.ClockViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.takeWhile
 
 @Composable
 fun LaiksApp(
@@ -23,9 +23,9 @@ fun LaiksApp(
     )
 ) {
 
-    val uiState = viewModel
+    val uiState by viewModel
         .uiState
-        .collectAsState()
+        .collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -38,8 +38,8 @@ fun LaiksApp(
         modifier = modifier,
     ) { innerPadding ->
         ClockScreen(
-            offset = uiState.value.offset,
-            time = uiState.value.time,
+            offset = uiState.offset,
+            time = uiState.time,
             onOffsetChange = {
                 viewModel.updateOffset(it)
             },

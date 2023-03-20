@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.folkmanis.laiks.LaiksApplication
-import com.folkmanis.laiks.data.ClockTicksRepository
 import com.folkmanis.laiks.data.UserPreferencesRepository
+import com.folkmanis.laiks.utilities.delayToNextMinute
+import com.folkmanis.laiks.utilities.delayToNextSecond
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class ClockUiState(
@@ -21,11 +24,21 @@ data class ClockUiState(
 
 class ClockViewModel(
     private val userPreferencesRepository: UserPreferencesRepository,
-    clockTicksRepository: ClockTicksRepository,
 ) : ViewModel() {
 
+    private val clockTicksFlow = flow<LocalDateTime> {
+        while (true) {
+            val now = LocalDateTime.now()
+            emit(now)
+            val delayToNext = delayToNextMinute(now)
+            Log.d(TAG, "Tick $now, delay $delayToNext")
+            delay(delayToNext)
+        }
+    }
+
+
     val uiState: StateFlow<ClockUiState> = combine(
-        clockTicksRepository.clockTicksFlow(),
+        clockTicksFlow,
         userPreferencesRepository.savedTimeOffset
     ) { time, offset ->
         ClockUiState(
@@ -33,10 +46,6 @@ class ClockViewModel(
             offset
         )
     }
-        .map {
-            Log.d(TAG, "Next tick ${it.time}")
-            it
-        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
@@ -52,14 +61,13 @@ class ClockViewModel(
     }
 
     companion object {
-        val TAG = "Clock View Model"
+        const val TAG = "Clock View Model"
         val Factory: ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     val application = (this[APPLICATION_KEY] as LaiksApplication)
                     ClockViewModel(
                         application.userPreferencesRepository,
-                        application.clocksTicksRepository,
                     )
                 }
             }
