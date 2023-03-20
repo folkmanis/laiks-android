@@ -10,17 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.folkmanis.laiks.data.FakeUserPreferencesRepository
 import com.folkmanis.laiks.ui.ClockScreen
 import com.folkmanis.laiks.ui.ClockViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.folkmanis.laiks.ui.theme.LaiksTheme
 
 @Composable
-fun LaiksApp(
+fun LaiksScreen(
     modifier: Modifier = Modifier,
     viewModel: ClockViewModel = viewModel(
         factory = ClockViewModel.Factory
-    )
+    ),
 ) {
 
     val uiState by viewModel
@@ -72,3 +75,14 @@ fun LaiksTopBar(
     )
 }
 
+
+@Preview
+@Composable
+fun LaiksScreenPreview() {
+    val viewModel = ClockViewModel(
+        FakeUserPreferencesRepository
+    )
+    LaiksTheme {
+        LaiksScreen(viewModel=viewModel)
+    }
+}

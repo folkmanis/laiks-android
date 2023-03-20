@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -10,7 +9,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.folkmanis.laiks.LaiksApplication
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.utilities.delayToNextMinute
-import com.folkmanis.laiks.utilities.delayToNextSecond
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -31,11 +29,9 @@ class ClockViewModel(
             val now = LocalDateTime.now()
             emit(now)
             val delayToNext = delayToNextMinute(now)
-            Log.d(TAG, "Tick $now, delay $delayToNext")
             delay(delayToNext)
         }
     }
-
 
     val uiState: StateFlow<ClockUiState> = combine(
         clockTicksFlow,
@@ -61,7 +57,6 @@ class ClockViewModel(
     }
 
     companion object {
-        const val TAG = "Clock View Model"
         val Factory: ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {

@@ -3,6 +3,7 @@ package com.folkmanis.laiks
 import android.app.Application
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
+import com.folkmanis.laiks.data.LocalUserPreferencesRepository
 import com.folkmanis.laiks.data.UserPreferencesRepository
 
 private const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
@@ -15,6 +16,6 @@ class LaiksApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         userPreferencesRepository =
-            UserPreferencesRepository(dataStore)
+            LocalUserPreferencesRepository(dataStore)
     }
 }
