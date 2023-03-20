@@ -82,7 +82,20 @@ fun LaiksScreenPreview() {
     val viewModel = ClockViewModel(
         FakeUserPreferencesRepository
     )
-    LaiksTheme {
+    LaiksTheme() {
+        LaiksScreen(viewModel=viewModel)
+    }
+}
+
+@Preview
+@Composable
+fun LaiksScreenPreviewDark() {
+    val viewModel = ClockViewModel(
+        FakeUserPreferencesRepository
+    )
+    LaiksTheme(
+        darkTheme = true,
+    ) {
         LaiksScreen(viewModel=viewModel)
     }
 }
