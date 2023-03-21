@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -114,7 +113,7 @@ fun TimeComponent(
 
         TimeSymbols(
             text = stringResource(id = R.string.minutes_separator),
-            modifier = modifier.alpha(alpha)
+//            modifier = modifier.alpha(alpha)
         )
 
         TimeSymbols(text = minutes)
