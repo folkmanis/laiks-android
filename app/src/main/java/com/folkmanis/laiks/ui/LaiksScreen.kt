@@ -1,34 +1,24 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.folkmanis.laiks
+package com.folkmanis.laiks.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.folkmanis.laiks.data.FakeUserPreferencesRepository
-import com.folkmanis.laiks.ui.ClockScreen
-import com.folkmanis.laiks.ui.ClockViewModel
+import com.folkmanis.laiks.R
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 
 @Composable
 fun LaiksScreen(
+    signIn: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ClockViewModel = viewModel(
-        factory = ClockViewModel.Factory
-    ),
 ) {
-
-    val uiState by viewModel
-        .uiState
-        .collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -36,16 +26,12 @@ fun LaiksScreen(
                 currentScreen = "Laiks",
                 canNavigateBack = false,
                 navigateUp = {},
+                signIn = signIn,
             )
         },
         modifier = modifier,
     ) { innerPadding ->
         ClockScreen(
-            offset = uiState.offset,
-            time = uiState.time,
-            onOffsetChange = {
-                viewModel.updateOffset(it)
-            },
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -56,11 +42,20 @@ fun LaiksScreen(
 fun LaiksTopBar(
     currentScreen: String,
     canNavigateBack: Boolean,
-    modifier: Modifier = Modifier,
     navigateUp: () -> Unit,
+    signIn: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         title = { Text(currentScreen) },
+        actions = {
+            IconButton(onClick = signIn) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(id = R.string.login_button)
+                )
+            }
+        },
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
@@ -75,27 +70,15 @@ fun LaiksTopBar(
     )
 }
 
-
 @Preview
 @Composable
-fun LaiksScreenPreview() {
-    val viewModel = ClockViewModel(
-        FakeUserPreferencesRepository
-    )
-    LaiksTheme() {
-        LaiksScreen(viewModel=viewModel)
-    }
-}
-
-@Preview
-@Composable
-fun LaiksScreenPreviewDark() {
-    val viewModel = ClockViewModel(
-        FakeUserPreferencesRepository
-    )
-    LaiksTheme(
-        darkTheme = true,
-    ) {
-        LaiksScreen(viewModel=viewModel)
+fun LaiksTopBarPreview() {
+    LaiksTheme {
+        LaiksTopBar(
+            currentScreen = "Laiks",
+            canNavigateBack = true,
+            navigateUp = { },
+            signIn = {}
+        )
     }
 }

@@ -4,4 +4,5 @@
     <string name="hour_plus_button">Hour Up</string>
     <string name="hour_minus_button">Hour Down</string>
     <string name="minutes_separator">:</string>
+    <string name="login_button">Login</string>
 </resources>

@@ -16,22 +16,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.STEP_DOWN_VALUE
 import com.folkmanis.laiks.STEP_UP_VALUE
+import com.folkmanis.laiks.data.FakeUserPreferencesRepository
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.timeToHours
 import com.folkmanis.laiks.utilities.timeToMinutes
-import java.time.LocalDateTime
-import java.time.LocalTime
+
+private fun Int.toSignedString(): String {
+    return if(this > 0) {
+        "+${toString()}"
+    } else {
+        toString()
+    }
+}
 
 @Composable
 fun ClockScreen(
-    offset: Int,
-    onOffsetChange: (Int) -> Unit,
-    time: LocalTime,
     modifier: Modifier = Modifier,
+    viewModel: ClockViewModel = viewModel(
+        factory = ClockViewModel.Factory
+    ),
 ) {
+
+    val uiState by viewModel
+        .uiState
+        .collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -41,7 +54,7 @@ fun ClockScreen(
     ) {
 
         FloatingActionButton(
-            onClick = { onOffsetChange(STEP_UP_VALUE) },
+            onClick = { viewModel.updateOffset(STEP_UP_VALUE) },
             modifier = Modifier
         ) {
             Icon(
@@ -51,7 +64,7 @@ fun ClockScreen(
         }
 
         Text(
-            text = offset.toSignedString(),
+            text = uiState.offset.toSignedString(),
             fontSize = 64.sp,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier
@@ -59,7 +72,7 @@ fun ClockScreen(
         )
 
         FloatingActionButton(
-            onClick = { onOffsetChange(STEP_DOWN_VALUE) }
+            onClick = { viewModel.updateOffset(STEP_DOWN_VALUE) }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.remove),
@@ -70,8 +83,8 @@ fun ClockScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         TimeComponent(
-            hours = timeToHours(time),
-            minutes = timeToMinutes(time),
+            hours = timeToHours(uiState.time),
+            minutes = timeToMinutes(uiState.time),
         )
 
     }
@@ -124,13 +137,24 @@ fun TimeSymbols(
 
 @Preview
 @Composable
-fun LaiksClockScreenPreview() {
-    val time: LocalTime = LocalDateTime.now().toLocalTime()
+fun LaiksScreenPreview() {
+    val viewModel = ClockViewModel(
+        FakeUserPreferencesRepository
+    )
     LaiksTheme {
-        ClockScreen(
-            offset = 3,
-            onOffsetChange = {},
-            time = time,
-        )
+        ClockScreen(viewModel=viewModel)
+    }
+}
+
+@Preview
+@Composable
+fun LaiksScreenPreviewDark() {
+    val viewModel = ClockViewModel(
+        FakeUserPreferencesRepository
+    )
+    LaiksTheme(
+        darkTheme = true,
+    ) {
+        ClockScreen(viewModel=viewModel)
     }
 }
