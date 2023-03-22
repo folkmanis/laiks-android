@@ -27,7 +27,7 @@ fun LaiksTopBar(
     currentScreen: LaiksScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    user: FirebaseUser?,
+    state: LaiksUiState,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -35,16 +35,16 @@ fun LaiksTopBar(
     TopAppBar(
         title = { Text(stringResource(id = currentScreen.title)) },
         actions = {
-            if (user == null) {
-                SignInButton()
-            } else {
+            if (state is LaiksUiState.LoggedIn) {
                 AuthorizedUserMenuButton(
-                    user = user,
+                    user = state.firebaseUser,
                     logout = {
                         AuthUI.getInstance()
                             .signOut(context)
                     },
                 )
+            } else {
+                SignInButton()
             }
         },
         navigationIcon = {
@@ -121,7 +121,7 @@ fun LaiksTopBarPreview() {
             currentScreen = LaiksScreen.Clock,
             canNavigateBack = true,
             navigateUp = { },
-            user = null,
+            state = LaiksUiState.NotLoggedIn,
         )
     }
 }

@@ -7,6 +7,8 @@ interface AccountService {
 
     val currentUser: Flow<FirebaseUser?>
 
+    suspend fun getLaiksUser(uId: String): Flow<LaiksUser?>
+    suspend fun signWithEmailAndPassword(email: String, password: String)
     suspend fun signOut()
 
 }

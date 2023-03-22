@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -29,7 +30,7 @@ fun LaiksAppScreen(
     )
 ) {
 
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
     val navController = rememberNavController()
 
@@ -39,13 +40,14 @@ fun LaiksAppScreen(
         backStackEntry?.destination?.route ?: LaiksScreen.Clock.name
     )
 
+
     Scaffold(
         topBar = {
             LaiksTopBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
-                user = uiState.value.user,
+                state = uiState,
             )
         },
         modifier = modifier,
@@ -58,7 +60,7 @@ fun LaiksAppScreen(
 
             composable(LaiksScreen.Clock.name) {
                 ClockScreen(
-                    pricesAllowed = true,
+                    pricesAllowed = uiState is LaiksUiState.LoggedIn && uiState.isPricesAllowed,
                     modifier = Modifier.padding(innerPadding),
                     onShowPrices = {
                         navController.navigate(LaiksScreen.Prices.name)

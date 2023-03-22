@@ -8,6 +8,8 @@ import com.folkmanis.laiks.data.AccountServiceFirebase
 import com.folkmanis.laiks.data.LocalUserPreferencesRepository
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 private const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
@@ -24,6 +26,10 @@ class LaiksApplication : Application() {
             LocalUserPreferencesRepository(dataStore)
 
         accountService =
-            AccountServiceFirebase(Firebase.auth)
+            AccountServiceFirebase(
+                Firebase.auth,
+                Firebase.firestore
+            )
+
     }
 }
