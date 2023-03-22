@@ -3,7 +3,6 @@
 package com.folkmanis.laiks.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -16,8 +15,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.firebase.ui.auth.AuthUI
@@ -26,36 +23,8 @@ import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.google.firebase.auth.FirebaseUser
 
 @Composable
-fun LaiksScreen(
-    modifier: Modifier = Modifier,
-    viewModel: LaiksViewModel = viewModel(
-        factory = LaiksViewModel.Factory
-    )
-) {
-
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-
-    Scaffold(
-        topBar = {
-            LaiksTopBar(
-                currentScreen = "Laiks",
-                canNavigateBack = false,
-                navigateUp = {},
-                user = uiState.value.user,
-            )
-        },
-        modifier = modifier,
-    ) { innerPadding ->
-        ClockScreen(
-            modifier = Modifier.padding(innerPadding),
-        )
-    }
-
-}
-
-@Composable
 fun LaiksTopBar(
-    currentScreen: String,
+    currentScreen: LaiksScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     user: FirebaseUser?,
@@ -64,7 +33,7 @@ fun LaiksTopBar(
     val context = LocalContext.current
 
     TopAppBar(
-        title = { Text(currentScreen) },
+        title = { Text(stringResource(id = currentScreen.title)) },
         actions = {
             if (user == null) {
                 SignInButton()
@@ -72,8 +41,8 @@ fun LaiksTopBar(
                 AuthorizedUserMenuButton(
                     user = user,
                     logout = {
-                             AuthUI.getInstance()
-                                 .signOut(context)
+                        AuthUI.getInstance()
+                            .signOut(context)
                     },
                 )
             }
@@ -149,7 +118,7 @@ fun AuthorizedUserMenuButton(
 fun LaiksTopBarPreview() {
     LaiksTheme {
         LaiksTopBar(
-            currentScreen = "Laiks",
+            currentScreen = LaiksScreen.Clock,
             canNavigateBack = true,
             navigateUp = { },
             user = null,

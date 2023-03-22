@@ -2,6 +2,7 @@ package com.folkmanis.laiks.ui
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -35,6 +36,8 @@ private fun Int.toSignedString(): String {
 
 @Composable
 fun ClockScreen(
+    pricesAllowed: Boolean,
+    onShowPrices: ()->Unit,
     modifier: Modifier = Modifier,
     viewModel: ClockViewModel = viewModel(
         factory = ClockViewModel.Factory
@@ -45,6 +48,12 @@ fun ClockScreen(
         .uiState
         .collectAsStateWithLifecycle()
 
+    if(pricesAllowed) {
+        Button(onClick = onShowPrices) {
+            Text(text = stringResource(id = R.string.show_prices_button))
+        }
+    }
+    
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -96,8 +105,8 @@ fun TimeComponent(
     minutes: String,
     modifier: Modifier = Modifier
 ) {
-    val infiniteTransition = rememberInfiniteTransition()
 
+    val infiniteTransition = rememberInfiniteTransition()
     val alpha by infiniteTransition.animateFloat(
         initialValue = 1f,
         targetValue = 0f,
@@ -141,7 +150,11 @@ fun LaiksScreenPreview() {
         FakeUserPreferencesRepository
     )
     LaiksTheme {
-        ClockScreen(viewModel=viewModel)
+        ClockScreen(
+            pricesAllowed = true,
+            viewModel=viewModel,
+            onShowPrices = {},
+        )
     }
 }
 
@@ -154,6 +167,10 @@ fun LaiksScreenPreviewDark() {
     LaiksTheme(
         darkTheme = true,
     ) {
-        ClockScreen(viewModel=viewModel)
+        ClockScreen(
+            pricesAllowed = true,
+            viewModel=viewModel,
+            onShowPrices = {},
+        )
     }
 }
