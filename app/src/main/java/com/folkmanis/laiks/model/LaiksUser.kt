@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.data
+package com.folkmanis.laiks.model
 
 data class LaiksUser(
     val email: String = "",

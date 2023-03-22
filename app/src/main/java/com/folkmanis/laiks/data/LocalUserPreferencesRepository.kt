@@ -2,10 +2,7 @@ package com.folkmanis.laiks.data
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -17,26 +14,44 @@ class LocalUserPreferencesRepository(
 
     private companion object {
         val TIME_OFFSET_KEY = intPreferencesKey("time_offset")
+        val INCLUDE_VAT_KEY = booleanPreferencesKey("include_vat")
         const val TAG = "User Preferences Datastore"
     }
 
-    override val savedTimeOffset: Flow<Int> = datastore.data
-        .catch {
-            if (it is IOException) {
-                Log.e(TAG, "Preferences read error", it)
-                emit(emptyPreferences())
-            } else {
-                throw it
+    private val allPreferences: Flow<Preferences>
+        get() = datastore.data
+            .catch {
+                if (it is IOException) {
+                    Log.e(TAG, "Preferences read error", it)
+                    emit(emptyPreferences())
+                } else {
+                    throw it
+                }
             }
-        }
-        .map { preferences ->
-            preferences[TIME_OFFSET_KEY] ?: 0
-        }
+
+    override val savedTimeOffset: Flow<Int>
+        get() = allPreferences
+            .map { preferences ->
+                preferences[TIME_OFFSET_KEY] ?: 0
+            }
+
+    override val includeVat: Flow<Boolean>
+        get() = allPreferences
+            .map { preferences ->
+                preferences[INCLUDE_VAT_KEY] ?: true
+            }
 
     override suspend fun saveTimeOffset(offset: Int) {
         datastore.edit { preferences ->
             preferences[TIME_OFFSET_KEY] = offset
         }
     }
+
+    override suspend fun setIncludeVat(include: Boolean) {
+        datastore.edit { preferences ->
+            preferences[INCLUDE_VAT_KEY] = include
+        }
+    }
+
 
 }

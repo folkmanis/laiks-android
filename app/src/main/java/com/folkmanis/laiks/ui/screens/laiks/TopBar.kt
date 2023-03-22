@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.folkmanis.laiks.ui
+package com.folkmanis.laiks.ui.screens.laiks
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape

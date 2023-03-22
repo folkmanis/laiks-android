@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui
+package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
@@ -24,16 +24,9 @@ import com.folkmanis.laiks.STEP_DOWN_VALUE
 import com.folkmanis.laiks.STEP_UP_VALUE
 import com.folkmanis.laiks.data.FakeUserPreferencesRepository
 import com.folkmanis.laiks.ui.theme.LaiksTheme
-import com.folkmanis.laiks.utilities.timeToHours
-import com.folkmanis.laiks.utilities.timeToMinutes
-
-private fun Int.toSignedString(): String {
-    return if (this > 0) {
-        "+${toString()}"
-    } else {
-        toString()
-    }
-}
+import com.folkmanis.laiks.utilities.ext.hoursString
+import com.folkmanis.laiks.utilities.ext.minutesString
+import com.folkmanis.laiks.utilities.ext.toSignedString
 
 @Composable
 fun ClockScreen(
@@ -113,8 +106,8 @@ fun ClockScreen(
                 .padding(top = 16.dp),
         ) {
             TimeComponent(
-                hours = timeToHours(uiState.time),
-                minutes = timeToMinutes(uiState.time),
+                hours = uiState.time.hoursString,
+                minutes = uiState.time.minutesString,
             )
         }
 
@@ -135,7 +128,9 @@ fun TimeComponent(
         initialValue = 1f,
         targetValue = 0f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000),
+            animation = tween(
+                durationMillis = 1000,
+                easing = { if (it > 0.5) 1f else 0f }),
             repeatMode = RepeatMode.Reverse,
         )
     )
@@ -147,7 +142,7 @@ fun TimeComponent(
         TimeSymbols(
             text = stringResource(id = R.string.minutes_separator),
             modifier = modifier
-//                .alpha(alpha)
+                .alpha(alpha)
         )
 
         TimeSymbols(text = minutes)

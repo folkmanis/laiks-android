@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.data
 
 import android.util.Log
+import com.folkmanis.laiks.model.LaiksUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,7 +11,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.tasks.await
 
 class AccountServiceFirebase(
     private val auth: FirebaseAuth,

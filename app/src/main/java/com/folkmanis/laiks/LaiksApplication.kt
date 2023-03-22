@@ -3,12 +3,8 @@ package com.folkmanis.laiks
 import android.app.Application
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import com.folkmanis.laiks.data.AccountService
-import com.folkmanis.laiks.data.AccountServiceFirebase
-import com.folkmanis.laiks.data.LocalUserPreferencesRepository
-import com.folkmanis.laiks.data.UserPreferencesRepository
+import com.folkmanis.laiks.data.*
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -20,15 +16,23 @@ private val Context.dataStore by preferencesDataStore(
 class LaiksApplication : Application() {
     lateinit var userPreferencesRepository: UserPreferencesRepository
     lateinit var accountService: AccountService
+    lateinit var pricesService: PricesService
     override fun onCreate() {
         super.onCreate()
+
+        val firestore = Firebase.firestore
         userPreferencesRepository =
             LocalUserPreferencesRepository(dataStore)
 
         accountService =
             AccountServiceFirebase(
                 Firebase.auth,
-                Firebase.firestore
+                firestore
+            )
+
+        pricesService =
+            PricesServiceFirebase(
+                firestore
             )
 
     }

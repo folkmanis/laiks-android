@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 interface UserPreferencesRepository {
     val savedTimeOffset: Flow<Int>
+    val includeVat: Flow<Boolean>
     suspend fun saveTimeOffset(offset: Int)
+    suspend fun setIncludeVat(include: Boolean)
 }
 
 object  FakeUserPreferencesRepository : UserPreferencesRepository {
@@ -13,5 +15,11 @@ object  FakeUserPreferencesRepository : UserPreferencesRepository {
 
     override suspend fun saveTimeOffset(offset: Int) {
         savedTimeOffset.emit(offset)
+    }
+
+    override val includeVat: MutableStateFlow<Boolean> = MutableStateFlow(true)
+
+    override suspend fun setIncludeVat(include: Boolean) {
+        includeVat.emit(include)
     }
 }

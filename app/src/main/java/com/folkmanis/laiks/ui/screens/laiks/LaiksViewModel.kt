@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui
+package com.folkmanis.laiks.ui.screens.laiks
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,18 +8,10 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.folkmanis.laiks.LaiksApplication
 import com.folkmanis.laiks.data.AccountService
-import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
-sealed interface LaiksUiState {
-    object NotLoggedIn : LaiksUiState
-    data class LoggedIn(
-        val firebaseUser: FirebaseUser,
-        val isAdmin: Boolean = false,
-        val isPricesAllowed: Boolean = false,
-    ) : LaiksUiState
-}
-
+@OptIn(ExperimentalCoroutinesApi::class)
 class LaiksViewModel(
     accountService: AccountService
 ) : ViewModel() {
