@@ -2,12 +2,20 @@ package com.folkmanis.laiks
 
 import com.folkmanis.laiks.utilities.delayToNextMinute
 import com.folkmanis.laiks.utilities.delayToNextSecond
-import com.folkmanis.laiks.utilities.timeToHours
-import com.folkmanis.laiks.utilities.timeToMinutes
+import com.folkmanis.laiks.utilities.ext.hoursString
+import com.folkmanis.laiks.utilities.ext.minutesString
+import com.folkmanis.laiks.utilities.hoursUntilTimestamp
+import com.google.firebase.Timestamp
 import org.junit.Test
 import java.time.LocalTime
 import org.junit.Assert.assertEquals
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
+import java.util.*
 
 class TimeTest {
 
@@ -15,42 +23,42 @@ class TimeTest {
     fun dateTimeUtils_timeToMinutes_twoDigits() {
         val testTime = LocalTime.of(5, 25)
         val expectedTime = "25"
-        assertEquals(expectedTime, timeToMinutes(testTime))
+        assertEquals(expectedTime, testTime.minutesString)
     }
 
     @Test
     fun dateTimeUtils_timeToMinutes_oneDigit() {
         val testTime = LocalTime.of(5, 5)
         val expectedTime = "05"
-        assertEquals(expectedTime, timeToMinutes(testTime))
+        assertEquals(expectedTime, testTime.minutesString)
     }
 
     @Test
     fun dateTimeUtils_timeToMinutes_zero() {
         val testTime = LocalTime.of(5, 0)
         val expectedTime = "00"
-        assertEquals(expectedTime, timeToMinutes(testTime))
+        assertEquals(expectedTime, testTime.minutesString)
     }
 
     @Test
     fun dateTimeUtils_timeToHours_twoDigits() {
         val testTime = LocalTime.of(23, 10)
         val expectedHour = "23"
-        assertEquals(expectedHour, timeToHours(testTime))
+        assertEquals(expectedHour, testTime.hoursString)
     }
 
     @Test
     fun dateTimeUtils_timeToHours_oneDigit() {
         val testTime = LocalTime.of(8, 10)
         val expectedHour = "8"
-        assertEquals(expectedHour, timeToHours(testTime))
+        assertEquals(expectedHour, testTime.hoursString)
     }
 
     @Test
     fun dateTimeUtils_timeToHours_zero() {
         val testTime = LocalTime.of(0, 10)
         val expectedHour = "0"
-        assertEquals(expectedHour, timeToHours(testTime))
+        assertEquals(expectedHour, testTime.hoursString)
     }
 
     @Test
@@ -94,6 +102,25 @@ class TimeTest {
             500_000_000
         )
         assertEquals(expectedDelay, delayToNextSecond(dateNow))
+    }
+
+    @Test
+    fun dateTimeUtils_hoursUntilTime_shouldBeAlmostEqual() {
+        val startDate = LocalDateTime
+            .of(2023, 3, 22, 23, 59, 59)
+        val dateNow = startDate
+            .atZone(ZoneId.systemDefault())
+            .truncatedTo(ChronoUnit.HOURS)
+            .toInstant()
+        val dateTo = startDate.plusSeconds(1)
+            .atZone(ZoneId.systemDefault())
+            .truncatedTo(ChronoUnit.HOURS)
+            .toInstant()
+        val timestampNow = Timestamp(
+            Date(dateTo.toEpochMilli())
+        )
+        val interval = hoursUntilTimestamp(dateNow, timestampNow)
+        assertEquals(1, interval)
     }
 
 }

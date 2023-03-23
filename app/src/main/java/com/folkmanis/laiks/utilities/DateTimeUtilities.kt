@@ -1,7 +1,14 @@
 package com.folkmanis.laiks.utilities
 
+import com.google.firebase.Timestamp
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.temporal.TemporalField
+import java.util.Date
+import kotlin.math.ceil
 
 fun delayToNextSecond(fromDateTime: LocalDateTime): Long {
     val nextSecond = fromDateTime
@@ -22,3 +29,7 @@ fun delayToNextMinute(fromDateTime: LocalDateTime): Long {
         .toMillis()
 }
 
+fun hoursUntilTimestamp(dateNow: Instant, time: Timestamp): Long {
+    val hours = Duration.between(dateNow, time.toDate().toInstant()).toMillis() / (60 * 60 * 1000)
+return hours
+}
