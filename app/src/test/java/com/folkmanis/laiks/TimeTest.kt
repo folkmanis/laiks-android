@@ -1,20 +1,19 @@
 package com.folkmanis.laiks
 
+import com.folkmanis.laiks.utilities.delayToNextHour
 import com.folkmanis.laiks.utilities.delayToNextMinute
 import com.folkmanis.laiks.utilities.delayToNextSecond
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.minutesString
+import com.folkmanis.laiks.utilities.ext.toLocalDateString
 import com.folkmanis.laiks.utilities.hoursUntilTimestamp
 import com.google.firebase.Timestamp
-import org.junit.Test
-import java.time.LocalTime
 import org.junit.Assert.assertEquals
-import java.time.Instant
+import org.junit.Test
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
+import java.time.ZonedDateTime
 import java.util.*
 
 class TimeTest {
@@ -76,6 +75,20 @@ class TimeTest {
     }
 
     @Test
+    fun clockTick_nextHour_fromDateTime() {
+        val expectedDelay = 60000L
+        val dateNow = LocalDateTime.of(
+            2023,
+            3,
+            19,
+            23,
+            59,
+            0,
+        )
+        assertEquals(expectedDelay, delayToNextHour(dateNow))
+    }
+
+    @Test
     fun clockTick_nextMinute_fromZero() {
         val expectedDelay = 60000L
         val dateNow = LocalDateTime.of(
@@ -105,22 +118,25 @@ class TimeTest {
     }
 
     @Test
-    fun dateTimeUtils_hoursUntilTime_shouldBeAlmostEqual() {
+    fun dateTimeUtils_hoursUntilTime_shouldCalculate() {
         val startDate = LocalDateTime
             .of(2023, 3, 22, 23, 59, 59)
-        val dateNow = startDate
             .atZone(ZoneId.systemDefault())
-            .truncatedTo(ChronoUnit.HOURS)
             .toInstant()
-        val dateTo = startDate.plusSeconds(1)
-            .atZone(ZoneId.systemDefault())
-            .truncatedTo(ChronoUnit.HOURS)
-            .toInstant()
-        val timestampNow = Timestamp(
-            Date(dateTo.toEpochMilli())
+        val timestampTo = Timestamp(
+            Date(startDate.toEpochMilli() + 1000)
         )
-        val interval = hoursUntilTimestamp(dateNow, timestampNow)
+        val interval = hoursUntilTimestamp(startDate, timestampTo)
         assertEquals(1, interval)
+    }
+
+    @Test
+    fun extTimestamp_ToLocalDate_localDate() {
+        val dateNow = ZonedDateTime.of(2023, 3, 22, 23, 0, 0, 0, ZoneId.systemDefault())
+            .toInstant()
+
+        val dateText = Timestamp(dateNow.epochSecond, dateNow.nano).toLocalDateString()
+        assertEquals("22.Mar", dateText)
     }
 
 }

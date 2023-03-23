@@ -4,16 +4,12 @@ import com.google.firebase.Timestamp
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.temporal.TemporalField
-import java.util.Date
-import kotlin.math.ceil
+import java.time.temporal.ChronoUnit
 
 fun delayToNextSecond(fromDateTime: LocalDateTime): Long {
     val nextSecond = fromDateTime
         .plusSeconds(1)
-        .withNano(0)
+        .truncatedTo(ChronoUnit.SECONDS)
     return Duration
         .between(fromDateTime, nextSecond)
         .toMillis()
@@ -22,14 +18,26 @@ fun delayToNextSecond(fromDateTime: LocalDateTime): Long {
 fun delayToNextMinute(fromDateTime: LocalDateTime): Long {
     val nextMinute = fromDateTime
         .plusMinutes(1)
-        .withSecond(0)
-        .withNano(0)
+        .truncatedTo(ChronoUnit.MINUTES)
     return Duration
         .between(fromDateTime, nextMinute)
         .toMillis()
 }
 
+fun delayToNextHour(fromDateTime: LocalDateTime): Long {
+    val nextHour = fromDateTime
+        .plusHours(1)
+        .truncatedTo(ChronoUnit.HOURS)
+    return Duration
+        .between(fromDateTime, nextHour)
+        .toMillis()
+}
+
 fun hoursUntilTimestamp(dateNow: Instant, time: Timestamp): Long {
-    val hours = Duration.between(dateNow, time.toDate().toInstant()).toMillis() / (60 * 60 * 1000)
-return hours
+    return Duration
+        .between(
+            dateNow.truncatedTo(ChronoUnit.HOURS),
+            time.toDate().toInstant().truncatedTo(ChronoUnit.HOURS)
+        )
+        .toHours()
 }

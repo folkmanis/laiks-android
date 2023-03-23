@@ -7,4 +7,6 @@
     <string name="login_button">Login</string>
     <string name="show_prices_button">ShowPrices</string>
     <string name="prices_screen">Prices</string>
+    <string name="loading">Loading...</string>
+    <string name="loading_failed">Loading failed!</string>
 </resources>
