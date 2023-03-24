@@ -8,8 +8,8 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-fun msWtoMWh(msWh: Double): Double =
-    msWh / 1000.0 / 1000.0 / 60.0 / 60.0 / 1000.0
+fun Double.msWtoMWh(): Double =
+    this / 1000.0 / 1000.0 / 60.0 / 60.0 / 1000.0
 
 val PowerAppliance.cycleLength: Long
     get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.length }
@@ -26,12 +26,12 @@ fun PowerAppliance.startTime(time: LocalDateTime): Long {
 
 }
 
-data class OffsetPrice(
+data class OffsetCost(
     val offset: Long,
     val price: Double,
 )
 
-fun priceTime(
+fun timeCost(
     prices: List<NpPrice>,
     time: LocalDateTime,
     appliance: PowerAppliance
@@ -43,7 +43,7 @@ fun priceTime(
 
     for (cycle in appliance.cycles) {
 
-        val consumption = cycleConsumption(cycle, prices, t)
+        val consumption = cycleCost(cycle, prices, t)
 
         if (consumption === null) {
             return null
@@ -54,17 +54,17 @@ fun priceTime(
 
     }
 
-    return msWtoMWh(totalCons) // EUR
+    return totalCons.msWtoMWh() // EUR
 
 }
 
-fun offsetPrices(
+fun offsetCosts(
     npPrices: List<NpPrice>,
     startTime: LocalDateTime,
     appliance: PowerAppliance
-): List<OffsetPrice> {
+): List<OffsetCost> {
 
-    val prices: MutableList<OffsetPrice> = mutableListOf()
+    val costs: MutableList<OffsetCost> = mutableListOf()
 
     var time = if (appliance.delay === "end") {
         startTime.plusHours(appliance.minimumDelay)
@@ -83,10 +83,10 @@ fun offsetPrices(
 
     while (time.isBefore(lastTime)) {
 
-        val price = priceTime(npPrices, time, appliance)
+        val price = timeCost(npPrices, time, appliance)
 
         if (price !== null) {
-            prices.add(OffsetPrice(offset, price))
+            costs.add(OffsetCost(offset, price))
         }
 
         offset++
@@ -94,12 +94,12 @@ fun offsetPrices(
 
     }
 
-    return prices
+    return costs
 
 }
 
-fun List<OffsetPrice>.bestOffset(): OffsetPrice? {
-    var best: OffsetPrice? = null
+fun List<OffsetCost>.bestOffset(): OffsetCost? {
+    var best: OffsetCost? = null
     for (offsetPrice in this) {
         best = if (best == null || offsetPrice.price < best.price)
             offsetPrice else best
@@ -107,7 +107,7 @@ fun List<OffsetPrice>.bestOffset(): OffsetPrice? {
     return best
 }
 
-fun cycleConsumption(
+fun cycleCost(
     cycle: PowerApplianceCycle,
     npPrices: List<NpPrice>,
     start: Long
