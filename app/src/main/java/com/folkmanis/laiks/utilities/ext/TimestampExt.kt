@@ -33,5 +33,5 @@ fun Timestamp.toLocalTime(): LocalTime {
 }
 
 fun Timestamp.toEpochMilli(): Long {
-    return this.seconds + (this.nanoseconds / 1_000_000)
+    return this.seconds * 1000 + (this.nanoseconds / 1_000_000)
 }

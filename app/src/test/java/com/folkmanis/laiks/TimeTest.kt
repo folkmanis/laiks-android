@@ -5,6 +5,7 @@ import com.folkmanis.laiks.utilities.delayToNextMinute
 import com.folkmanis.laiks.utilities.delayToNextSecond
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.minutesString
+import com.folkmanis.laiks.utilities.ext.toEpochMilli
 import com.folkmanis.laiks.utilities.ext.toLocalDateString
 import com.folkmanis.laiks.utilities.hoursUntilTimestamp
 import com.google.firebase.Timestamp
@@ -137,6 +138,16 @@ class TimeTest {
 
         val dateText = Timestamp(dateNow.epochSecond, dateNow.nano).toLocalDateString()
         assertEquals("22.Mar", dateText)
+    }
+
+    @Test
+    fun extTimestamp_ToEpochMilli_shoulCalculate() {
+        val dateNow = ZonedDateTime.of(2023, 3, 22, 23, 52, 14, 234_000_000, ZoneId.systemDefault())
+            .toInstant()
+        assertEquals(
+            dateNow.toEpochMilli(),
+            Timestamp(Date.from(dateNow)).toEpochMilli()
+        )
     }
 
 }
