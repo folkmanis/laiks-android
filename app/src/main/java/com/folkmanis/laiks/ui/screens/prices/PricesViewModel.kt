@@ -9,7 +9,9 @@ import com.folkmanis.laiks.LaiksApplication
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.utilities.SHOW_HOURS_BEFORE
 import com.folkmanis.laiks.utilities.hourTicks
+import com.folkmanis.laiks.utilities.minuteTicks
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.flow.*
 import java.io.IOException
 import java.time.Instant
@@ -25,13 +27,23 @@ class PricesViewModel(
         .flatMapLatest { localDateTime ->
             pricesService.allNpPrices(startTime(localDateTime))
                 .catch {
-                    if (it is IOException)
-                        PricesUiState.Error("IO Error")
+                    if (it is FirebaseFirestoreException)
+                        PricesUiState.Error(it.message ?: "Firebase error", it)
                     else
                         throw it
                 }
-                .map { npPrices ->
-                    PricesUiState.Success(localDateTime,npPrices)
+                .flatMapLatest { npPrices ->
+                    minuteTicks()
+                        .flatMapLatest { minute ->
+                            pricesService.activeAppliances
+                                .map { appliances ->
+                                    PricesUiState.Success(
+                                        hour = localDateTime,
+                                        npPrices = npPrices,
+                                        minute = minute,
+                                    )
+                                }
+                        }
                 }
         }
 

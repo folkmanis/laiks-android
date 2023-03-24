@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.utilities
 
 import com.folkmanis.laiks.model.NpPrice
+import com.folkmanis.laiks.model.OffsetCost
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import com.folkmanis.laiks.utilities.ext.toEpochMilli
@@ -23,13 +24,7 @@ fun PowerAppliance.startTime(time: LocalDateTime): Long {
     } else {
         time.toLocalMilli()
     }
-
 }
-
-data class OffsetCost(
-    val offset: Long,
-    val price: Double,
-)
 
 fun timeCost(
     prices: List<NpPrice>,

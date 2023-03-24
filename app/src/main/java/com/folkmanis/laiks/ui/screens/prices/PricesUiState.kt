@@ -7,13 +7,17 @@ import java.time.ZoneId
 
 sealed interface PricesUiState {
     object Loading : PricesUiState
-    data class Error(val reason: String) : PricesUiState
+    data class Error(
+        val reason: String,
+        val exception: Throwable,
+        ) : PricesUiState
     data class Success(
-        val localDateTime: LocalDateTime = LocalDateTime.now(),
-        val npPrices: List<NpPrice> = emptyList()
+        val hour: LocalDateTime = LocalDateTime.now(),
+        val npPrices: List<NpPrice> = emptyList(),
+        val minute: LocalDateTime = LocalDateTime.now(),
     ) : PricesUiState {
-        val instantTime: Instant
-            get() = localDateTime
+        val instantHour: Instant
+            get() = hour
                 .atZone(ZoneId.systemDefault())
                 .toInstant()
     }

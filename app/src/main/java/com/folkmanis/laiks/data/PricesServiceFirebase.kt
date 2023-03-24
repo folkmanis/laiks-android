@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.data
 
 import com.folkmanis.laiks.model.NpPrice
+import com.folkmanis.laiks.model.PowerAppliance
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.snapshots
@@ -12,22 +13,36 @@ class PricesServiceFirebase(
     private val firestore: FirebaseFirestore
 ) : PricesService {
 
-   private val npData = firestore
+    private val npData = firestore
         .collection(LAIKS_COLLECTION)
         .document(NP_DATA)
 
+    private val appliances = firestore
+        .collection(POWER_APPLIANCES_COLLECTION)
+
     override fun allNpPrices(startTimestamp: Timestamp): Flow<List<NpPrice>> {
-       return npData.collection(NP_PRICES_COLLECTION)
-           .whereGreaterThanOrEqualTo("startTime", startTimestamp)
+        return npData.collection(NP_PRICES_COLLECTION)
+            .whereGreaterThanOrEqualTo("startTime", startTimestamp)
             .orderBy("startTime")
             .snapshots()
             .map { snapshot ->
                 snapshot.toObjects()
             }
     }
+
+    val activeAppliances: Flow<List<PowerAppliance>> =
+        appliances
+            .whereEqualTo("enabled", true)
+            .orderBy("name")
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObjects()
+            }
+
     companion object {
         private const val LAIKS_COLLECTION = "laiks"
         private const val NP_DATA = "np-data"
         private const val NP_PRICES_COLLECTION = "prices"
+        private const val POWER_APPLIANCES_COLLECTION = "powerAppliances"
     }
 }

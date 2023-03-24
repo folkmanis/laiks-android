@@ -32,51 +32,59 @@ fun PriceRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .height(48.dp),
+            .padding(horizontal = 16.dp)
+            .height(64.dp),
     ) {
-        Text(
-            text = price
+        Box(
+            modifier = Modifier
+                .width(64.dp),
+        ) {
+            val hours = price
                 .startTime
                 .hoursFrom(dateNow)
-                .toSignedString(),
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .width(64.dp),
-        )
+            if (hours >= 0) {
+                Text(
+                    text = hours.toSignedString(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                )
+            }
+        }
 
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .weight(1f),
         ) {
 
-            Text(
-                price.startTime.toLocalDateString(),
-                fontSize = 24.sp
-            )
+//            Text(
+//                price.startTime.toLocalDateString(),
+//                fontSize = 18.sp
+//            )
 
             TimeIntervalText(
                 startTime = price.startTime.toLocalTime(),
                 endTime = price.endTime.toLocalTime(),
             )
 
-            val formatter = NumberFormat
-                .getNumberInstance()
-            formatter.maximumFractionDigits = 2
-            formatter.minimumFractionDigits = 2
-
-            Text(
-                text = formatter
-                    .format(price.value.eurMWhToCentsKWh().withVat(VAT)
-                    ),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
         }
+        val formatter = NumberFormat
+            .getNumberInstance()
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+
+        Text(
+            text = formatter
+                .format(
+                    price.value.eurMWhToCentsKWh().withVat(VAT)
+                ),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(start = 16.dp)
+        )
 
 
     }
@@ -108,6 +116,7 @@ fun TimeText(
         Text(
             text = time.hoursString,
             fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier,
         )
         Text(
