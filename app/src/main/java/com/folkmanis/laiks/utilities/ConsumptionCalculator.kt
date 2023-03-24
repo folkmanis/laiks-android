@@ -79,7 +79,6 @@ fun offsetPrices(
     }
         .atZone(ZoneId.systemDefault()).toLocalDateTime()
 
-//    var time = startTime
     var offset = appliance.minimumDelay
 
     while (time.isBefore(lastTime)) {
