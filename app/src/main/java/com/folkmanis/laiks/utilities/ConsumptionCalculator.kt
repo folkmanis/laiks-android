@@ -1,7 +1,6 @@
 package com.folkmanis.laiks.utilities
 
 import com.folkmanis.laiks.model.NpPrice
-import com.folkmanis.laiks.model.OffsetCost
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import com.folkmanis.laiks.utilities.ext.toEpochMilli
@@ -57,9 +56,9 @@ fun offsetCosts(
     npPrices: List<NpPrice>,
     startTime: LocalDateTime,
     appliance: PowerAppliance
-): List<OffsetCost> {
+): Map<Long, Double> {
 
-    val costs: MutableList<OffsetCost> = mutableListOf()
+    val costs: MutableMap<Long, Double> = mutableMapOf()
 
     var time = if (appliance.delay === "end") {
         startTime.plusHours(appliance.minimumDelay)
@@ -81,7 +80,7 @@ fun offsetCosts(
         val price = timeCost(npPrices, time, appliance)
 
         if (price !== null) {
-            costs.add(OffsetCost(offset, price))
+            costs.put(offset, price)
         }
 
         offset++
@@ -93,13 +92,8 @@ fun offsetCosts(
 
 }
 
-fun List<OffsetCost>.bestOffset(): OffsetCost? {
-    var best: OffsetCost? = null
-    for (offsetPrice in this) {
-        best = if (best == null || offsetPrice.price < best.price)
-            offsetPrice else best
-    }
-    return best
+fun Map<Long, Double>.bestOffset(): Long? {
+    return minByOrNull { pair -> pair.value }?.key
 }
 
 fun cycleCost(

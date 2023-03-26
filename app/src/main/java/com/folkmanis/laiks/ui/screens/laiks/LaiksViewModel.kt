@@ -18,6 +18,7 @@ class LaiksViewModel(
 
     val uiState: StateFlow<LaiksUiState> = accountService.currentUser
         .flatMapLatest { user ->
+            Log.d(TAG, "User: $user")
             if (user == null) {
                 flowOf(LaiksUiState.NotLoggedIn)
             } else {

@@ -12,6 +12,10 @@ fun Timestamp.hoursFrom(dateNow: Instant): Int {
     return hoursUntilTimestamp(dateNow, this).toInt()
 }
 
+fun Timestamp.hoursFrom(dateNow: LocalDateTime): Int {
+    return hoursUntilTimestamp(dateNow, this).toInt()
+}
+
 fun Timestamp.toLocalDateString(): String {
    val formatter = DateTimeFormatter.ofPattern("d.LLL")
     return this
@@ -26,10 +30,6 @@ fun Timestamp.toLocalDateTime(): LocalDateTime {
         .toInstant()
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
-}
-
-fun Timestamp.toLocalTime(): LocalTime {
-    return  this.toLocalDateTime().toLocalTime()
 }
 
 fun Timestamp.toEpochMilli(): Long {

@@ -67,20 +67,18 @@ val dishWasher = PowerAppliance(
     color = "#ff00ff",
 )
 
-private val dishWasherCosts = listOf<OffsetCost>(
-    OffsetCost(0L, 0.0195),
-    OffsetCost(1L, 0.00975),
-    OffsetCost(2L, 17070000000.0.msWtoMWh()),
-    OffsetCost(3L, 7500000000.0.msWtoMWh()),
+private val dishWasherCosts = mapOf(
+    0L to 0.0195,
+    1L to 0.00975,
+    2L to 17070000000.0.msWtoMWh(),
+    3L to 7500000000.0.msWtoMWh(),
 )
-private val washerCosts = listOf<OffsetCost>(
-    OffsetCost(3L, 19140000000.0.msWtoMWh()),
-    OffsetCost(4L, 7845000000.0.msWtoMWh()),
+private val washerCosts = mapOf(
+    3L to 19140000000.0.msWtoMWh(),
+    4L to 7845000000.0.msWtoMWh(),
 )
-
 
 val washer = dishWasher.copy(delay = "end", minimumDelay = 3L)
-
 
 class ConsumptionCalculatorTest {
 
@@ -133,7 +131,7 @@ class ConsumptionCalculatorTest {
             pricesStart.plusMinutes(30),
             dishWasher
         )
-        assertEquals(dishWasherCosts.bestOffset(), costs[3])
+        assertEquals(3,costs.bestOffset())
     }
 
     @Test

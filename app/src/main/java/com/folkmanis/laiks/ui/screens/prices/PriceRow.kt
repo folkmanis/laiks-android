@@ -1,32 +1,24 @@
 package com.folkmanis.laiks.ui.screens.prices
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.ui.theme.LaiksTheme
-import com.folkmanis.laiks.utilities.VAT
+import com.folkmanis.laiks.VAT
+import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.utilities.ext.*
-import java.text.NumberFormat
-import java.time.Instant
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Composable
 fun PriceRow(
-    dateNow: Instant,
+    powerHour: PowerHour,
     modifier: Modifier = Modifier,
-    price: NpPrice,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -39,9 +31,11 @@ fun PriceRow(
             modifier = Modifier
                 .width(64.dp),
         ) {
-            val hours = price
+            val hours = powerHour.offset
+/*                price
                 .startTime
                 .hoursFrom(dateNow)
+ */
             if (hours >= 0) {
                 Text(
                     text = hours.toSignedString(),
@@ -65,21 +59,19 @@ fun PriceRow(
 //            )
 
             TimeIntervalText(
-                startTime = price.startTime.toLocalTime(),
-                endTime = price.endTime.toLocalTime(),
+                startTime = powerHour.startTime.toLocalTime(),
+                endTime = powerHour.endTime.toLocalTime(),
             )
 
+            AppliancesCosts(appliances = powerHour.appliancesHours)
         }
-        val formatter = NumberFormat
-            .getNumberInstance()
-        formatter.maximumFractionDigits = 2
-        formatter.minimumFractionDigits = 2
 
         Text(
-            text = formatter
-                .format(
-                    price.value.eurMWhToCentsKWh().withVat(VAT)
-                ),
+            text =
+            powerHour.price
+                .eurMWhToCentsKWh()
+                .withVat(VAT)
+                .toFormattedDecimals(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -134,8 +126,7 @@ fun PriceRowPreview() {
 
     LaiksTheme {
         PriceRow(
-            dateNow = Instant.now().plusSeconds(-60 * 60 * 10),
-            price = NpPrice()
+            powerHour = PowerHour(id = "ACD12")
         )
     }
 }

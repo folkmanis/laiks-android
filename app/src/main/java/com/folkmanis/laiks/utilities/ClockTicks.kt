@@ -18,7 +18,7 @@ fun hourTicks() = flow<LocalDateTime> {
     while (true) {
         val now = LocalDateTime.now()
         emit(now)
-        val delayToNext = delayToNextMinute(LocalDateTime.now())
+        val delayToNext = delayToNextHour(LocalDateTime.now())
         delay(delayToNext)
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,26 +27,25 @@ fun PricesScreen(
 
     when (uiState) {
         is PricesUiState.Success -> {
-            val prices = uiState.npPrices
-            val timeNow = uiState.instantHour
             LazyColumn(
                 modifier = modifier
             ) {
-                items(
-                    prices,
-                    key = { it.id }
-                ) { price ->
-                    PriceRow(
-                        dateNow = timeNow,
-                        price = price,
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                    )
-                    Divider(
-                        thickness = 2.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                    )
+                uiState.groupedPrices.forEach { (date, powerHour) ->
+                    item {
+                        Text(text = date.toString())
+                    }
+                    items(powerHour, key = { it.id }) {
+                        PriceRow(
+                            powerHour = it,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                        )
+                        Divider(
+                            thickness = 2.dp,
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                        )
+                    }
                 }
             }
         }

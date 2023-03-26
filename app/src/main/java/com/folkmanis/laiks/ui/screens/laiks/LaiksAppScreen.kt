@@ -55,8 +55,8 @@ fun LaiksAppScreen(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = LaiksScreen.Prices.name,
-//            startDestination = LaiksScreen.Clock.name,
+//            startDestination = LaiksScreen.Prices.name,
+            startDestination = LaiksScreen.Clock.name,
             modifier = modifier.padding(innerPadding),
         ) {
 

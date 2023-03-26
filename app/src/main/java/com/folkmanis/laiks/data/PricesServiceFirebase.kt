@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class PricesServiceFirebase(
-    private val firestore: FirebaseFirestore
+   private val firestore: FirebaseFirestore
 ) : PricesService {
 
     private val npData = firestore
@@ -30,8 +30,9 @@ class PricesServiceFirebase(
             }
     }
 
-    val activeAppliances: Flow<List<PowerAppliance>> =
-        appliances
+    override val activeAppliances: Flow<List<PowerAppliance>>
+        get() = firestore
+            .collection(POWER_APPLIANCES_COLLECTION)
             .whereEqualTo("enabled", true)
             .orderBy("name")
             .snapshots()

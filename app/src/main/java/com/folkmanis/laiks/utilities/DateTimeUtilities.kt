@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 fun delayToNextSecond(fromDateTime: LocalDateTime): Long {
@@ -40,4 +41,11 @@ fun hoursUntilTimestamp(dateNow: Instant, time: Timestamp): Long {
             time.toDate().toInstant().truncatedTo(ChronoUnit.HOURS)
         )
         .toHours()
+}
+
+fun hoursUntilTimestamp(dateNow: LocalDateTime, time: Timestamp): Long {
+    return hoursUntilTimestamp(
+        dateNow.atZone(ZoneId.systemDefault()).toInstant(),
+        time
+    )
 }
