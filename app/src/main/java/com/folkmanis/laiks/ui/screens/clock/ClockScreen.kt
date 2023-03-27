@@ -2,8 +2,8 @@ package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,7 +67,7 @@ fun ClockScreen(
             modifier = Modifier,
         ) {
 
-            FloatingActionButton(
+            LargeFloatingActionButton(
                 onClick = { viewModel.updateOffset(STEP_UP_VALUE) },
                 modifier = Modifier
             ) {
@@ -85,7 +85,7 @@ fun ClockScreen(
                     .padding(vertical = 8.dp)
             )
 
-            FloatingActionButton(
+            LargeFloatingActionButton(
                 onClick = { viewModel.updateOffset(STEP_DOWN_VALUE) }
             ) {
                 Icon(
