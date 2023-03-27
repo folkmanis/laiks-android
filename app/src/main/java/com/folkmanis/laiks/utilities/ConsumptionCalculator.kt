@@ -3,31 +3,61 @@ package com.folkmanis.laiks.utilities
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
-import com.folkmanis.laiks.utilities.ext.toEpochMilli
+import com.folkmanis.laiks.utilities.ext.sWtoMWh
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 
-fun Double.msWtoMWh(): Double =
-    this / 1000.0 / 1000.0 / 60.0 / 60.0 / 1000.0
+val PowerAppliance.cycleLengthSeconds: Long
+    get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.seconds }
 
-val PowerAppliance.cycleLength: Long
-    get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.length }
+fun Map<Long, Double>.bestOffset(): Int? {
+    return minByOrNull { mapEntry -> mapEntry.value }?.key?.toInt()
+}
 
-fun LocalDateTime.toLocalMilli(): Long =
-    this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-fun PowerAppliance.startTime(time: LocalDateTime): Long {
+fun PowerAppliance.startTime(time: Long): Long {
     return if (this.delay == "end") {
-        time.toLocalMilli() - this.cycleLength
+        time - this.cycleLengthSeconds
     } else {
-        time.toLocalMilli()
+        time
     }
+}
+
+fun offsetCosts(
+    npPrices: List<NpPrice>,
+    startTime: Instant,
+    appliance: PowerAppliance
+): Map<Long, Double> {
+
+    val costs: MutableMap<Long, Double> = mutableMapOf()
+
+    var offset = appliance.minimumDelay
+
+    var time = startTime.epochSecond + offset * 60 * 60
+    if (appliance.delay === "end") {
+        time -= appliance.cycleLengthSeconds
+    }
+
+    val lastTime = npPrices.maxOf { it.endTime.seconds }
+
+    while (time < lastTime) {
+
+        val price = timeCost(npPrices, time, appliance)
+
+        if (price !== null) {
+            costs[offset] = price
+        }
+
+        offset++
+        time += 60 * 60 // 1h
+
+    }
+
+    return costs
+
 }
 
 fun timeCost(
     prices: List<NpPrice>,
-    time: LocalDateTime,
+    time: Long,
     appliance: PowerAppliance
 ): Double? {
 
@@ -44,56 +74,12 @@ fun timeCost(
         }
 
         totalCons += consumption
-        t += cycle.length
+        t += cycle.seconds
 
     }
 
-    return totalCons.msWtoMWh() // EUR
+    return totalCons.sWtoMWh() // EUR
 
-}
-
-fun offsetCosts(
-    npPrices: List<NpPrice>,
-    startTime: LocalDateTime,
-    appliance: PowerAppliance
-): Map<Long, Double> {
-
-    val costs: MutableMap<Long, Double> = mutableMapOf()
-
-    var time = if (appliance.delay === "end") {
-        startTime.plusHours(appliance.minimumDelay)
-    } else startTime
-
-    val lastTime = npPrices.fold(Instant.MIN) { last, pr ->
-        val end = pr.endTime.toDate().toInstant()
-        if (end.isAfter(last))
-            end
-        else
-            last
-    }
-        .atZone(ZoneId.systemDefault()).toLocalDateTime()
-
-    var offset = appliance.minimumDelay
-
-    while (time.isBefore(lastTime)) {
-
-        val price = timeCost(npPrices, time, appliance)
-
-        if (price !== null) {
-            costs[offset] = price
-        }
-
-        offset++
-        time = time.plusHours(1)
-
-    }
-
-    return costs
-
-}
-
-fun Map<Long, Double>.bestOffset(): Long? {
-    return minByOrNull { pair -> pair.value }?.key
 }
 
 fun cycleCost(
@@ -102,7 +88,7 @@ fun cycleCost(
     start: Long
 ): Double? {
 
-    val end = start + cycle.length
+    val end = start + cycle.seconds
 
     var total = 0.0
     var pos = start
@@ -110,14 +96,14 @@ fun cycleCost(
     while (pos != end) {
 
         val price = npPrices
-            .find { pr -> pos >= pr.startTime.toEpochMilli() && pos < pr.endTime.toEpochMilli() }
+            .find { pr -> pos >= pr.startTime.seconds && pos < pr.endTime.seconds }
             ?: return null
 
-        val l = price.endTime.toEpochMilli().coerceAtMost(end) -
-                price.startTime.toEpochMilli().coerceAtLeast(pos)
+        val l = price.endTime.seconds.coerceAtMost(end) -
+                price.startTime.seconds.coerceAtLeast(pos)
         total += l.toDouble() * cycle.consumption.toDouble() * price.value
 
-        pos = price.endTime.toEpochMilli().coerceAtMost(end)
+        pos = price.endTime.seconds.coerceAtMost(end)
 
     }
 

@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.prices
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
@@ -15,7 +14,6 @@ import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.utilities.bestOffset
-import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
 import com.folkmanis.laiks.utilities.ext.hoursFrom
 import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.folkmanis.laiks.utilities.ext.withVat
@@ -23,7 +21,6 @@ import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.time.Instant
@@ -56,7 +53,6 @@ class PricesViewModel(
             Pair(prices, appliances)
         }
         .combine(minuteTicks()) { pricesAppliancesPair, minute ->
-            Log.d(TAG, "pricesAppliancesPair: $pricesAppliancesPair")
             calculateCosts(
                 prices = pricesAppliancesPair.first,
                 minute = minute,
@@ -70,12 +66,6 @@ class PricesViewModel(
                 }
             )
         }
-//        .catch {
-//            if (it is FirebaseFirestoreException)
-//                PricesUiState.Error(it.message ?: "Firebase error", it)
-//            else
-//                throw it
-//        }
 
 
     private fun calculateCosts(
@@ -84,19 +74,19 @@ class PricesViewModel(
         appliances: List<PowerAppliance>,
     ): List<PowerHour> {
 
+        val startTime = minute.atZone(ZoneId.systemDefault()).toInstant()
         val appliancesAllCosts = buildMap {
             appliances.forEach { appliance ->
-                val costs = offsetCosts(prices, minute, appliance)
+                val costs = offsetCosts(prices, startTime, appliance)
                 put(appliance, costs)
-                Log.d(TAG, "Best offset: ${appliance.name}, max offset ${costs.minBy { it.key }}")
             }
         }
         val bestOffsets = buildMap {
             appliancesAllCosts.forEach { (powerAppliance, costs) ->
-                val bestOffset = costs.bestOffset()
-                Log.d(TAG, "Best offset: $bestOffset")
+                val bestOffset = costs
+                    .bestOffset()
                 if (bestOffset != null) {
-                    put(powerAppliance, bestOffset.toInt())
+                    put(powerAppliance, bestOffset)
                 }
             }
         }
@@ -142,6 +132,7 @@ class PricesViewModel(
     }
 
     companion object {
+        @Suppress("unused")
         private const val TAG = "PricesViewModel"
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

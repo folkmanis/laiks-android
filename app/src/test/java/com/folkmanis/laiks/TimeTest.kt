@@ -5,8 +5,6 @@ import com.folkmanis.laiks.utilities.delayToNextMinute
 import com.folkmanis.laiks.utilities.delayToNextSecond
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.minutesString
-import com.folkmanis.laiks.utilities.ext.toEpochMilli
-import com.folkmanis.laiks.utilities.ext.toLocalDateString
 import com.folkmanis.laiks.utilities.hoursUntilTimestamp
 import com.google.firebase.Timestamp
 import org.junit.Assert.assertEquals
@@ -14,7 +12,6 @@ import org.junit.Test
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 
 class TimeTest {
@@ -129,25 +126,6 @@ class TimeTest {
         )
         val interval = hoursUntilTimestamp(startDate, timestampTo)
         assertEquals(1, interval)
-    }
-
-    @Test
-    fun extTimestamp_ToLocalDate_localDate() {
-        val dateNow = ZonedDateTime.of(2023, 3, 22, 23, 0, 0, 0, ZoneId.systemDefault())
-            .toInstant()
-
-        val dateText = Timestamp(dateNow.epochSecond, dateNow.nano).toLocalDateString()
-        assertEquals("22.Mar", dateText)
-    }
-
-    @Test
-    fun extTimestamp_ToEpochMilli_shoulCalculate() {
-        val dateNow = ZonedDateTime.of(2023, 3, 22, 23, 52, 14, 234_000_000, ZoneId.systemDefault())
-            .toInstant()
-        assertEquals(
-            dateNow.toEpochMilli(),
-            Timestamp(Date.from(dateNow)).toEpochMilli()
-        )
     }
 
 }
