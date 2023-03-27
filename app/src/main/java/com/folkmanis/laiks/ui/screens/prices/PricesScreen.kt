@@ -32,7 +32,12 @@ fun PricesScreen(
             ) {
                 uiState.groupedPrices.forEach { (date, powerHour) ->
                     item {
-                        Text(text = date.toString())
+                        DateHeader(date = date)
+                        Divider(
+                            thickness = 2.dp,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                        )
                     }
                     items(powerHour, key = { it.id }) {
                         PriceRow(
@@ -43,7 +48,7 @@ fun PricesScreen(
                         Divider(
                             thickness = 2.dp,
                             modifier = Modifier
-                                .padding(horizontal = 10.dp)
+                                .padding(horizontal = 16.dp)
                         )
                     }
                 }

@@ -1,10 +1,7 @@
 package com.folkmanis.laiks.ui.screens.prices
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,7 +20,7 @@ import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
 private fun Modifier.conditionalBackground(condition: Boolean, color: Color): Modifier =
     if (condition) {
         this
-            .background(color, shape = RoundedCornerShape(16.dp))
+            .background(color, shape = RoundedCornerShape(9.dp))
             .padding(vertical = 1.dp, horizontal = 4.dp)
     } else {
         this
@@ -52,6 +49,7 @@ fun ApplianceCost(
     Box(
         modifier = modifier
             .padding(1.dp)
+            .height(18.dp)
 //            .clip(RoundedCornerShape(16.dp))
     ) {
 
