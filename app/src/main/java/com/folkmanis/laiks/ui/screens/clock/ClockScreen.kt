@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.clock
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
@@ -10,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -123,26 +121,12 @@ fun TimeComponent(
     modifier: Modifier = Modifier
 ) {
 
-    val infiniteTransition = rememberInfiniteTransition()
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 1000,
-                easing = { if (it > 0.5) 1f else 0f }),
-            repeatMode = RepeatMode.Reverse,
-        )
-    )
-
     Row(modifier = modifier) {
 
         TimeSymbols(text = hours)
 
         TimeSymbols(
             text = stringResource(id = R.string.minutes_separator),
-            modifier = modifier
-                .alpha(alpha)
         )
 
         TimeSymbols(text = minutes)
