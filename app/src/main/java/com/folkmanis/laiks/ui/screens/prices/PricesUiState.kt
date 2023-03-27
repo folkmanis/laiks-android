@@ -13,18 +13,3 @@ sealed interface PricesUiState {
         val groupedPrices: Map<LocalDate, List<PowerHour>>
     ) : PricesUiState
 }
-
-/*
-
-        val hour: LocalDateTime = LocalDateTime.now(),
-        val npPrices: List<NpPrice> = emptyList(),
-        val minute: LocalDateTime = LocalDateTime.now(),
-        val powerApplianceCostsList: List< PowerApplianceCosts> = emptyList(),
-
-{
-        val instantHour: Instant
-            get() = hour
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-    }
-*/

@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.VAT
+import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.utilities.ext.*
 import java.time.LocalTime
@@ -29,13 +30,9 @@ fun PriceRow(
     ) {
         Box(
             modifier = Modifier
-                .width(64.dp),
+                .width(48.dp),
         ) {
             val hours = powerHour.offset
-/*                price
-                .startTime
-                .hoursFrom(dateNow)
- */
             if (hours >= 0) {
                 Text(
                     text = hours.toSignedString(),
@@ -46,21 +43,18 @@ fun PriceRow(
         }
 
         Row(
-            verticalAlignment = Alignment.Bottom,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
         ) {
 
-//            Text(
-//                price.startTime.toLocalDateString(),
-//                fontSize = 18.sp
-//            )
-
             TimeIntervalText(
                 startTime = powerHour.startTime.toLocalTime(),
                 endTime = powerHour.endTime.toLocalTime(),
+                modifier = Modifier
+                    .width(116.dp)
             )
 
             AppliancesCosts(appliances = powerHour.appliancesHours)
@@ -70,12 +64,11 @@ fun PriceRow(
             text =
             powerHour.price
                 .eurMWhToCentsKWh()
-                .withVat(VAT)
                 .toFormattedDecimals(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(start = 16.dp)
+                .padding(start = 8.dp)
         )
 
 
@@ -84,16 +77,21 @@ fun PriceRow(
 
 @Composable
 fun TimeIntervalText(
-    modifier: Modifier = Modifier,
     startTime: LocalTime,
     endTime: LocalTime,
+    modifier: Modifier = Modifier,
 ) {
     Row(
+        horizontalArrangement = Arrangement.End,
         modifier = modifier
-            .padding(horizontal = 8.dp)
+            .padding(end = 8.dp)
+            .fillMaxWidth()
     ) {
         TimeText(time = startTime)
-        Text("-")
+        Text(
+            "-",
+            fontSize = 24.sp
+        )
         TimeText(time = endTime)
     }
 
@@ -104,7 +102,9 @@ fun TimeText(
     modifier: Modifier = Modifier,
     time: LocalTime,
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier,
+    ) {
         Text(
             text = time.hoursString,
             fontSize = 24.sp,
@@ -126,7 +126,19 @@ fun PriceRowPreview() {
 
     LaiksTheme {
         PriceRow(
-            powerHour = PowerHour(id = "ACD12")
+            powerHour = PowerHour(
+                id = "ACD12",
+                offset = 2,
+                price = 12.5,
+                appliancesHours = listOf(
+                    PowerApplianceHour(
+                        isBest = true,
+                        cost = 0.185,
+                        name = "Veļasmašīna"
+                    ),
+                    PowerApplianceHour(),
+                ),
+            ),
         )
     }
 }

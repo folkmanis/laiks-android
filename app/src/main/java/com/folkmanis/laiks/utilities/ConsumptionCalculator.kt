@@ -80,7 +80,7 @@ fun offsetCosts(
         val price = timeCost(npPrices, time, appliance)
 
         if (price !== null) {
-            costs.put(offset, price)
+            costs[offset] = price
         }
 
         offset++

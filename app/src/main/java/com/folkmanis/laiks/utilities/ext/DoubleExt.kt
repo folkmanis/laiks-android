@@ -10,6 +10,8 @@ fun Double.eurMWhToCentsKWh(): Double {
     return this * EUR_MWH_TO_CENTS_KWH
 }
 
+fun Double.eurToCents(): Double = this * 100.0
+
 fun Double.withVat(amount: Double): Double {
     return this * amount
 }

@@ -15,6 +15,7 @@ import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.utilities.bestOffset
+import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
 import com.folkmanis.laiks.utilities.ext.hoursFrom
 import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.folkmanis.laiks.utilities.ext.withVat
@@ -47,23 +48,15 @@ class PricesViewModel(
             pricesService.allNpPrices(startTime(localDateTime))
         }
         .flatMapLatest { prices ->
-            Log.d(TAG, "$prices")
-            vatAmount
-                .map { prices.addVat(it) }
-                .flatMapLatest { vatPrices ->
-                    pricesService.activeAppliances
-                        .map { appliances ->
-                            Log.d(TAG, "$appliances")
-                            Pair(vatPrices, appliances)
-                        }
-                }
+            vatAmount.map {
+                prices.addVat(it)
+            }
         }
-//        .combine(pricesService.activeAppliances) { prices, appliances ->
-//            Pair(prices, appliances)
-//        }
+        .combine(pricesService.activeAppliances) { prices, appliances ->
+            Pair(prices, appliances)
+        }
         .combine(minuteTicks()) { pricesAppliancesPair, minute ->
             Log.d(TAG, "pricesAppliancesPair: $pricesAppliancesPair")
-            Log.d(TAG, "minute $minute")
             calculateCosts(
                 prices = pricesAppliancesPair.first,
                 minute = minute,
@@ -95,13 +88,19 @@ class PricesViewModel(
             appliances.forEach { appliance ->
                 val costs = offsetCosts(prices, minute, appliance)
                 put(appliance, costs)
+                Log.d(TAG, "Best offset: ${appliance.name}, max offset ${costs.minBy { it.key }}")
             }
         }
         val bestOffsets = buildMap {
             appliancesAllCosts.forEach { (powerAppliance, costs) ->
-                put(powerAppliance, costs.bestOffset()?.toInt())
+                val bestOffset = costs.bestOffset()
+                Log.d(TAG, "Best offset: $bestOffset")
+                if (bestOffset != null) {
+                    put(powerAppliance, bestOffset.toInt())
+                }
             }
         }
+
 
         return prices.map { price ->
             val offset = price.startTime.hoursFrom(minute)
