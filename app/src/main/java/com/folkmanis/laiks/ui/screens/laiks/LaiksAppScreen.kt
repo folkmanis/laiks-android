@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -41,6 +42,7 @@ fun LaiksAppScreen(
         backStackEntry?.destination?.route ?: LaiksScreen.Clock.name
     )
 
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         topBar = {
@@ -49,9 +51,11 @@ fun LaiksAppScreen(
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 state = uiState,
+                scrollBehavior = scrollBehavior,
             )
         },
-        modifier = modifier,
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         NavHost(
             navController = navController,

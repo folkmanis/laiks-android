@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,14 +64,18 @@ fun ApplianceCost(
             MaterialTheme.colorScheme.onSurface
         }
 
+        val backgroundColor = if(appliance.isBest) {
+            Color(appliance.color.toColorInt())
+        } else {
+            MaterialTheme.colorScheme.surface
+        }
+
         Text(
             text = text,
             fontSize = 10.sp,
             modifier = Modifier
-                .conditionalBackground(
-                    color = Color(appliance.color.toColorInt()),
-                    condition = appliance.isBest,
-                ),
+                .background(backgroundColor, shape = RoundedCornerShape(9.dp))
+                .padding(vertical = 1.dp, horizontal = 4.dp),
             color = color,
         )
 

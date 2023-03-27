@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -31,12 +32,19 @@ fun LaiksTopBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     state: LaiksUiState,
+    scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     TopAppBar(
-        title = { Text(stringResource(id = currentScreen.title)) },
+        title = {
+            Text(
+                stringResource(id = currentScreen.title),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
         actions = {
             if (state is LaiksUiState.LoggedIn) {
                 AuthorizedUserMenuButton(
@@ -60,7 +68,8 @@ fun LaiksTopBar(
                 }
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -113,19 +122,6 @@ fun AuthorizedUserMenuButton(
             text = user.displayName ?: "Unknown",
             modifier = modifier
                 .clickable { logout() }
-        )
-    }
-}
-
-@Preview
-@Composable
-fun LaiksTopBarPreview() {
-    LaiksTheme {
-        LaiksTopBar(
-            currentScreen = LaiksScreen.Clock,
-            canNavigateBack = true,
-            navigateUp = { },
-            state = LaiksUiState.NotLoggedIn,
         )
     }
 }
