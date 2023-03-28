@@ -4,9 +4,12 @@ package com.folkmanis.laiks.ui.screens.laiks
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,7 +44,6 @@ fun LaiksAppScreen(
     val currentScreen = LaiksScreen.valueOf(
         backStackEntry?.destination?.route ?: LaiksScreen.Clock.name
     )
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -61,7 +63,8 @@ fun LaiksAppScreen(
             navController = navController,
 //            startDestination = LaiksScreen.Prices.name,
             startDestination = LaiksScreen.Clock.name,
-            modifier = modifier.padding(innerPadding),
+            modifier = modifier
+                .padding(innerPadding),
         ) {
 
             composable(LaiksScreen.Clock.name) {
