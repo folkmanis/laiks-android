@@ -4,14 +4,16 @@ package com.folkmanis.laiks.ui.screens.laiks
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -27,6 +29,7 @@ enum class LaiksScreen(@StringRes val title: Int) {
     Prices(title = R.string.prices_screen)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LaiksAppScreen(
     modifier: Modifier = Modifier,
@@ -37,6 +40,8 @@ fun LaiksAppScreen(
 
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
+    val isVat by viewModel.isVat.collectAsStateWithLifecycle(initialValue = true)
+
     val navController = rememberNavController()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -46,25 +51,62 @@ fun LaiksAppScreen(
     )
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
+    val canNavigateBack = navController.previousBackStackEntry != null
+
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
-            LaiksTopBar(
-                currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() },
-                state = uiState,
-                scrollBehavior = scrollBehavior,
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(id = currentScreen.title),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    if (canNavigateBack) {
+                        IconButton(onClick = navController::navigateUp) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back_button)
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    if (uiState is LaiksUiState.LoggedIn) {
+                        LoggedInUserMenu(
+                            photoUrl = uiState.photoUrl,
+                            displayName = uiState.displayName,
+                            onLogout = {
+                                navController.popBackStack(LaiksScreen.Clock.name, false)
+                                viewModel.logout(context)
+                            },
+                            isVat = isVat,
+                            onSetVat = {
+                                viewModel.setVat(!isVat)
+                            }
+                        )
+                    } else {
+                        NotLoggedUserMenu(
+                            onLogin = { viewModel.login(context) },
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
             )
         },
         modifier = modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         NavHost(
             navController = navController,
 //            startDestination = LaiksScreen.Prices.name,
             startDestination = LaiksScreen.Clock.name,
             modifier = modifier
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
 
             composable(LaiksScreen.Clock.name) {

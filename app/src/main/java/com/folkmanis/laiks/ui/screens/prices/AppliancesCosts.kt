@@ -1,11 +1,13 @@
 package com.folkmanis.laiks.ui.screens.prices
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,16 +19,6 @@ import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.ext.eurToCents
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
-
-private fun Modifier.conditionalBackground(condition: Boolean, color: Color): Modifier =
-    if (condition) {
-        this
-            .background(color, shape = RoundedCornerShape(9.dp))
-            .padding(vertical = 1.dp, horizontal = 4.dp)
-    } else {
-        this
-    }
-
 
 @Composable
 fun AppliancesCosts(
@@ -51,7 +43,6 @@ fun ApplianceCost(
         modifier = modifier
             .padding(1.dp)
             .height(18.dp)
-//            .clip(RoundedCornerShape(16.dp))
     ) {
 
         val costStr = appliance.cost

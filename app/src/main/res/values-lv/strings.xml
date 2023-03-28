@@ -9,4 +9,7 @@
     <string name="prices_screen">Elektrības cenas</string>
     <string name="loading">Notiek ielāde</string>
     <string name="loading_failed">Kaut kas nogāja greizi</string>
+    <string name="login_menu_item">Pieslēgties</string>
+    <string name="logout_menu_item">Atslēgties</string>
+    <string name="include_vat">PVN iekļauts</string>
 </resources>
