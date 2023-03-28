@@ -5,8 +5,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.folkmanis.laiks.ui.theme.LaiksTheme
@@ -15,6 +21,11 @@ import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.utilities.ext.*
 import java.time.LocalTime
+
+val largeNumberStyle = TextStyle(
+    fontSize = 24.sp,
+    fontWeight = FontWeight.Bold
+)
 
 @Composable
 fun PriceRow(
@@ -36,8 +47,7 @@ fun PriceRow(
             if (hours >= 0) {
                 Text(
                     text = hours.toSignedString(),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
+                    style = largeNumberStyle,
                 )
             }
         }
@@ -65,8 +75,7 @@ fun PriceRow(
             powerHour.price
                 .eurMWhToCentsKWh()
                 .toFormattedDecimals(),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            style = largeNumberStyle,
             modifier = Modifier
                 .padding(start = 8.dp)
         )
@@ -90,7 +99,7 @@ fun TimeIntervalText(
         TimeText(time = startTime)
         Text(
             "-",
-            fontSize = 24.sp
+            style = largeNumberStyle,
         )
         TimeText(time = endTime)
     }
@@ -99,23 +108,26 @@ fun TimeIntervalText(
 
 @Composable
 fun TimeText(
-    modifier: Modifier = Modifier,
     time: LocalTime,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
     ) {
         Text(
-            text = time.hoursString,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier,
-        )
-        Text(
-            text = time.minutesString,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .offset(y = 3.dp)
+            style = largeNumberStyle,
+            text = buildAnnotatedString {
+                append(time.hoursString)
+                withStyle(
+                    SpanStyle(
+                        baselineShift = BaselineShift.Superscript,
+                    fontSize = 8.sp
+                    )
+                ) {
+                    append(time.minutesString)
+                }
+            },
+            modifier = modifier,
         )
     }
 }
