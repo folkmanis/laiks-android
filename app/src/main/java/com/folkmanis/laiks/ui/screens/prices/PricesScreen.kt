@@ -1,23 +1,21 @@
 package com.folkmanis.laiks.ui.screens.prices
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 
 @Composable
 fun PricesScreen(
-    viewModel: PricesViewModel = viewModel(
-        factory = PricesViewModel.Factory
-    ),
+    viewModel: PricesViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
 ) {
 

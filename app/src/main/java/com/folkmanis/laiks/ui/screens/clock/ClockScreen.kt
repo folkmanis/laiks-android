@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.STEP_DOWN_VALUE
 import com.folkmanis.laiks.STEP_UP_VALUE
@@ -25,15 +24,14 @@ import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.minutesString
 import com.folkmanis.laiks.utilities.ext.toSignedString
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun ClockScreen(
     pricesAllowed: Boolean,
     onShowPrices: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ClockViewModel = viewModel(
-        factory = ClockViewModel.Factory
-    ),
+    viewModel: ClockViewModel = hiltViewModel(),
 ) {
 
     val uiState by viewModel

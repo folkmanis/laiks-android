@@ -3,20 +3,19 @@ package com.folkmanis.laiks.ui.screens.laiks
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.firebase.ui.auth.AuthUI
-import com.folkmanis.laiks.LaiksApplication
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.UserPreferencesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LaiksViewModel(
+@HiltViewModel
+class LaiksViewModel @Inject constructor(
     accountService: AccountService,
     private val settingsService: UserPreferencesRepository,
 ) : ViewModel() {
@@ -73,17 +72,6 @@ class LaiksViewModel(
 
     companion object {
         private const val TAG = "Laiks View Model"
-        val Factory: ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    val application =
-                        (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as LaiksApplication)
-                    LaiksViewModel(
-                        accountService = application.accountService,
-                        settingsService = application.userPreferencesRepository
-                    )
-                }
-            }
     }
 
 

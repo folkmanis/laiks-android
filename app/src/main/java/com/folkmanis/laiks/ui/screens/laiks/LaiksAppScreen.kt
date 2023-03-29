@@ -14,8 +14,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -33,9 +33,7 @@ enum class LaiksScreen(@StringRes val title: Int) {
 @Composable
 fun LaiksAppScreen(
     modifier: Modifier = Modifier,
-    viewModel: LaiksViewModel = viewModel(
-        factory = LaiksViewModel.Factory
-    )
+    viewModel: LaiksViewModel = hiltViewModel()
 ) {
 
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value

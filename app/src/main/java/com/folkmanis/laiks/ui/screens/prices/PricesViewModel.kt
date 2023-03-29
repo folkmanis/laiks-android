@@ -1,10 +1,6 @@
 package com.folkmanis.laiks.ui.screens.prices
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.folkmanis.laiks.LaiksApplication
 import com.folkmanis.laiks.SHOW_HOURS_BEFORE
 import com.folkmanis.laiks.VAT
 import com.folkmanis.laiks.data.PricesService
@@ -21,18 +17,21 @@ import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
 import com.google.firebase.Timestamp
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
+import javax.inject.Inject
 
 fun List<NpPrice>.addVat(amount: Double): List<NpPrice> =
     map { it.copy(value = it.value.withVat(amount)) }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class PricesViewModel(
+@HiltViewModel
+class PricesViewModel @Inject constructor(
     private val pricesService: PricesService,
     userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
@@ -134,15 +133,5 @@ class PricesViewModel(
     companion object {
         @Suppress("unused")
         private const val TAG = "PricesViewModel"
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application =
-                    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as LaiksApplication)
-                PricesViewModel(
-                    application.pricesService,
-                    application.userPreferencesRepository,
-                )
-            }
-        }
     }
 }

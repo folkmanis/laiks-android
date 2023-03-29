@@ -1,6 +1,7 @@
-package com.folkmanis.laiks.data
+package com.folkmanis.laiks.data.implementations
 
 import android.util.Log
+import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.model.LaiksUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -11,8 +12,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class AccountServiceFirebase(
+class AccountServiceFirebase @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
 ) : AccountService {
