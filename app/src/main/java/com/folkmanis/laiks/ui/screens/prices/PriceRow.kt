@@ -12,13 +12,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.folkmanis.laiks.ui.theme.LaiksTheme
-import com.folkmanis.laiks.VAT
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PowerHour
+import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.ext.*
 import java.time.LocalTime
 
