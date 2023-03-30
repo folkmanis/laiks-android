@@ -44,30 +44,28 @@ class PricesViewModel @Inject constructor(
             pricesService.allNpPrices(startTime(localDateTime))
         }
         .flatMapLatest { prices ->
-            vatAmount.map {
-                prices.addVat(it)
-            }
+            vatAmount.map { vat -> prices.addVat(vat) }
         }
         .combine(pricesService.activeAppliances) { prices, appliances ->
             Pair(prices, appliances)
         }
         .combine(minuteTicks()) { pricesAppliancesPair, minute ->
-            calculateCosts(
+            appliancesCostsFromMinute(
                 prices = pricesAppliancesPair.first,
                 minute = minute,
                 appliances = pricesAppliancesPair.second,
             )
         }
-        .map { powerHour ->
+        .map { powerHours ->
             PricesUiState.Success(
-                groupedPrices = powerHour.groupBy {
+                groupedPrices = powerHours.groupBy {
                     it.startTime.toLocalDate()
                 }
             )
         }
 
 
-    private fun calculateCosts(
+    private fun appliancesCostsFromMinute(
         prices: List<NpPrice>,
         minute: LocalDateTime,
         appliances: List<PowerAppliance>,
@@ -91,24 +89,13 @@ class PricesViewModel @Inject constructor(
         }
 
 
-        return prices.map { price ->
+        val powerHours = prices.map { price ->
             val offset = price.startTime.hoursFrom(minute)
-            val appliancesHours = buildList {
-                appliances.forEach { appliance ->
-                    val applianceHourCost = appliancesAllCosts[appliance]
-                        ?.get(offset.toLong())
-                    if (applianceHourCost != null) {
-                        add(
-                            PowerApplianceHour(
-                                name = appliance.name,
-                                cost = applianceHourCost,
-                                color = appliance.color,
-                                isBest = bestOffsets[appliance] == offset,
-                            )
-                        )
-                    }
-                }
-            }
+            val appliancesHours = appliances.toPowerApplianceHour(
+                appliancesAllCosts,
+                offset,
+                bestOffsets
+            )
             PowerHour(
                 id = price.id,
                 offset = offset,
@@ -118,6 +105,32 @@ class PricesViewModel @Inject constructor(
                 endTime = price.endTime.toLocalDateTime(),
                 appliancesHours = appliancesHours,
             )
+        }
+
+        return powerHours
+    }
+
+    private fun List<PowerAppliance>.toPowerApplianceHour(
+        appliancesAllCosts: Map<PowerAppliance, Map<Long, Double>>,
+        offset: Int,
+        bestOffsets: Map<PowerAppliance, Int>
+    ): List<PowerApplianceHour> {
+        val appliances = this
+        return buildList {
+            appliances.forEach { appliance ->
+                val applianceHourCost = appliancesAllCosts[appliance]
+                    ?.get(offset.toLong())
+                if (applianceHourCost != null) {
+                    add(
+                        PowerApplianceHour(
+                            name = appliance.name,
+                            cost = applianceHourCost,
+                            color = appliance.color,
+                            isBest = bestOffsets[appliance] == offset,
+                        )
+                    )
+                }
+            }
         }
     }
 
