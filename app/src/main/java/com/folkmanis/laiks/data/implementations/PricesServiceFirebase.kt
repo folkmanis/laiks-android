@@ -1,18 +1,24 @@
 package com.folkmanis.laiks.data.implementations
 
+import com.folkmanis.laiks.DAY_STARTS_HOUR
+import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
+import com.folkmanis.laiks.NIGHT_STARTS_HOUR
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.model.NpPrice
-import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.*
+import com.folkmanis.laiks.utilities.ext.minusDays
+import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PricesServiceFirebase @Inject constructor(
-   private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore
 ) : PricesService {
 
     private val npData = firestore
@@ -38,6 +44,25 @@ class PricesServiceFirebase @Inject constructor(
             .map { snapshot ->
                 snapshot.toObjects()
             }
+
+    override fun lastDaysPrices(days: Long): Flow<List<NpPrice>> {
+        return firestore
+            .collection(LAIKS_COLLECTION)
+            .document(NP_DATA)
+            .collection(NP_PRICES_COLLECTION)
+            .orderBy("endTime", Query.Direction.DESCENDING)
+            .limit(1)
+            .snapshots()
+            .map { snapshot ->
+                snapshot
+                    .toObjects<NpPrice>()
+                    .first()!!
+                    .endTime
+                    .minusDays(days)
+            }
+            .flatMapLatest { fromTime -> allNpPrices(fromTime) }
+    }
+
 
     companion object {
         private const val LAIKS_COLLECTION = "laiks"

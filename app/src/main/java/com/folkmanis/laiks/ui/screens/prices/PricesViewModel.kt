@@ -64,7 +64,6 @@ class PricesViewModel @Inject constructor(
             )
         }
 
-
     private fun appliancesCostsFromMinute(
         prices: List<NpPrice>,
         minute: LocalDateTime,

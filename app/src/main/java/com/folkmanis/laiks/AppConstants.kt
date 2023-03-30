@@ -7,3 +7,6 @@ const val SHOW_HOURS_BEFORE = 0L
 const val VAT = 1.21
 const val CURRENCY_DECIMALS = 2
 const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
+const val DAY_STARTS_HOUR = 7L
+const val NIGHT_STARTS_HOUR = 23L
+const val INCLUDE_AVERAGE_DAYS = 5L
