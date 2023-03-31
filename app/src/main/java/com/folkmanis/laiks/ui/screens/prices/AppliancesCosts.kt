@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +19,11 @@ import androidx.core.graphics.toColorInt
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.ext.eurToCents
+import com.folkmanis.laiks.utilities.ext.isDark
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
+
+fun Color.contrasting(): Color =
+    if (isDark()) Color.White else Color.Black
 
 @Composable
 fun AppliancesCosts(
@@ -49,16 +54,16 @@ fun ApplianceCost(
             .eurToCents()
             .toFormattedDecimals()
         val text = "${appliance.name}: $costStr"
-        val color = if (appliance.isBest) {
-            MaterialTheme.colorScheme.onPrimary
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        }
 
-        val backgroundColor = if(appliance.isBest) {
+        val backgroundColor = if (appliance.isBest) {
             Color(appliance.color.toColorInt())
         } else {
             MaterialTheme.colorScheme.surface
+        }
+        val color = if (appliance.isBest) {
+            backgroundColor.contrasting()
+        } else {
+            MaterialTheme.colorScheme.onSurface
         }
 
         Text(
@@ -77,10 +82,12 @@ fun ApplianceCost(
 @Composable
 fun AppliancesCostsPreview() {
     val costs = listOf(
-        PowerApplianceHour(isBest = true, cost = 0.185, name = "Veļasmašīna"),
+        PowerApplianceHour(isBest = true, cost = 0.185, name = "Veļasmašīna", color = "#473592"),
         PowerApplianceHour(),
     )
-    LaiksTheme {
-        AppliancesCosts(appliances = costs)
+    LaiksTheme(darkTheme = false) {
+        Surface {
+            AppliancesCosts(appliances = costs)
+        }
     }
 }

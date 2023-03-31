@@ -1,10 +1,12 @@
 package com.folkmanis.laiks.ui.screens.prices
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -19,15 +21,37 @@ import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.ext.*
 import java.time.LocalTime
+import kotlin.math.absoluteValue
 
 val largeNumberStyle = TextStyle(
     fontSize = 24.sp,
     fontWeight = FontWeight.Bold
 )
 
+fun PowerHour.priceScore(average: Double?, stDev: Double?): Double {
+    if (average == null || stDev == null) return 0.0
+    var score = (average - price) / stDev
+    if (score < -1.0) score = -1.0
+    if (score > 1.0) score = 1.0
+    return score
+}
+
+fun scoreColor(score: Double, background: Color): Color {
+    val positiveHue = 122f
+    val negativeHue = 0f
+    val hue = if (score >= 0) positiveHue else negativeHue
+    val value = if (background.isDark())
+        0.5f + 0.5f * score.absoluteValue.toFloat()
+    else
+        0.8f * score.absoluteValue.toFloat()
+    return Color.hsv(hue, 1f, value)
+}
+
 @Composable
 fun PriceRow(
     powerHour: PowerHour,
+    average: Double?,
+    stDev: Double?,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -74,6 +98,10 @@ fun PriceRow(
                 .eurMWhToCentsKWh()
                 .toFormattedDecimals(),
             style = largeNumberStyle,
+            color = scoreColor(
+                powerHour.priceScore(average, stDev),
+                MaterialTheme.colorScheme.surface,
+            ),
             modifier = Modifier
                 .padding(start = 8.dp)
         )
@@ -119,7 +147,7 @@ fun TimeText(
                 withStyle(
                     SpanStyle(
                         baselineShift = BaselineShift.Superscript,
-                    fontSize = 8.sp
+                        fontSize = 8.sp
                     )
                 ) {
                     append(time.minutesString)
@@ -130,11 +158,11 @@ fun TimeText(
     }
 }
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun PriceRowPreview() {
 
-    LaiksTheme {
+    LaiksTheme(darkTheme = true) {
         PriceRow(
             powerHour = PowerHour(
                 id = "ACD12",
@@ -149,6 +177,8 @@ fun PriceRowPreview() {
                     PowerApplianceHour(),
                 ),
             ),
+            average = 12.5,
+            stDev = 0.9
         )
     }
 }

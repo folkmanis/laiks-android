@@ -15,8 +15,8 @@ import com.folkmanis.laiks.utilities.composables.LoadingScreen
 
 @Composable
 fun PricesScreen(
-    viewModel: PricesViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
+    viewModel: PricesViewModel = hiltViewModel(),
 ) {
 
     val uiState = viewModel.uiState
@@ -40,6 +40,8 @@ fun PricesScreen(
                     items(powerHour, key = { it.id }) {
                         PriceRow(
                             powerHour = it,
+                            average = uiState.average,
+                            stDev = uiState.stDev,
                             modifier = Modifier
                                 .fillMaxWidth(),
                         )

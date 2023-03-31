@@ -1,22 +1,20 @@
 package com.folkmanis.laiks.data.implementations
 
-import com.folkmanis.laiks.DAY_STARTS_HOUR
-import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
-import com.folkmanis.laiks.NIGHT_STARTS_HOUR
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.*
 import com.folkmanis.laiks.utilities.ext.minusDays
-import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObjects
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PricesServiceFirebase @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : PricesService {
@@ -56,7 +54,7 @@ class PricesServiceFirebase @Inject constructor(
             .map { snapshot ->
                 snapshot
                     .toObjects<NpPrice>()
-                    .first()!!
+                    .first()
                     .endTime
                     .minusDays(days)
             }
