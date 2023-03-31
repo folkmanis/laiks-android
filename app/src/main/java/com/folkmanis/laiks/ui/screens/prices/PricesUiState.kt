@@ -1,7 +1,10 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import com.folkmanis.laiks.model.NpPrice
+import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerHour
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 sealed interface PricesUiState {
     object Loading : PricesUiState
@@ -10,6 +13,11 @@ sealed interface PricesUiState {
         val exception: Throwable,
         ) : PricesUiState
     data class Success(
-        val groupedPrices: Map<LocalDate, List<PowerHour>>
+        val npPrices: List<NpPrice> = emptyList(),
+        val appliances: List<PowerAppliance> = emptyList(),
+        val minute: LocalDateTime = LocalDateTime.now(),
+        val groupedCosts: Map<LocalDate, List<PowerHour>> = emptyMap(),
+        val average: Double = 0.0,
+        val stDev: Double = 0.0,
     ) : PricesUiState
 }

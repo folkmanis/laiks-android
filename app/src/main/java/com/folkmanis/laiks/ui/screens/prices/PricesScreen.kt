@@ -28,7 +28,7 @@ fun PricesScreen(
             LazyColumn(
                 modifier = modifier
             ) {
-                uiState.groupedPrices.forEach { (date, powerHour) ->
+                uiState.groupedCosts.forEach { (date, powerHour) ->
                     item {
                         DateHeader(date = date)
                         Divider(
