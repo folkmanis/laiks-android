@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
 import com.folkmanis.laiks.SHOW_HOURS_BEFORE
@@ -38,35 +39,36 @@ class PricesViewModel @Inject constructor(
     private val vatAmount = userPreferencesRepository.includeVat
         .map { if (it) VAT else 1.0 }
 
-    val uiState: Flow<PricesUiState> = hourTicks()
-        .flatMapLatest { localDateTime ->
-            pricesService.allNpPrices(startTime(localDateTime))
+    val uiState: Flow<PricesUiState> = pricesService
+        .lastDaysPrices(INCLUDE_AVERAGE_DAYS)
+        .combine(vatAmount) { prices, vat ->
+            prices.addVat(vat)
         }
-        .flatMapLatest { prices ->
-            vatAmount.map { vat -> prices.addVat(vat) }
+        .map { prices ->
+            PricesUiState.Success(
+                npPrices = prices,
+                average = prices.average,
+                stDev = prices.stDev(),
+            )
         }
-        .flatMapLatest { prices ->
-            pricesService
-                .lastDaysPrices(INCLUDE_AVERAGE_DAYS)
-                .map { longPrices ->
-                    PricesUiState.Success(
-                        npPrices = prices,
-                        average = longPrices.average,
-                        stDev = longPrices.stDev(),
-                    )
-                }
+        .combine(hourTicks()) { state, hour ->
+            val npPrices = state.npPrices
+                .filter { it.startTime.toLocalDateTime() >= hour }
+            state.copy(npPrices = npPrices)
         }
         .combine(pricesService.activeAppliances) { state, appliances ->
             state.copy(appliances = appliances)
         }
         .combine(minuteTicks()) { state, minute ->
+            state.copy(minute = minute)
+        }
+        .map { state ->
             val powerHours = appliancesCostsFromMinute(
                 prices = state.npPrices,
-                minute = minute,
+                minute = state.minute,
                 appliances = state.appliances,
             )
             state.copy(
-                minute = minute,
                 groupedCosts = powerHours.groupBy {
                     it.startTime.toLocalDate()
                 }

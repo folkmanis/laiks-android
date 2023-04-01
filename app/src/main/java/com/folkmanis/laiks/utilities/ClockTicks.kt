@@ -4,6 +4,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 fun minuteTicks() = flow<LocalDateTime> {
     while (true) {
@@ -17,7 +18,7 @@ fun minuteTicks() = flow<LocalDateTime> {
 fun hourTicks() = flow<LocalDateTime> {
     while (true) {
         val now = LocalDateTime.now()
-        emit(now)
+        emit(now.truncatedTo(ChronoUnit.HOURS))
         val delayToNext = delayToNextHour(LocalDateTime.now())
         delay(delayToNext)
     }

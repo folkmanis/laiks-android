@@ -1,8 +1,10 @@
 package com.folkmanis.laiks.data.implementations
 
+import android.util.Log
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.*
 import com.folkmanis.laiks.utilities.ext.minusDays
+import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -12,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -29,7 +32,7 @@ class PricesServiceFirebase @Inject constructor(
             .orderBy("startTime")
             .snapshots()
             .map { snapshot ->
-                snapshot.toObjects()
+                snapshot.toObjects<NpPrice>()
             }
     }
 
@@ -58,11 +61,15 @@ class PricesServiceFirebase @Inject constructor(
                     .endTime
                     .minusDays(days)
             }
-            .flatMapLatest { fromTime -> allNpPrices(fromTime) }
+            .flatMapLatest { fromTime ->
+                allNpPrices(fromTime)
+                    .take(1)
+            }
     }
 
 
     companion object {
+        private const val TAG = "Prices Service"
         private const val LAIKS_COLLECTION = "laiks"
         private const val NP_DATA = "np-data"
         private const val NP_PRICES_COLLECTION = "prices"
