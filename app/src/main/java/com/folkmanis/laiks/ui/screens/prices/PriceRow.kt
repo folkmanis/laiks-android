@@ -28,13 +28,12 @@ val largeNumberStyle = TextStyle(
     fontWeight = FontWeight.Bold
 )
 
-fun PowerHour.priceScore(average: Double?, stDev: Double?): Double {
-    if (average == null || stDev == null) return 0.0
-    var score = (average - price) / stDev
-    if (score < -1.0) score = -1.0
-    if (score > 1.0) score = 1.0
-    return score
-}
+fun PowerHour.priceScore(average: Double?, stDev: Double?): Double =
+    if (average == null || stDev == null) {
+        0.0
+    } else {
+        ((average - price) / stDev).coerceIn(-1.0, 1.0)
+    }
 
 fun scoreColor(score: Double, background: Color): Color {
     val positiveHue = 122f
@@ -158,7 +157,7 @@ fun TimeText(
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun PriceRowPreview() {
 
