@@ -1,9 +1,7 @@
 package com.folkmanis.laiks.ui.screens.prices
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
-import com.folkmanis.laiks.SHOW_HOURS_BEFORE
 import com.folkmanis.laiks.VAT
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
@@ -16,23 +14,18 @@ import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
-import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 fun List<NpPrice>.addVat(amount: Double): List<NpPrice> =
     map { it.copy(value = it.value.withVat(amount)) }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PricesViewModel @Inject constructor(
-    private val pricesService: PricesService,
+    pricesService: PricesService,
     userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
 
@@ -40,7 +33,7 @@ class PricesViewModel @Inject constructor(
         .map { if (it) VAT else 1.0 }
 
     val uiState: Flow<PricesUiState> = pricesService
-        .lastDaysPrices(INCLUDE_AVERAGE_DAYS)
+        .lastDaysPricesFlow(INCLUDE_AVERAGE_DAYS)
         .combine(vatAmount) { prices, vat ->
             prices.addVat(vat)
         }
@@ -56,8 +49,8 @@ class PricesViewModel @Inject constructor(
                 .filter { it.startTime.toLocalDateTime() >= hour }
             state.copy(npPrices = npPrices)
         }
-        .combine(pricesService.activeAppliances) { state, appliances ->
-            state.copy(appliances = appliances)
+        .map { state ->
+            state.copy(appliances = pricesService.activeAppliances())
         }
         .combine(minuteTicks()) { state, minute ->
             state.copy(minute = minute)
@@ -97,7 +90,6 @@ class PricesViewModel @Inject constructor(
                 }
             }
         }
-
 
         val powerHours = prices.map { price ->
             val offset = price.startTime.hoursFrom(minute)
@@ -142,15 +134,6 @@ class PricesViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun startTime(localDateTime: LocalDateTime): Timestamp {
-        val instant: Instant = localDateTime
-            .minusHours(SHOW_HOURS_BEFORE)
-            .truncatedTo(ChronoUnit.HOURS)
-            .atZone(ZoneId.systemDefault())
-            .toInstant()
-        return Timestamp(instant.epochSecond, 0)
     }
 
     companion object {

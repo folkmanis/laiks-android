@@ -1,7 +1,6 @@
 package com.folkmanis.laiks.model
 
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 data class PowerHour(
     val id: String,
