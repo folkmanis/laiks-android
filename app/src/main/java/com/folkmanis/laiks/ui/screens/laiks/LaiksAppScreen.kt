@@ -2,6 +2,8 @@
 
 package com.folkmanis.laiks.ui.screens.laiks
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,13 +22,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.R
+import com.folkmanis.laiks.USER_ID
+import com.folkmanis.laiks.USER_ID_ARG
 import com.folkmanis.laiks.ui.screens.clock.ClockScreen
 import com.folkmanis.laiks.ui.screens.prices.PricesScreen
+import com.folkmanis.laiks.ui.screens.user_edit.UserEditScreen
+import com.folkmanis.laiks.ui.screens.users.UsersScreen
+import com.folkmanis.laiks.utilities.oauth.getSignInIntent
 
 enum class LaiksScreen(@StringRes val title: Int) {
     Clock(title = R.string.app_name),
-    Prices(title = R.string.prices_screen)
+    Prices(title = R.string.prices_screen),
+    Users(title = R.string.users_screen),
+    UserEditor(title = R.string.user_editor)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,6 +64,15 @@ fun LaiksAppScreen(
 
     val context = LocalContext.current
 
+    val loginLauncher = rememberLauncherForActivityResult(
+        FirebaseAuthUIActivityResultContract()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            viewModel.login()
+        }
+    }
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -78,6 +98,8 @@ fun LaiksAppScreen(
                         LoggedInUserMenu(
                             photoUrl = uiState.photoUrl,
                             displayName = uiState.displayName,
+                            npAllowed = uiState.isPricesAllowed,
+                            isAdmin = uiState.isAdmin,
                             onLogout = {
                                 navController.popBackStack(LaiksScreen.Clock.name, false)
                                 viewModel.logout(context)
@@ -85,11 +107,14 @@ fun LaiksAppScreen(
                             isVat = isVat,
                             onSetVat = {
                                 viewModel.setVat(!isVat)
+                            },
+                            onUsersAdmin = {
+                                navController.navigate(LaiksScreen.Users.name)
                             }
                         )
                     } else {
                         NotLoggedUserMenu(
-                            onLogin = { viewModel.login(context) },
+                            onLogin = { loginLauncher.launch(getSignInIntent()) },
                         )
                     }
                 },
@@ -119,6 +144,28 @@ fun LaiksAppScreen(
 
             composable(LaiksScreen.Prices.name) {
                 PricesScreen()
+            }
+
+            composable(LaiksScreen.Users.name) {
+                UsersScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onEdit = { user ->
+                        navController.navigate(
+                            "${LaiksScreen.UserEditor.name}?$USER_ID=${user.id}"
+                        )
+                    }
+                )
+            }
+
+            composable(
+                route = "${LaiksScreen.UserEditor.name}$USER_ID_ARG",
+                arguments = listOf(navArgument(USER_ID) {
+                    nullable = true
+                })
+            ) {
+                UserEditScreen(
+                    id = it.arguments?.getString(USER_ID)
+                )
             }
         }
     }

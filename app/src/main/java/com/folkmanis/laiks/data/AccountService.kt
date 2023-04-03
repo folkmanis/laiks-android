@@ -6,10 +6,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface AccountService {
 
-    val currentUser: Flow<FirebaseUser?>
+    val firebaseUserFlow: Flow<FirebaseUser?>
 
-    suspend fun getLaiksUser(uId: String): Flow<LaiksUser?>
+    val authUser: FirebaseUser?
+
+    fun laiksUsersFlow(): Flow<List<LaiksUser>>
+    fun laiksUserFlow(uId: String): Flow<LaiksUser?>
     suspend fun signWithEmailAndPassword(email: String, password: String)
-    suspend fun signOut()
+    suspend fun createLaiksUser(user: FirebaseUser)
+
+    suspend fun updateLaiksUser(user: LaiksUser)
+
+    suspend fun userExists(id: String): Boolean
 
 }

@@ -12,4 +12,7 @@
     <string name="login_menu_item">Pieslēgties</string>
     <string name="logout_menu_item">Atslēgties</string>
     <string name="include_vat">PVN iekļauts</string>
+    <string name="users_screen">Lietotāji</string>
+    <string name="users_menu">Lietotāji</string>
+    <string name="user_editor">Lietotāja iestatījumi</string>
 </resources>

@@ -16,7 +16,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class LaiksViewModel @Inject constructor(
-    accountService: AccountService,
+    private val accountService: AccountService,
     private val settingsService: UserPreferencesRepository,
 ) : ViewModel() {
 
@@ -28,14 +28,14 @@ class LaiksViewModel @Inject constructor(
         }
     }
 
-    val uiState: StateFlow<LaiksUiState> = accountService.currentUser
+    val uiState: StateFlow<LaiksUiState> = accountService.firebaseUserFlow
         .flatMapLatest { user ->
             Log.d(TAG, "User: $user")
             if (user == null) {
                 flowOf(LaiksUiState.NotLoggedIn)
             } else {
                 Log.d(TAG, "User Id ${user.uid} logged in")
-                accountService.getLaiksUser(user.uid)
+                accountService.laiksUserFlow(user.uid)
                     .map { laiksUser ->
                         LaiksUiState.LoggedIn(
                             isAdmin = laiksUser?.isAdmin ?: false,
@@ -52,17 +52,13 @@ class LaiksViewModel @Inject constructor(
             LaiksUiState.NotLoggedIn,
         )
 
-    fun login(context: Context) {
-        val providers = arrayListOf(
-            AuthUI.IdpConfig.GoogleBuilder().build()
-        )
-
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-
-        context.startActivity(signInIntent)
+    fun login() {
+        viewModelScope.launch {
+            val user = accountService.authUser
+            if (user != null && !accountService.userExists(user.uid)) {
+                accountService.createLaiksUser(user)
+            }
+        }
     }
 
     fun logout(context: Context) {

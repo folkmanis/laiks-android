@@ -10,3 +10,5 @@ const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
 const val DAY_STARTS_HOUR = 7L
 const val NIGHT_STARTS_HOUR = 23L
 const val INCLUDE_AVERAGE_DAYS = 5L
+const val USER_ID = "userId"
+const val USER_ID_ARG = "?$USER_ID={$USER_ID}"

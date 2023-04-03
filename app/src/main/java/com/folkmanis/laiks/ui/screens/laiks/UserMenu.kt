@@ -1,6 +1,10 @@
 package com.folkmanis.laiks.ui.screens.laiks
 
+import android.app.Activity.RESULT_OK
 import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -18,15 +22,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.R
+import com.folkmanis.laiks.utilities.composables.AvatarIcon
+import com.folkmanis.laiks.utilities.oauth.getSignInIntent
+import org.w3c.dom.Text
 
 @Composable
 fun LoggedInUserMenu(
     photoUrl: Uri?,
     displayName: String,
+    isAdmin: Boolean,
+    npAllowed: Boolean,
     onLogout: () -> Unit,
     isVat: Boolean,
     onSetVat: (Boolean) -> Unit,
+    onUsersAdmin: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -39,7 +50,8 @@ fun LoggedInUserMenu(
             if (photoUrl != null) {
                 AvatarIcon(
                     photoUrl = photoUrl,
-                    displayName = displayName
+                    displayName = displayName,
+                    modifier = Modifier.size(30.dp)
                 )
             } else {
                 Icon(
@@ -71,20 +83,32 @@ fun LoggedInUserMenu(
                 }
             )
             // PVN
-            DropdownMenuItem(
-                text = {
-                    Text(text = stringResource(id = R.string.include_vat))
-                },
-                onClick = {
-                    onSetVat(!isVat)
-                    menuExpanded = false
-                },
-                leadingIcon = {
-                    if (isVat) {
-                        Icon(Icons.Filled.Check, contentDescription = null)
+            if (npAllowed) {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(id = R.string.include_vat))
+                    },
+                    onClick = {
+                        onSetVat(!isVat)
+                        menuExpanded = false
+                    },
+                    leadingIcon = {
+                        if (isVat) {
+                            Icon(Icons.Filled.Check, contentDescription = null)
+                        }
                     }
-                }
-            )
+                )
+            }
+            // Admin
+            if (isAdmin) {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(id = R.string.users_menu))
+                    },
+                    onClick = onUsersAdmin,
+                    leadingIcon = {}
+                )
+            }
         }
 
     }
@@ -97,6 +121,7 @@ fun NotLoggedUserMenu(
 ) {
 
     var menuExpanded by remember { mutableStateOf(false) }
+
 
     Box(modifier = modifier) {
         IconButton(onClick = { menuExpanded = !menuExpanded }) {
@@ -129,22 +154,4 @@ fun NotLoggedUserMenu(
         }
     }
 
-}
-
-@Composable
-fun AvatarIcon(
-    photoUrl: Uri,
-    displayName: String,
-    modifier: Modifier = Modifier,
-) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(photoUrl)
-            .build(),
-        contentDescription = displayName,
-        contentScale = ContentScale.FillBounds,
-        modifier = modifier
-            .size(30.dp)
-            .clip(shape = CircleShape)
-    )
 }
