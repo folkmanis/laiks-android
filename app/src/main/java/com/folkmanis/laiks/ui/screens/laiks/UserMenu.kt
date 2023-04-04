@@ -1,32 +1,19 @@
 package com.folkmanis.laiks.ui.screens.laiks
 
-import android.app.Activity.RESULT_OK
 import android.net.Uri
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.composables.AvatarIcon
-import com.folkmanis.laiks.utilities.oauth.getSignInIntent
-import org.w3c.dom.Text
 
 @Composable
 fun LoggedInUserMenu(
@@ -105,7 +92,10 @@ fun LoggedInUserMenu(
                     text = {
                         Text(text = stringResource(id = R.string.users_menu))
                     },
-                    onClick = onUsersAdmin,
+                    onClick = {
+                        menuExpanded = false
+                        onUsersAdmin()
+                    },
                     leadingIcon = {}
                 )
             }

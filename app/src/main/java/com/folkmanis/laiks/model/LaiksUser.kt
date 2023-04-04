@@ -8,7 +8,9 @@ data class LaiksUser(
     @DocumentId val id: String = "",
     val email: String = "",
 
-    @get:PropertyName("isAdmin")
+    // or field will be renamed to 'admin'
+//    @get:PropertyName("isAdmin")
+    @field:JvmField
     val isAdmin: Boolean = false,
 
     val name: String = "",

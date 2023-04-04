@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -26,7 +27,6 @@ import androidx.navigation.navArgument
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.USER_ID
-import com.folkmanis.laiks.USER_ID_ARG
 import com.folkmanis.laiks.ui.screens.clock.ClockScreen
 import com.folkmanis.laiks.ui.screens.prices.PricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.UserEditScreen
@@ -55,7 +55,8 @@ fun LaiksAppScreen(
 
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentScreen = LaiksScreen.valueOf(
+    val currentScreen = LaiksScreen
+        .valueOf(
         backStackEntry?.destination?.route ?: LaiksScreen.Clock.name
     )
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -101,7 +102,10 @@ fun LaiksAppScreen(
                             npAllowed = uiState.isPricesAllowed,
                             isAdmin = uiState.isAdmin,
                             onLogout = {
-                                navController.popBackStack(LaiksScreen.Clock.name, false)
+                                navController.popBackStack(
+                                    LaiksScreen.Clock.name,
+                                    false
+                                )
                                 viewModel.logout(context)
                             },
                             isVat = isVat,
@@ -135,7 +139,6 @@ fun LaiksAppScreen(
             composable(LaiksScreen.Clock.name) {
                 ClockScreen(
                     pricesAllowed = uiState is LaiksUiState.LoggedIn && uiState.isPricesAllowed,
-                    modifier = Modifier.padding(innerPadding),
                     onShowPrices = {
                         navController.navigate(LaiksScreen.Prices.name)
                     }
@@ -148,23 +151,22 @@ fun LaiksAppScreen(
 
             composable(LaiksScreen.Users.name) {
                 UsersScreen(
-                    modifier = Modifier.padding(innerPadding),
                     onEdit = { user ->
                         navController.navigate(
-                            "${LaiksScreen.UserEditor.name}?$USER_ID=${user.id}"
+                            "${LaiksScreen.UserEditor.name}/${user.id}"
                         )
                     }
                 )
             }
 
             composable(
-                route = "${LaiksScreen.UserEditor.name}$USER_ID_ARG",
+                route = "${LaiksScreen.UserEditor.name}/{$USER_ID}",
                 arguments = listOf(navArgument(USER_ID) {
-                    nullable = true
+                    type = NavType.StringType
                 })
-            ) {
+            ) {backStackEntry->
                 UserEditScreen(
-                    id = it.arguments?.getString(USER_ID)
+                    id = backStackEntry.arguments?.getString(USER_ID)
                 )
             }
         }
