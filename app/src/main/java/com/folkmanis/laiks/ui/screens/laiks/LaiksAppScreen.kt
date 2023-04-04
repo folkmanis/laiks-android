@@ -37,7 +37,25 @@ enum class LaiksScreen(@StringRes val title: Int) {
     Clock(title = R.string.app_name),
     Prices(title = R.string.prices_screen),
     Users(title = R.string.users_screen),
-    UserEditor(title = R.string.user_editor)
+    UserEditor(title = R.string.user_editor) {
+        override val route: String
+            get() = "$name/{userId}"
+    };
+
+    open fun withParam(param: String): String = "$name/$param"
+
+    open val route: String = name
+
+    companion object {
+
+        val defaultScreen = Clock
+        fun byRoute(path: String?): LaiksScreen {
+            return if (path != null)
+                values().find { it.route.startsWith(path) } ?: defaultScreen
+            else
+                defaultScreen
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,10 +73,9 @@ fun LaiksAppScreen(
 
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentScreen = LaiksScreen
-        .valueOf(
-        backStackEntry?.destination?.route ?: LaiksScreen.Clock.name
-    )
+    val currentScreen = LaiksScreen.byRoute(backStackEntry?.destination?.route)
+
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val canNavigateBack = navController.previousBackStackEntry != null
@@ -130,13 +147,13 @@ fun LaiksAppScreen(
         NavHost(
             navController = navController,
 //            startDestination = LaiksScreen.Prices.name,
-            startDestination = LaiksScreen.Clock.name,
+            startDestination = LaiksScreen.defaultScreen.route,
             modifier = modifier
                 .padding(innerPadding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
 
-            composable(LaiksScreen.Clock.name) {
+            composable(LaiksScreen.Clock.route) {
                 ClockScreen(
                     pricesAllowed = uiState is LaiksUiState.LoggedIn && uiState.isPricesAllowed,
                     onShowPrices = {
@@ -145,26 +162,26 @@ fun LaiksAppScreen(
                 )
             }
 
-            composable(LaiksScreen.Prices.name) {
+            composable(LaiksScreen.Prices.route) {
                 PricesScreen()
             }
 
-            composable(LaiksScreen.Users.name) {
+            composable(LaiksScreen.Users.route) {
                 UsersScreen(
                     onEdit = { user ->
                         navController.navigate(
-                            "${LaiksScreen.UserEditor.name}/${user.id}"
+                            LaiksScreen.UserEditor.withParam(user.id)
                         )
                     }
                 )
             }
 
             composable(
-                route = "${LaiksScreen.UserEditor.name}/{$USER_ID}",
+                route = LaiksScreen.UserEditor.route,
                 arguments = listOf(navArgument(USER_ID) {
                     type = NavType.StringType
                 })
-            ) {backStackEntry->
+            ) { backStackEntry ->
                 UserEditScreen(
                     id = backStackEntry.arguments?.getString(USER_ID)
                 )
