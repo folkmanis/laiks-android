@@ -12,6 +12,8 @@ interface AccountService {
 
     fun laiksUsersFlow(): Flow<List<LaiksUser>>
     fun laiksUserFlow(uId: String): Flow<LaiksUser?>
+
+    suspend fun laiksUser(uId: String): LaiksUser?
     suspend fun signWithEmailAndPassword(email: String, password: String)
     suspend fun createLaiksUser(user: FirebaseUser)
 

@@ -39,7 +39,7 @@ enum class LaiksScreen(@StringRes val title: Int) {
     Users(title = R.string.users_screen),
     UserEditor(title = R.string.user_editor) {
         override val route: String
-            get() = "$name/{userId}"
+            get() = "$name/{$USER_ID}"
     };
 
     open fun withParam(param: String): String = "$name/$param"
@@ -181,10 +181,8 @@ fun LaiksAppScreen(
                 arguments = listOf(navArgument(USER_ID) {
                     type = NavType.StringType
                 })
-            ) { backStackEntry ->
-                UserEditScreen(
-                    id = backStackEntry.arguments?.getString(USER_ID)
-                )
+            ) {
+                UserEditScreen()
             }
         }
     }

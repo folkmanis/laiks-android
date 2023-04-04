@@ -3,7 +3,6 @@ package com.folkmanis.laiks.data.implementations
 import android.util.Log
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.ui.screens.laiks.LaiksViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -49,6 +48,13 @@ class AccountServiceFirebase @Inject constructor(
                 Log.d(TAG, "Laiks user ${document.data}")
                 document.toObject<LaiksUser>()
             }
+
+    override suspend fun laiksUser(uId: String): LaiksUser? =
+        firestore.collection(USER_COLLECTION)
+            .document(uId)
+            .get()
+            .await()
+            .toObject()
 
     override suspend fun userExists(id: String): Boolean =
         firestore.collection(USER_COLLECTION)
