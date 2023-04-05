@@ -2,7 +2,7 @@ package com.folkmanis.laiks.model
 
 import com.google.firebase.firestore.DocumentId
 
-data class PowerAppliance(
+data class PowerAppliance (
     @DocumentId val id: String = "",
     val color: String = "#CCCCCC",
     val cycles: List<PowerApplianceCycle> = emptyList(),

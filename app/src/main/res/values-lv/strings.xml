@@ -19,4 +19,8 @@
     <string name="is_admin_checkbox">Administratora tiesības</string>
     <string name="alert_ok">Apstiprināt</string>
     <string name="alert_dismiss">Atcelt</string>
+    <string name="delete_button">Izdzēst</string>
+    <string name="appliance_delete_confirmation">Tiešām vēlaties dzēst aparātu "%1$s"? Šo darbību nevarēs atcelt!</string>
+    <string name="appliances_screen">Aparāti</string>
+    <string name="appliance_screen">Aparāts</string>
 </resources>

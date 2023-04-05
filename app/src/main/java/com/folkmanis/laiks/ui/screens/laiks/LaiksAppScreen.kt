@@ -25,8 +25,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.folkmanis.laiks.APPLIANCE_ID
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.USER_ID
+import com.folkmanis.laiks.ui.screens.appliances.AppliancesScreen
 import com.folkmanis.laiks.ui.screens.clock.ClockScreen
 import com.folkmanis.laiks.ui.screens.prices.PricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.UserEditScreen
@@ -40,6 +42,11 @@ enum class LaiksScreen(@StringRes val title: Int) {
     UserEditor(title = R.string.user_editor) {
         override val route: String
             get() = "$name/{$USER_ID}"
+    },
+    Appliances(title = R.string.appliances_screen),
+    ApplianceEditor(title = R.string.appliance_screen) {
+        override val route: String
+            get() = "$name/{$APPLIANCE_ID}"
     };
 
     open fun withParam(param: String): String = "$name/$param"
@@ -146,7 +153,6 @@ fun LaiksAppScreen(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-//            startDestination = LaiksScreen.Prices.name,
             startDestination = LaiksScreen.defaultScreen.route,
             modifier = modifier
                 .padding(innerPadding)
@@ -183,6 +189,20 @@ fun LaiksAppScreen(
                 })
             ) {
                 UserEditScreen()
+            }
+
+            composable(route = LaiksScreen.Appliances.route) {
+                AppliancesScreen(
+                    onEdit = { applianceId ->
+                        navController.navigate(
+                            LaiksScreen.ApplianceEditor.withParam(applianceId)
+                        )
+                    }
+                )
+            }
+
+            composable(route = LaiksScreen.ApplianceEditor.route) {
+
             }
         }
     }

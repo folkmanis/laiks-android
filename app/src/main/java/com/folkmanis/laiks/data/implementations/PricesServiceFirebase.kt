@@ -7,6 +7,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.snapshots
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -20,9 +21,13 @@ class PricesServiceFirebase @Inject constructor(
     private val npData = firestore
         .collection(LAIKS_COLLECTION)
         .document(NP_DATA)
+        .collection(NP_PRICES_COLLECTION)
+
+    private val appliances = firestore
+        .collection(POWER_APPLIANCES_COLLECTION)
 
     override suspend fun npPrices(startTimestamp: Timestamp): List<NpPrice> {
-        return npData.collection(NP_PRICES_COLLECTION)
+        return npData
             .whereGreaterThanOrEqualTo("startTime", startTimestamp)
             .orderBy("startTime")
             .get()
@@ -30,8 +35,16 @@ class PricesServiceFirebase @Inject constructor(
             .toObjects()
     }
 
+    override val allAppliancesFlow: Flow<List<PowerAppliance>>
+        get() = appliances
+            .orderBy("name")
+            .snapshots()
+            .map { snapshot ->
+                snapshot.toObjects()
+            }
+
     override suspend fun activeAppliances(): List<PowerAppliance> {
-        return firestore.collection(POWER_APPLIANCES_COLLECTION)
+        return appliances
             .whereEqualTo("enabled", true)
             .orderBy("name")
             .get()
@@ -39,11 +52,28 @@ class PricesServiceFirebase @Inject constructor(
             .toObjects()
     }
 
+    override suspend fun getAppliance(id: String): PowerAppliance? {
+        return appliances
+            .document(id)
+            .get()
+            .await()
+            .toObject()
+    }
+
+    override suspend fun deleteAppliance(id: String) {
+        appliances.document(id).delete().await()
+    }
+
+    override suspend fun updateAppliance(appliance: PowerAppliance) {
+        appliances.document(appliance.id).set(appliance).await()
+    }
+
+    override suspend fun addAppliance(appliance: PowerAppliance): String {
+        return appliances.add(appliance).await().id
+    }
+
     override fun lastDaysPricesFlow(days: Long): Flow<List<NpPrice>> {
-        return firestore
-            .collection(LAIKS_COLLECTION)
-            .document(NP_DATA)
-            .collection(NP_PRICES_COLLECTION)
+        return npData
             .orderBy("endTime", Query.Direction.DESCENDING)
             .limit(1)
             .snapshots()
