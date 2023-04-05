@@ -127,7 +127,7 @@ fun LaiksAppScreen(
                             isAdmin = uiState.isAdmin,
                             onLogout = {
                                 navController.popBackStack(
-                                    LaiksScreen.Clock.name,
+                                    LaiksScreen.Clock.route,
                                     false
                                 )
                                 viewModel.logout(context)
@@ -137,7 +137,20 @@ fun LaiksAppScreen(
                                 viewModel.setVat(!isVat)
                             },
                             onUsersAdmin = {
-                                navController.navigate(LaiksScreen.Users.name)
+                                navController.navigate (
+                                    LaiksScreen.Users.route,
+                                ) {
+                                    launchSingleTop = true
+                                    popUpTo(LaiksScreen.Clock.route)
+                                }
+                            },
+                            onAppliancesAdmin = {
+                                navController.navigate(
+                                    LaiksScreen.Appliances.route,
+                                ) {
+                                    launchSingleTop = true
+                                    popUpTo(LaiksScreen.Clock.route)
+                                }
                             }
                         )
                     } else {

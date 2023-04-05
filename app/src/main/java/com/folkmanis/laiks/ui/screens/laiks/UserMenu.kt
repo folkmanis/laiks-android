@@ -25,6 +25,7 @@ fun LoggedInUserMenu(
     isVat: Boolean,
     onSetVat: (Boolean) -> Unit,
     onUsersAdmin: () -> Unit,
+    onAppliancesAdmin: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -88,6 +89,7 @@ fun LoggedInUserMenu(
             }
             // Admin
             if (isAdmin) {
+                // Users
                 DropdownMenuItem(
                     text = {
                         Text(text = stringResource(id = R.string.users_menu))
@@ -96,7 +98,30 @@ fun LoggedInUserMenu(
                         menuExpanded = false
                         onUsersAdmin()
                     },
-                    leadingIcon = {}
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.manage_accounts),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                )
+                // Appliances
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(id = R.string.appliances_menu_item))
+                    },
+                    onClick = {
+                        menuExpanded = false
+                        onAppliancesAdmin()
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.dishwasher_gen),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
                 )
             }
         }

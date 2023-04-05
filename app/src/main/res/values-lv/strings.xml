@@ -23,4 +23,6 @@
     <string name="appliance_delete_confirmation">Tiešām vēlaties dzēst aparātu "%1$s"? Šo darbību nevarēs atcelt!</string>
     <string name="appliances_screen">Aparāti</string>
     <string name="appliance_screen">Aparāts</string>
+    <string name="settings">Iestatījumi</string>
+    <string name="appliances_menu_item">Elektroiekārtas</string>
 </resources>

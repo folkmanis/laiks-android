@@ -23,4 +23,6 @@
     <string name="appliance_delete_confirmation">Do you really want to delete appliance named "%1$s"? This action can\'t be undone!</string>
     <string name="appliances_screen">Appliances</string>
     <string name="appliance_screen">Appliance</string>
+    <string name="appliances_menu_item">Edit Appliances</string>
+    <string name="settings">Settings</string>
 </resources>
