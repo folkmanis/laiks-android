@@ -12,5 +12,3 @@ const val NIGHT_STARTS_HOUR = 23L
 const val INCLUDE_AVERAGE_DAYS = 5L
 const val USER_ID = "userId"
 const val APPLIANCE_ID = "applianceId"
-
-val DELAY_VALUES = setOf("start", "end")

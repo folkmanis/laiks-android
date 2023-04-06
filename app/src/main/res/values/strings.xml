@@ -27,8 +27,9 @@
     <string name="settings">Settings</string>
     <string name="appliance_name_label">Name</string>
     <string name="appliance_minimumDelay_label">Minimum delay</string>
-    <string name="appliance_enabled_label">Enabled</string>
+    <string name="appliance_enabled_label">Show in active list</string>
     <string name="appliance_delay_label">Delay on</string>
+    <string name="appliance_enabled_check">Active</string>
     <string name="appliance_delay_start_label">Start</string>
     <string name="appliance_delay_end_label">End</string>
     <string name="appliance_cycles_label">Power consumption cycles</string>

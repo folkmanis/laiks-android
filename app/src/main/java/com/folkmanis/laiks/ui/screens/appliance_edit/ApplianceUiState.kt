@@ -1,8 +1,8 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
-import com.folkmanis.laiks.DELAY_VALUES
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
+import com.folkmanis.laiks.model.PowerApplianceDelay
 
 data class ApplianceUiState(
 
@@ -30,7 +30,7 @@ data class ApplianceUiState(
         get() = minimumDelay != null && minimumDelay >= 0
 
     val isDelayValid: Boolean
-        get() = DELAY_VALUES.contains(delay)
+        get() = PowerApplianceDelay.values().map { it.name }.contains(delay)
 
     val isCyclesValid: Boolean
     get() = true // TODO

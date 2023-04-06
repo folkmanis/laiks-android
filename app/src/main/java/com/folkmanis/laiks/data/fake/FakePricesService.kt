@@ -62,6 +62,7 @@ class FakePricesService : PricesService {
                     length = 40 * 60 * 1000, // 40 min
                 ),
             ),
+            name = "Trauku mašīna",
             delay = "start",
             minimumDelay = 0, // hours
             enabled = true,
