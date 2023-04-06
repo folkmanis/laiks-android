@@ -28,6 +28,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.APPLIANCE_ID
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.USER_ID
+import com.folkmanis.laiks.ui.screens.appliance_edit.ApplianceEdit
 import com.folkmanis.laiks.ui.screens.appliances.AppliancesScreen
 import com.folkmanis.laiks.ui.screens.clock.ClockScreen
 import com.folkmanis.laiks.ui.screens.prices.PricesScreen
@@ -137,7 +138,7 @@ fun LaiksAppScreen(
                                 viewModel.setVat(!isVat)
                             },
                             onUsersAdmin = {
-                                navController.navigate (
+                                navController.navigate(
                                     LaiksScreen.Users.route,
                                 ) {
                                     launchSingleTop = true
@@ -214,8 +215,13 @@ fun LaiksAppScreen(
                 )
             }
 
-            composable(route = LaiksScreen.ApplianceEditor.route) {
-
+            composable(
+                route = LaiksScreen.ApplianceEditor.route,
+                arguments = listOf(navArgument(APPLIANCE_ID) {
+                    type = NavType.StringType
+                })
+            ) {
+                ApplianceEdit()
             }
         }
     }

@@ -1,12 +1,14 @@
 package com.folkmanis.laiks
 
+import com.folkmanis.laiks.data.fake.FakePricesService.Companion.dishWasher
+import com.folkmanis.laiks.data.fake.FakePricesService.Companion.washer
+import com.folkmanis.laiks.data.fake.FakePricesService.Companion.testPrices
 import com.folkmanis.laiks.model.NpPrice
-import com.folkmanis.laiks.model.PowerAppliance
-import com.folkmanis.laiks.model.PowerApplianceCycle
 import com.folkmanis.laiks.utilities.*
 import com.folkmanis.laiks.utilities.ext.sWtoMWh
 import com.google.firebase.Timestamp
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalDateTime
@@ -20,54 +22,7 @@ private fun LocalDateTime.toTimestamp(): Timestamp {
 }
 
 private val pricesStart = LocalDateTime.of(2023, 3, 24, 23, 0)
-val testPrices: List<NpPrice> = listOf(
-    NpPrice(
-        startTime = pricesStart.toTimestamp(),
-        endTime = pricesStart.plusHours(1).toTimestamp(),
-        value = 20.0,
-    ),
-    NpPrice(
-        startTime = pricesStart.plusHours(1).toTimestamp(),
-        endTime = pricesStart.plusHours(2).toTimestamp(),
-        value = 10.0,
-    ),
-    NpPrice(
-        startTime = pricesStart.plusHours(2).toTimestamp(),
-        endTime = pricesStart.plusHours(3).toTimestamp(),
-        value = 5.0,
-    ),
-    NpPrice(
-        startTime = pricesStart.plusHours(3).toTimestamp(),
-        endTime = pricesStart.plusHours(4).toTimestamp(),
-        value = 2.0,
-    ),
-    NpPrice(
-        startTime = pricesStart.plusHours(4).toTimestamp(),
-        endTime = pricesStart.plusHours(5).toTimestamp(),
-        value = 1.5,
-    ),
-)
-
-val dishWasher = PowerAppliance(
-    cycles = listOf(
-        PowerApplianceCycle(
-            consumption = 100,
-            length = 5 * 60 * 1000, // 5 min
-        ),
-        PowerApplianceCycle(
-            consumption = 2000,
-            length = 30 * 60 * 1000, // 30 min
-        ),
-        PowerApplianceCycle(
-            consumption = 150,
-            length = 40 * 60 * 1000, // 40 min
-        ),
-    ),
-    delay = "start",
-    minimumDelay = 0, // hours
-    enabled = true,
-    color = "#ff00ff",
-)
+val prices: List<NpPrice> = testPrices(pricesStart)
 
 private val dishWasherCosts = mapOf(
     0L to 0.0195,
@@ -79,8 +34,6 @@ private val washerCosts = mapOf(
     3L to 19140000.0.sWtoMWh(),
     4L to 7845000.0.sWtoMWh(),
 )
-
-val washer = dishWasher.copy(delay = "end", minimumDelay = 3L)
 
 val after30min: Instant = pricesStart
     .plusMinutes(30)
@@ -104,7 +57,7 @@ class ConsumptionCalculatorTest {
     fun consumptionCalculator_consumption_oneCycleCost() {
         val cost = cycleCost(
             dishWasher.cycles[0],
-            testPrices,
+            prices,
             after30min.epochSecond
         )
         val expected = 600000.0
@@ -114,7 +67,7 @@ class ConsumptionCalculatorTest {
     @Test
     fun consumptionCalculator_consumption_timeCost() {
         val cost = timeCost(
-            testPrices,
+            prices,
             after30min.epochSecond,
             dishWasher
         )
@@ -125,7 +78,7 @@ class ConsumptionCalculatorTest {
     @Test
     fun consumptionCalculator_consumption_dishWasherCosts() {
         val costs = offsetCosts(
-            testPrices,
+            prices,
             after30min,
             dishWasher
         )
@@ -138,7 +91,7 @@ class ConsumptionCalculatorTest {
     @Test
     fun consumptionCalculator_consumption_dishWasherBestOffset() {
         val costs = offsetCosts(
-            testPrices,
+            prices,
             after30min,
             dishWasher
         )
@@ -148,7 +101,7 @@ class ConsumptionCalculatorTest {
     @Test
     fun consumptionCalculator_consumption_washerCosts() {
         val costs = offsetCosts(
-            testPrices,
+            prices,
             after30min,
             washer
         )
@@ -159,7 +112,7 @@ class ConsumptionCalculatorTest {
     @Test
     fun consumptionCalculator_consumption_notCalculateDishWasher() {
         val costs = offsetCosts(
-            testPrices,
+            prices,
             after4h,
             dishWasher
         )

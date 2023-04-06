@@ -14,15 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class ApplianceUiState(
-//    val appliance: PowerAppliance = PowerAppliance(),
-    val isLoading: Boolean = false,
-    val isSaving: Boolean = false,
-    val editMode: Boolean = false,
-) {
-    val enabled: Boolean
-        get() = !isSaving && editMode && !isLoading
-}
+
 
 @HiltViewModel
 class ApplianceEditViewModel @Inject constructor(
@@ -35,9 +27,6 @@ class ApplianceEditViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ApplianceUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _appliance = MutableStateFlow(PowerAppliance())
-    val appliance = _appliance.asStateFlow()
-
     init {
         if (applianceId != null) {
             loadAppliance(applianceId)
@@ -48,27 +37,29 @@ class ApplianceEditViewModel @Inject constructor(
     }
 
     fun setName(name: String) {
-        _appliance.update { it.copy(name = name) }
+        _uiState.update { it.copy(name = name) }
     }
 
-    fun setMinimumDelay(time: Long) {
-        _appliance.update { it.copy(minimumDelay = time) }
+    fun setMinimumDelay(time: Long?) {
+        _uiState.update { it.copy(minimumDelay = time) }
     }
 
-    fun setDelay(delay: String) {
-        _appliance.update { it.copy(delay = delay) }
+    fun setDelay(value: String) {
+        if (value == "start" || value == "end") {
+            _uiState.update { it.copy(delay = value) }
+        }
     }
 
     fun setEnabled(enabled: Boolean) {
-        _appliance.update { it.copy(enabled = enabled) }
+        _uiState.update { it.copy(enabled = enabled) }
     }
 
     fun setColor(color: String) {
-        _appliance.update { it.copy(color=color) }
+        _uiState.update { it.copy(color = color) }
     }
 
     fun setCycles(cycles: List<PowerApplianceCycle>) {
-        _appliance
+        _uiState.update { it.copy(cycles = cycles) }
     }
 
     fun startEdit() {
@@ -80,7 +71,7 @@ class ApplianceEditViewModel @Inject constructor(
             it.copy(editMode = false, isSaving = true)
         }
         viewModelScope.launch {
-            val appliance = _appliance.value
+            val appliance = _uiState.value.toPowerAppliance()
             if (appliance.id.isBlank()) {
                 pricesService.addAppliance(appliance)
             } else {
@@ -95,7 +86,9 @@ class ApplianceEditViewModel @Inject constructor(
         viewModelScope.launch {
             val appliance = pricesService.getAppliance(id)
             if (appliance != null) {
-                _appliance.update { appliance }
+                _uiState.update { state ->
+                    state.copy(appliance)
+                }
             }
             _uiState.update { it.copy(isLoading = false) }
         }
