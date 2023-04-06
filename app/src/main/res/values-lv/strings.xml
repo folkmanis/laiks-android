@@ -25,4 +25,12 @@
     <string name="appliance_screen">Aparāts</string>
     <string name="settings">Iestatījumi</string>
     <string name="appliances_menu_item">Elektroiekārtas</string>
+    <string name="appliance_name_label">Nosaukums</string>
+    <string name="appliance_minimumDelay_label">Mazākais laiks</string>
+    <string name="appliance_enabled_label">Rādīt izdevīgāko laiku</string>
+    <string name="appliance_delay_label">Atliktais laiks norāda cikla</string>
+    <string name="appliance_delay_start_label">sākumu</string>
+    <string name="appliance_delay_end_label">beigas</string>
+    <string name="appliance_cycles_label">Patēriņa cikli</string>
+    <string name="appliance_color_label">Izceltā krāsa</string>
 </resources>
