@@ -1,8 +1,12 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
@@ -20,7 +23,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.APPLIANCE_ID
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.data.fake.FakePricesService
 
 @Composable
@@ -32,6 +34,8 @@ fun ApplianceEdit(
     val state by viewModel.uiState
         .collectAsStateWithLifecycle(initialValue = ApplianceUiState())
 
+    val scroll = rememberScrollState()
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -39,6 +43,7 @@ fun ApplianceEdit(
         Column(
             modifier = Modifier
                 .padding(16.dp)
+                .verticalScroll(scroll)
         ) {
 
             OutlinedTextField(
@@ -59,7 +64,7 @@ fun ApplianceEdit(
                 isError = !state.isNameValid
             )
 
-            MinimumDelayInput(
+            NumberInput(
                 value = state.minimumDelay,
                 onValueChange = viewModel::setMinimumDelay,
                 modifier = Modifier
@@ -70,34 +75,22 @@ fun ApplianceEdit(
                 isError = !state.isMinimumDelayValid
             )
 
-            Column(
+            OptionWithLabel(
+                label = stringResource(id = R.string.appliance_delay_label),
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(8.dp)
             ) {
-                Text(
-                    text = stringResource(
-                        id = R.string.appliance_delay_label
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                )
                 DelayInput(
                     value = state.delay,
                     onValueChange = viewModel::setDelay,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
                 )
             }
 
-            Column(
+            OptionWithLabel(
+                label = stringResource(id = R.string.appliance_color_label),
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(8.dp)
             ) {
-                Text(
-                    text = stringResource(id = R.string.appliance_color_label),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -117,22 +110,16 @@ fun ApplianceEdit(
                         modifier = Modifier
                             .padding(start = 16.dp)
                     )
-
                 }
             }
 
-            Column(
+            OptionWithLabel(
+                label = stringResource(
+                    id = R.string.appliance_enabled_label
+                ),
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(8.dp)
             ) {
-                Text(
-                    text = stringResource(
-                        id = R.string.appliance_enabled_label
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -148,7 +135,6 @@ fun ApplianceEdit(
                         modifier = Modifier
                             .padding(start = 16.dp)
                     )
-
                 }
             }
 
@@ -156,38 +142,6 @@ fun ApplianceEdit(
 
         }
     }
-}
-
-@Composable
-fun MinimumDelayInput(
-    value: Long?,
-    onValueChange: (Long?) -> Unit,
-    modifier: Modifier = Modifier,
-    label: @Composable() (() -> Unit)? = null,
-    isError: Boolean = false,
-) {
-
-    var inputState by remember { mutableStateOf("") }
-
-    if (value != null) {
-        inputState = value.toString()
-    }
-
-    OutlinedTextField(
-        value = inputState,
-        onValueChange = {
-            inputState = it
-            onValueChange(inputState.toLongOrNull())
-        },
-        modifier = modifier,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next,
-        ),
-        label = label,
-        isError = isError,
-    )
-
 }
 
 @Preview

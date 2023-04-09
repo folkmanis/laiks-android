@@ -1,0 +1,50 @@
+package com.folkmanis.laiks.ui.screens.appliance_edit
+
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+
+@Composable
+fun NumberInput(
+    value: Long?,
+    onValueChange: (Long?) -> Unit,
+    modifier: Modifier = Modifier,
+    label: @Composable() (() -> Unit)? = null,
+    isError: Boolean = false,
+) {
+
+    var inputState by remember { mutableStateOf(TextFieldValue("")) }
+
+    if (value != null && value.toString() != inputState.text) {
+        inputState = TextFieldValue(value.toString())
+    }
+
+    OutlinedTextField(
+        value = inputState,
+        onValueChange = {
+            inputState = it
+            onValueChange(inputState.text.toLongOrNull())
+        },
+        modifier = modifier
+            .onFocusChanged { focusState ->
+                if (focusState.isFocused) {
+                    inputState = inputState.copy(
+                        selection = TextRange(0, inputState.text.length)
+                    )
+                }
+            },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next,
+        ),
+        label = label,
+        isError = isError,
+    )
+
+}
