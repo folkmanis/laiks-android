@@ -17,12 +17,24 @@ fun NumberInput(
     modifier: Modifier = Modifier,
     label: @Composable() (() -> Unit)? = null,
     isError: Boolean = false,
+    prefix: @Composable() (() -> Unit)? = null,
+    suffix: @Composable() (() -> Unit)? = null,
 ) {
 
-    var inputState by remember { mutableStateOf(TextFieldValue("")) }
+    var inputState by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = value?.toString() ?: "",
+                selection = TextRange(value?.toString()?.length ?: 0)
+            )
+        )
+    }
 
-    if (value != null && value.toString() != inputState.text) {
-        inputState = TextFieldValue(value.toString())
+    if (inputState.text != value?.toString()) {
+        inputState = TextFieldValue(
+            text = value.toString(),
+            selection = TextRange(value.toString().length)
+        )
     }
 
     OutlinedTextField(
@@ -43,6 +55,8 @@ fun NumberInput(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next,
         ),
+        prefix = prefix,
+        suffix = suffix,
         label = label,
         isError = isError,
     )

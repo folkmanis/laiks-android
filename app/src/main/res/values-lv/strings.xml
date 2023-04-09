@@ -34,4 +34,6 @@
     <string name="appliance_delay_end_label">beigas</string>
     <string name="appliance_cycles_label">Patēriņa cikli</string>
     <string name="appliance_color_label">Izceltā krāsa</string>
+    <string name="add">Pievienot</string>
+    <string name="remove">Noņemt</string>
 </resources>
