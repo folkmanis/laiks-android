@@ -22,18 +22,15 @@ fun NumberInput(
 ) {
 
     var inputState by remember {
-        mutableStateOf(
-            TextFieldValue(
-                text = value?.toString() ?: "",
-                selection = TextRange(value?.toString()?.length ?: 0)
-            )
-        )
+        mutableStateOf(TextFieldValue(""))
     }
 
-    if (inputState.text != value?.toString()) {
+    val valueStr = value?.toString() ?: ""
+
+    if (value != null && valueStr != inputState.text) {
         inputState = TextFieldValue(
-            text = value.toString(),
-            selection = TextRange(value.toString().length)
+            text = valueStr,
+            selection = TextRange(valueStr.length)
         )
     }
 
@@ -49,6 +46,12 @@ fun NumberInput(
                     inputState = inputState.copy(
                         selection = TextRange(0, inputState.text.length)
                     )
+                } else if (inputState.text.toLongOrNull() == null) {
+                    inputState = TextFieldValue(
+                        "0",
+                        selection = TextRange(1)
+                    )
+                    onValueChange(0)
                 }
             },
         keyboardOptions = KeyboardOptions(
