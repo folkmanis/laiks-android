@@ -1,12 +1,12 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,7 +28,8 @@ import com.folkmanis.laiks.data.fake.FakePricesService
 @Composable
 fun ApplianceEdit(
     modifier: Modifier = Modifier,
-    viewModel: ApplianceEditViewModel = hiltViewModel()
+    viewModel: ApplianceEditViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
 ) {
 
     val state by viewModel.uiState
@@ -72,7 +73,8 @@ fun ApplianceEdit(
                 label = {
                     Text(text = stringResource(id = R.string.appliance_minimumDelay_label))
                 },
-                isError = !state.isMinimumDelayValid
+                isError = !state.isMinimumDelayValid,
+                enabled = state.isEnabled,
             )
 
             OptionWithLabel(
@@ -83,6 +85,7 @@ fun ApplianceEdit(
                 DelayInput(
                     value = state.delay,
                     onValueChange = viewModel::setDelay,
+                    enabled = state.isEnabled,
                 )
             }
 
@@ -127,7 +130,8 @@ fun ApplianceEdit(
                 ) {
                     Switch(
                         checked = state.enabled,
-                        onCheckedChange = viewModel::setEnabled
+                        onCheckedChange = viewModel::setEnabled,
+                        enabled = state.isEnabled,
                     )
                     Text(
                         text = stringResource(id = R.string.appliance_enabled_check),
@@ -138,10 +142,82 @@ fun ApplianceEdit(
                 }
             }
 
+            OptionWithLabel(
+                label = stringResource(
+                    id = R.string.appliance_cycles_label
+                )
+            ) {
+                PowerConsumptionCyclesScreen(
+                    cycles = state.cycles,
+                    onCyclesChange = viewModel::setCycles,
+                    enabled = state.isEnabled,
+                )
+            }
+
+            if (state.editMode) {
+
+                EditorActions(
+                    onSave = {
+                        viewModel.save { onNavigateBack() }
+                    },
+                    onCancel = onNavigateBack,
+                    saveEnabled = state.isValid,
+                    cancelEnabled = !state.isLoading && !state.isSaving,
+                )
+
+            }
+
             Text(text = state.toString())
 
         }
+
+        if (!state.editMode) {
+            FloatingActionButton(
+                onClick = viewModel::startEdit,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = stringResource(id = R.string.edit)
+                )
+            }
+        }
+
     }
+}
+
+@Composable
+fun EditorActions(
+    onSave: () -> Unit,
+    onCancel: () -> Unit,
+    saveEnabled: Boolean,
+    cancelEnabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .height(56.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
+    ) {
+        TextButton(
+            enabled = cancelEnabled,
+            onClick = onCancel,
+        ) {
+            Text(text = stringResource(id = R.string.action_cancel))
+        }
+
+        TextButton(
+            enabled = saveEnabled,
+            onClick = onSave,
+        ) {
+            Text(text = stringResource(id = R.string.action_save))
+        }
+    }
+
 }
 
 @Preview
@@ -152,10 +228,11 @@ fun ApplianceEditPreview() {
         pricesService = FakePricesService(),
         SavedStateHandle(mapOf(APPLIANCE_ID to "12AFE34"))
     )
-    viewModel.startEdit()
+
     MaterialTheme {
         ApplianceEdit(
-            viewModel = viewModel
+            viewModel = viewModel,
+            onNavigateBack = {},
         )
     }
 }

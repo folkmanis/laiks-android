@@ -20,6 +20,7 @@ fun DelayInput(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    enabled: Boolean = true,
 ) {
 
     val delay = PowerApplianceDelay.valueOf(value)
@@ -34,7 +35,8 @@ fun DelayInput(
             ) {
                 RadioButton(
                     selected = option == delay,
-                    onClick = { onValueChange(option.name) }
+                    onClick = { onValueChange(option.name) },
+                    enabled = enabled,
                 )
                 Text(
                     text = stringResource(id = option.label),

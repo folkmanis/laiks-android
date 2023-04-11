@@ -32,8 +32,11 @@
     <string name="appliance_delay_label">Atliktais laiks norāda cikla</string>
     <string name="appliance_delay_start_label">sākumu</string>
     <string name="appliance_delay_end_label">beigas</string>
-    <string name="appliance_cycles_label">Patēriņa cikli</string>
+    <string name="appliance_cycles_label">Elektrības patēriņa cikli</string>
     <string name="appliance_color_label">Izceltā krāsa</string>
     <string name="add">Pievienot</string>
     <string name="remove">Noņemt</string>
+    <string name="action_cancel">Atcelt</string>
+    <string name="action_save">Saglabāt</string>
+    <string name="edit">Labot</string>
 </resources>

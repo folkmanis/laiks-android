@@ -211,6 +211,11 @@ fun LaiksAppScreen(
                         navController.navigate(
                             LaiksScreen.ApplianceEditor.withParam(applianceId)
                         )
+                    },
+                    onAdd = {
+                        navController.navigate(
+                            LaiksScreen.ApplianceEditor.route
+                        )
                     }
                 )
             }
@@ -221,7 +226,11 @@ fun LaiksAppScreen(
                     type = NavType.StringType
                 })
             ) {
-                ApplianceEdit()
+                ApplianceEdit(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
     }

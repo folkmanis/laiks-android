@@ -19,6 +19,7 @@ fun NumberInput(
     isError: Boolean = false,
     prefix: @Composable() (() -> Unit)? = null,
     suffix: @Composable() (() -> Unit)? = null,
+    enabled: Boolean = true,
 ) {
 
     var inputState by remember {
@@ -62,6 +63,7 @@ fun NumberInput(
         suffix = suffix,
         label = label,
         isError = isError,
+        enabled = enabled,
     )
 
 }
