@@ -73,7 +73,8 @@ fun PowerConsumptionCyclesScreen(
                     onCyclesChange(cycles.removeAt(index))
                 },
                 modifier = Modifier
-                    .height(72.dp)
+                    .height(72.dp),
+                enabled=enabled,
             )
         }
 

@@ -37,6 +37,7 @@ fun PowerConsumptionCycleRow(
     onAdd: () -> Unit,
     ondRemove: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
 
     Row(
@@ -63,7 +64,8 @@ fun PowerConsumptionCycleRow(
             },
             isError = cycle.length < 0,
             modifier = Modifier
-                .weight(1f)
+                .weight(1f),
+            enabled = enabled,
         )
 
         NumberInput(
@@ -79,11 +81,13 @@ fun PowerConsumptionCycleRow(
             isError = cycle.consumption < 0,
             modifier = Modifier
                 .padding(start = 8.dp)
-                .weight(1f)
+                .weight(1f),
+            enabled = enabled,
         )
 
         IconButton(
             onClick = onAdd,
+            enabled = enabled,
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
@@ -93,6 +97,7 @@ fun PowerConsumptionCycleRow(
 
         IconButton(
             onClick = ondRemove,
+            enabled = enabled,
         ) {
             Icon(
                 imageVector = Icons.Filled.Delete,

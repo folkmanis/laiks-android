@@ -8,7 +8,6 @@ data class ApplianceUiState(
 
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
-    val editMode: Boolean = false,
 
     val id: String = "",
     val name: String = "",
@@ -20,8 +19,11 @@ data class ApplianceUiState(
 
     ) {
 
+    val isNew: Boolean
+        get() = id.isNotBlank()
+
     val isEnabled: Boolean
-        get() = !isSaving && editMode && !isLoading
+        get() = !isSaving && !isLoading
 
     val isNameValid: Boolean
         get() = name.isNotBlank()

@@ -5,10 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,7 +42,7 @@ fun ApplianceEdit(
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 64.dp)
                 .verticalScroll(scroll)
         ) {
 
@@ -54,7 +53,6 @@ fun ApplianceEdit(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 enabled = state.isEnabled,
-                readOnly = !state.editMode,
                 singleLine = true,
                 label = {
                     Text(text = stringResource(id = R.string.appliance_name_label))
@@ -154,36 +152,24 @@ fun ApplianceEdit(
                 )
             }
 
-            if (state.editMode) {
-
-                EditorActions(
-                    onSave = {
-                        viewModel.save { onNavigateBack() }
-                    },
-                    onCancel = onNavigateBack,
-                    saveEnabled = state.isValid,
-                    cancelEnabled = !state.isLoading && !state.isSaving,
-                )
-
-            }
 
             Text(text = state.toString())
 
         }
 
-        if (!state.editMode) {
-            FloatingActionButton(
-                onClick = viewModel::startEdit,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = stringResource(id = R.string.edit)
+        EditorActions(
+            onSave = {
+                viewModel.save { onNavigateBack() }
+            },
+            onCancel = onNavigateBack,
+            saveEnabled = state.isValid,
+            cancelEnabled = !state.isLoading && !state.isSaving,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                 )
-            }
-        }
+        )
 
     }
 }

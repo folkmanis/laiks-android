@@ -30,9 +30,6 @@ class ApplianceEditViewModel @Inject constructor(
     init {
         if (applianceId != null) {
             loadAppliance(applianceId)
-            _uiState.update { it.copy(editMode = false) }
-        } else {
-            _uiState.update { it.copy(editMode = true) }
         }
     }
 
@@ -62,13 +59,9 @@ class ApplianceEditViewModel @Inject constructor(
         _uiState.update { it.copy(cycles = cycles) }
     }
 
-    fun startEdit() {
-        _uiState.update { it.copy(editMode = true) }
-    }
-
     fun save(popUpScreen: () -> Unit) {
         _uiState.update {
-            it.copy(editMode = false, isSaving = true)
+            it.copy(isSaving = true)
         }
         viewModelScope.launch {
             val appliance = _uiState.value.toPowerAppliance()
