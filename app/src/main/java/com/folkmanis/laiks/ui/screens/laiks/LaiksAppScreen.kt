@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.APPLIANCE_ID
+import com.folkmanis.laiks.COPY
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.USER_ID
 import com.folkmanis.laiks.ui.screens.appliance_edit.ApplianceEdit
@@ -47,11 +48,7 @@ enum class LaiksScreen(@StringRes val title: Int) {
     Appliances(title = R.string.appliances_screen),
     ApplianceEditor(title = R.string.appliance_screen) {
         override val route: String
-            get() = "${super.route}/{$APPLIANCE_ID}"
-    },
-    ApplianceCopy(title = R.string.appliance_screen) {
-        override val route: String
-            get() = "${super.route}/{$APPLIANCE_ID}"
+            get() = "${super.route}/{$APPLIANCE_ID}?$COPY={$COPY}"
     };
 
     open fun withParam(param: String): String = "$name/$param"
@@ -230,45 +227,29 @@ fun LaiksAppScreen(
                     navArgument(APPLIANCE_ID) {
                         type = NavType.StringType
                     },
+                    navArgument(COPY) {
+                        type= NavType.BoolType
+                        defaultValue = false
+                    }
                 ),
             ) { backStackEntry ->
                 val applianceId = backStackEntry.arguments?.getString(APPLIANCE_ID)
+                val createCopy = backStackEntry.arguments?.getBoolean(COPY) ?: false
                 ApplianceEdit(
                     id = applianceId,
                     onNavigateBack = {
                         navController.popBackStack()
                     },
+                    createCopy = createCopy,
                     onCopy = { id ->
                         navController.navigate(
-                            LaiksScreen.ApplianceCopy.withParam(id)
+                            "${LaiksScreen.ApplianceEditor.withParam(id)}?$COPY={true}"
                         ) {
                         }
                     }
                 )
             }
 
-            composable(
-                route = LaiksScreen.ApplianceCopy.route,
-                arguments = listOf(
-                    navArgument(APPLIANCE_ID) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                val id = backStackEntry.arguments?.getString(APPLIANCE_ID)
-                ApplianceEdit(
-                    id = id,
-                    createCopy = true,
-                    onCopy = {},
-                    onNavigateBack = {
-                        navController.navigate(LaiksScreen.Appliances.route) {
-                            popUpTo(LaiksScreen.Appliances.route) {
-                                inclusive = true
-                            }
-                        }
-                    },
-                )
-            }
 
         }
     }
