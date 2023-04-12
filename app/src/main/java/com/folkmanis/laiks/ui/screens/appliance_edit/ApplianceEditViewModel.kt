@@ -70,6 +70,9 @@ class ApplianceEditViewModel @Inject constructor(
             } else {
                 pricesService.updateAppliance(appliance)
             }
+            _uiState.update {
+                it.copy(isSaving = false)
+            }
             popUpScreen()
         }
     }

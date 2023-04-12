@@ -42,7 +42,7 @@ fun ApplianceEdit(
     ) {
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 64.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 56.dp)
                 .verticalScroll(scroll)
         ) {
 
@@ -92,26 +92,12 @@ fun ApplianceEdit(
                 modifier = Modifier
                     .padding(8.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                ColorSelection(
+                    color = state.color,
+                    onColorChange = viewModel::setColor,
                     modifier = Modifier
                         .padding(top = 16.dp, start = 24.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(width = 48.dp, height = 24.dp)
-                            .background(
-                                color = Color(state.color.toColorInt()),
-                            )
-                    )
-                    Text(
-                        text = state.color,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontStyle = FontStyle.Italic,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                    )
-                }
+                )
             }
 
             OptionWithLabel(
