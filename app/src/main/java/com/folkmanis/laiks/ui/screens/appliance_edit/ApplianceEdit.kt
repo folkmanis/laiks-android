@@ -7,28 +7,27 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.folkmanis.laiks.APPLIANCE_ID
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakePricesService
 
 @Composable
 fun ApplianceEdit(
-    modifier: Modifier = Modifier,
-    viewModel: ApplianceEditViewModel = hiltViewModel(),
+    id: String?,
     onNavigateBack: () -> Unit,
+    onCopy: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    createCopy: Boolean = false,
+    viewModel: ApplianceEditViewModel = hiltViewModel(),
 ) {
 
     val state by viewModel.uiState
@@ -36,15 +35,23 @@ fun ApplianceEdit(
 
     val scroll = rememberScrollState()
 
+    LaunchedEffect(id) {
+        if (id != null) {
+            viewModel.loadAppliance(id, createCopy)
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
     ) {
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 56.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 56.dp)
                 .verticalScroll(scroll)
         ) {
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = state.name,
@@ -75,6 +82,8 @@ fun ApplianceEdit(
                 enabled = state.isEnabled,
             )
 
+            OptionsDivider()
+
             OptionWithLabel(
                 label = stringResource(id = R.string.appliance_delay_label),
                 modifier = Modifier
@@ -86,6 +95,8 @@ fun ApplianceEdit(
                     enabled = state.isEnabled,
                 )
             }
+
+            OptionsDivider()
 
             OptionWithLabel(
                 label = stringResource(id = R.string.appliance_color_label),
@@ -99,6 +110,8 @@ fun ApplianceEdit(
                         .padding(top = 16.dp, start = 24.dp)
                 )
             }
+
+            OptionsDivider()
 
             OptionWithLabel(
                 label = stringResource(
@@ -126,6 +139,8 @@ fun ApplianceEdit(
                 }
             }
 
+            OptionsDivider()
+
             OptionWithLabel(
                 label = stringResource(
                     id = R.string.appliance_cycles_label
@@ -138,9 +153,6 @@ fun ApplianceEdit(
                 )
             }
 
-
-            Text(text = state.toString())
-
         }
 
         EditorActions(
@@ -148,8 +160,12 @@ fun ApplianceEdit(
                 viewModel.save { onNavigateBack() }
             },
             onCancel = onNavigateBack,
+            onCopy = {
+                onCopy(state.id)
+            },
             saveEnabled = state.isValid,
             cancelEnabled = !state.isLoading && !state.isSaving,
+            copyEnabled = !state.isNew,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .background(
@@ -164,8 +180,10 @@ fun ApplianceEdit(
 fun EditorActions(
     onSave: () -> Unit,
     onCancel: () -> Unit,
+    onCopy: () -> Unit,
     saveEnabled: Boolean,
     cancelEnabled: Boolean,
+    copyEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -175,6 +193,14 @@ fun EditorActions(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
     ) {
+
+        TextButton(
+            onClick = onCopy,
+            enabled = copyEnabled,
+        ) {
+            Text(text = stringResource(id = R.string.copy))
+        }
+
         TextButton(
             enabled = cancelEnabled,
             onClick = onCancel,
@@ -192,19 +218,29 @@ fun EditorActions(
 
 }
 
+@Composable
+fun OptionsDivider(modifier: Modifier = Modifier) {
+    Divider(
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .height(1.dp)
+    )
+}
+
 @Preview
 @Composable
 fun ApplianceEditPreview() {
 
     val viewModel = ApplianceEditViewModel(
         pricesService = FakePricesService(),
-        SavedStateHandle(mapOf(APPLIANCE_ID to "12AFE34"))
     )
 
     MaterialTheme {
         ApplianceEdit(
             viewModel = viewModel,
             onNavigateBack = {},
+            onCopy = {},
+            id = "12AFE34",
         )
     }
 }

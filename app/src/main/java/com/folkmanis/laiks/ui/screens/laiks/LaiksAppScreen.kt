@@ -42,12 +42,16 @@ enum class LaiksScreen(@StringRes val title: Int) {
     Users(title = R.string.users_screen),
     UserEditor(title = R.string.user_editor) {
         override val route: String
-            get() = "$name/{$USER_ID}"
+            get() = "${super.route}/{$USER_ID}"
     },
     Appliances(title = R.string.appliances_screen),
     ApplianceEditor(title = R.string.appliance_screen) {
         override val route: String
-            get() = "$name/{$APPLIANCE_ID}"
+            get() = "${super.route}/{$APPLIANCE_ID}"
+    },
+    ApplianceCopy(title = R.string.appliance_screen) {
+        override val route: String
+            get() = "${super.route}/{$APPLIANCE_ID}"
     };
 
     open fun withParam(param: String): String = "$name/$param"
@@ -222,16 +226,50 @@ fun LaiksAppScreen(
 
             composable(
                 route = LaiksScreen.ApplianceEditor.route,
-                arguments = listOf(navArgument(APPLIANCE_ID) {
-                    type = NavType.StringType
-                })
-            ) {
+                arguments = listOf(
+                    navArgument(APPLIANCE_ID) {
+                        type = NavType.StringType
+                    },
+                ),
+            ) { backStackEntry ->
+                val applianceId = backStackEntry.arguments?.getString(APPLIANCE_ID)
                 ApplianceEdit(
+                    id = applianceId,
                     onNavigateBack = {
                         navController.popBackStack()
+                    },
+                    onCopy = { id ->
+                        navController.navigate(
+                            LaiksScreen.ApplianceCopy.withParam(id)
+                        ) {
+                        }
                     }
                 )
             }
+
+            composable(
+                route = LaiksScreen.ApplianceCopy.route,
+                arguments = listOf(
+                    navArgument(APPLIANCE_ID) {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString(APPLIANCE_ID)
+                ApplianceEdit(
+                    id = id,
+                    createCopy = true,
+                    onCopy = {},
+                    onNavigateBack = {
+                        navController.navigate(LaiksScreen.Appliances.route) {
+                            popUpTo(LaiksScreen.Appliances.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                )
+            }
+
         }
     }
 

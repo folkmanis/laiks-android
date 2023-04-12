@@ -12,4 +12,5 @@ const val NIGHT_STARTS_HOUR = 23L
 const val INCLUDE_AVERAGE_DAYS = 5L
 const val USER_ID = "userId"
 const val APPLIANCE_ID = "applianceId"
+const val COPY ="copy"
 const val MSW_TO_KWH = 1.0 / 1000.0 / 1000.0 / 3600.0

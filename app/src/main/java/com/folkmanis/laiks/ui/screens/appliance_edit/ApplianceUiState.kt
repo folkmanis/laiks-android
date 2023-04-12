@@ -20,7 +20,7 @@ data class ApplianceUiState(
     ) {
 
     val isNew: Boolean
-        get() = id.isNotBlank()
+        get() = id.isBlank()
 
     val isEnabled: Boolean
         get() = !isSaving && !isLoading

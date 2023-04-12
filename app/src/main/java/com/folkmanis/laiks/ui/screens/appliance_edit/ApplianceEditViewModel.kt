@@ -1,11 +1,8 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.APPLIANCE_ID
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,23 +12,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 @HiltViewModel
 class ApplianceEditViewModel @Inject constructor(
     private val pricesService: PricesService,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
-    private val applianceId: String? = savedStateHandle[APPLIANCE_ID]
 
     private val _uiState = MutableStateFlow(ApplianceUiState())
     val uiState = _uiState.asStateFlow()
-
-    init {
-        if (applianceId != null) {
-            loadAppliance(applianceId)
-        }
-    }
 
     fun setName(name: String) {
         _uiState.update { it.copy(name = name) }
@@ -77,13 +64,18 @@ class ApplianceEditViewModel @Inject constructor(
         }
     }
 
-    private fun loadAppliance(id: String) {
+ fun loadAppliance(id: String, createCopy: Boolean = false) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val appliance = pricesService.getAppliance(id)
             if (appliance != null) {
                 _uiState.update { state ->
                     state.copy(appliance)
+                }
+                if (createCopy) {
+                    _uiState.update { state ->
+                        state.copy(id = "", name = "")
+                    }
                 }
             }
             _uiState.update { it.copy(isLoading = false) }

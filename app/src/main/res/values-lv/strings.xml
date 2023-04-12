@@ -35,6 +35,7 @@
     <string name="appliance_cycles_label">Elektrības patēriņa cikli</string>
     <string name="appliance_color_label">Izceltā krāsa</string>
     <string name="add">Pievienot</string>
+    <string name="copy">Kopēt</string>
     <string name="remove">Noņemt</string>
     <string name="action_cancel">Atcelt</string>
     <string name="action_save">Saglabāt</string>
