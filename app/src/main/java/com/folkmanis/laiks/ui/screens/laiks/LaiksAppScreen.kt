@@ -243,8 +243,9 @@ fun LaiksAppScreen(
                     createCopy = createCopy,
                     onCopy = { id ->
                         navController.navigate(
-                            "${LaiksScreen.ApplianceEditor.withParam(id)}?$COPY={true}"
+                            "${LaiksScreen.ApplianceEditor.withParam(id)}?$COPY=true"
                         ) {
+                            popUpTo(LaiksScreen.Appliances.route)
                         }
                     }
                 )
