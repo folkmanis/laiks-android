@@ -1,10 +1,7 @@
 package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFloatingActionButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,73 +35,76 @@ fun ClockScreen(
         .uiState
         .collectAsStateWithLifecycle()
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
-
         Column(
-            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f),
-        ) {
-
-            if (pricesAllowed) {
-                Button(onClick = onShowPrices) {
-                    Text(text = stringResource(id = R.string.show_prices_button))
-                }
-            }
-
-        }
-
-        Column(
+                .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier,
+//            verticalArrangement = Arrangement.Center,
         ) {
 
-            LargeFloatingActionButton(
-                onClick = { viewModel.updateOffset(STEP_UP_VALUE) },
-                modifier = Modifier
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.add),
-                    contentDescription = stringResource(id = R.string.hour_plus_button)
+
+                LargeFloatingActionButton(
+                    onClick = { viewModel.updateOffset(STEP_UP_VALUE) },
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.add),
+                        contentDescription = stringResource(id = R.string.hour_plus_button)
+                    )
+                }
+
+                Text(
+                    text = uiState.offset.toSignedString(),
+                    fontSize = 64.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                )
+
+                LargeFloatingActionButton(
+                    onClick = { viewModel.updateOffset(STEP_DOWN_VALUE) }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.remove),
+                        contentDescription = stringResource(id = R.string.hour_minus_button)
+                    )
+                }
+
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding(top = 16.dp),
+            ) {
+                TimeComponent(
+                    hours = uiState.time.hoursString,
+                    minutes = uiState.time.minutesString,
                 )
             }
 
-            Text(
-                text = uiState.offset.toSignedString(),
-                fontSize = 64.sp,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-            )
-
-            LargeFloatingActionButton(
-                onClick = { viewModel.updateOffset(STEP_DOWN_VALUE) }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.remove),
-                    contentDescription = stringResource(id = R.string.hour_minus_button)
-                )
-            }
 
         }
 
-        Column(
-            verticalArrangement = Arrangement.Top,
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f)
-                .padding(top = 16.dp),
-        ) {
-            TimeComponent(
-                hours = uiState.time.hoursString,
-                minutes = uiState.time.minutesString,
-            )
+        if (pricesAllowed) {
+            FloatingActionButton(
+                onClick = onShowPrices,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomEnd)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.euro_symbol_48px),
+                    contentDescription = stringResource(id = R.string.show_prices_button)
+                )
+            }
+
         }
 
 
@@ -160,7 +160,7 @@ fun LaiksScreenPreview() {
     }
 }
 
-@Preview(showBackground = false)
+@Preview(showBackground = true)
 @Composable
 fun LaiksScreenPreviewDark() {
     val viewModel = ClockViewModel(
