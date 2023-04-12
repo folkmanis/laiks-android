@@ -64,7 +64,7 @@ class ApplianceEditViewModel @Inject constructor(
         }
     }
 
- fun loadAppliance(id: String, createCopy: Boolean = false) {
+    fun loadAppliance(id: String, createCopy: Boolean = false) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val appliance = pricesService.getAppliance(id)
