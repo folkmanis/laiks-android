@@ -9,13 +9,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class AccountServiceFirebase @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
@@ -32,6 +32,17 @@ class AccountServiceFirebase @Inject constructor(
 
     override val authUser: FirebaseUser?
         get() = auth.currentUser
+
+    override val laiksUserFlow: Flow<LaiksUser?>
+        get() = firebaseUserFlow
+            .flatMapLatest { user ->
+                if (user == null) {
+                    flowOf(null)
+                } else {
+                    laiksUserFlow(user.uid)
+                }
+            }
+
 
     override fun laiksUsersFlow(): Flow<List<LaiksUser>> =
         firestore.collection(USER_COLLECTION)

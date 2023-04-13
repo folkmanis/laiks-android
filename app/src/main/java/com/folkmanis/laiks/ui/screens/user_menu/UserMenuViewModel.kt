@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui.screens.laiks
+package com.folkmanis.laiks.ui.screens.user_menu
 
 import android.content.Context
 import android.util.Log
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class LaiksViewModel @Inject constructor(
+class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
     private val settingsService: UserPreferencesRepository,
 ) : ViewModel() {
@@ -28,28 +28,32 @@ class LaiksViewModel @Inject constructor(
         }
     }
 
-    val uiState: StateFlow<LaiksUiState> = accountService.firebaseUserFlow
+    val uiState: StateFlow<UserMenuUiState> = accountService.firebaseUserFlow
         .flatMapLatest { user ->
             Log.d(TAG, "User: $user")
             if (user == null) {
-                flowOf(LaiksUiState.NotLoggedIn)
+                flowOf(UserMenuUiState.NotLoggedIn)
             } else {
-                Log.d(TAG, "User Id ${user.uid} logged in")
                 accountService.laiksUserFlow(user.uid)
                     .map { laiksUser ->
-                        LaiksUiState.LoggedIn(
-                            isAdmin = laiksUser?.isAdmin ?: false,
-                            isPricesAllowed = laiksUser?.npAllowed ?: false,
-                            displayName = user.displayName ?: "",
-                            photoUrl = user.photoUrl
-                        )
+                        if (laiksUser != null) {
+                            Log.d(TAG, "User Id ${user.uid} logged in")
+                            UserMenuUiState.LoggedIn(
+                                isAdmin = laiksUser.isAdmin,
+                                isPricesAllowed = laiksUser.npAllowed,
+                                displayName = user.displayName ?: "",
+                                photoUrl = user.photoUrl
+                            )
+                        } else {
+                            UserMenuUiState.NotLoggedIn
+                        }
                     }
             }
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            LaiksUiState.NotLoggedIn,
+            UserMenuUiState.NotLoggedIn,
         )
 
     fun login() {
@@ -67,7 +71,7 @@ class LaiksViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "Laiks View Model"
+        const val TAG = "UserMenuViewModel"
     }
 
 

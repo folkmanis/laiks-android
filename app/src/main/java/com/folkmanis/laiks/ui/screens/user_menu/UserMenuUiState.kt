@@ -1,14 +1,14 @@
-package com.folkmanis.laiks.ui.screens.laiks
+package com.folkmanis.laiks.ui.screens.user_menu
 
 import android.net.Uri
 
-sealed interface LaiksUiState {
-    object NotLoggedIn : LaiksUiState
+sealed interface UserMenuUiState {
+    object NotLoggedIn: UserMenuUiState
     data class LoggedIn(
         val isAdmin: Boolean = false,
         val isPricesAllowed: Boolean = false,
         val displayName: String = "",
         val photoUrl: Uri? = null,
-    ) : LaiksUiState
-}
+    ) : UserMenuUiState
 
+}

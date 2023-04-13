@@ -22,10 +22,10 @@ import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.minutesString
 import com.folkmanis.laiks.utilities.ext.toSignedString
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.folkmanis.laiks.data.fake.FakeAccountService
 
 @Composable
 fun ClockScreen(
-    pricesAllowed: Boolean,
     onShowPrices: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ClockViewModel = hiltViewModel(),
@@ -34,6 +34,10 @@ fun ClockScreen(
     val uiState by viewModel
         .uiState
         .collectAsStateWithLifecycle()
+
+    val pricesAllowed by viewModel
+        .isPricesAllowed
+        .collectAsStateWithLifecycle(initialValue = false)
 
     Box(
         modifier = modifier
@@ -149,11 +153,11 @@ fun TimeSymbols(
 @Composable
 fun LaiksScreenPreview() {
     val viewModel = ClockViewModel(
-        FakeUserPreferencesRepository
+        FakeUserPreferencesRepository,
+        FakeAccountService()
     )
     LaiksTheme {
         ClockScreen(
-            pricesAllowed = true,
             viewModel = viewModel,
             onShowPrices = {},
         )
@@ -164,13 +168,13 @@ fun LaiksScreenPreview() {
 @Composable
 fun LaiksScreenPreviewDark() {
     val viewModel = ClockViewModel(
-        FakeUserPreferencesRepository
+        FakeUserPreferencesRepository,
+        FakeAccountService()
     )
     LaiksTheme(
         darkTheme = true,
     ) {
         ClockScreen(
-            pricesAllowed = true,
             viewModel = viewModel,
             onShowPrices = {},
         )

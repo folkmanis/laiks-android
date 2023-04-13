@@ -5,6 +5,7 @@ package com.folkmanis.laiks.ui.screens.laiks
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -34,6 +35,7 @@ import com.folkmanis.laiks.ui.screens.appliances.AppliancesScreen
 import com.folkmanis.laiks.ui.screens.clock.ClockScreen
 import com.folkmanis.laiks.ui.screens.prices.PricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.UserEditScreen
+import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
 import com.folkmanis.laiks.ui.screens.users.UsersScreen
 import com.folkmanis.laiks.utilities.oauth.getSignInIntent
 
@@ -71,12 +73,7 @@ enum class LaiksScreen(@StringRes val title: Int) {
 @Composable
 fun LaiksAppScreen(
     modifier: Modifier = Modifier,
-    viewModel: LaiksViewModel = hiltViewModel()
 ) {
-
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
-
-    val isVat by viewModel.isVat.collectAsStateWithLifecycle(initialValue = true)
 
     val navController = rememberNavController()
 
@@ -89,15 +86,7 @@ fun LaiksAppScreen(
 
     val canNavigateBack = navController.previousBackStackEntry != null
 
-    val context = LocalContext.current
 
-    val loginLauncher = rememberLauncherForActivityResult(
-        FirebaseAuthUIActivityResultContract()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            viewModel.login()
-        }
-    }
 
 
     Scaffold(
@@ -121,45 +110,30 @@ fun LaiksAppScreen(
                     }
                 },
                 actions = {
-                    if (uiState is LaiksUiState.LoggedIn) {
-                        LoggedInUserMenu(
-                            photoUrl = uiState.photoUrl,
-                            displayName = uiState.displayName,
-                            npAllowed = uiState.isPricesAllowed,
-                            isAdmin = uiState.isAdmin,
-                            onLogout = {
-                                navController.popBackStack(
-                                    LaiksScreen.Clock.route,
-                                    false
-                                )
-                                viewModel.logout(context)
-                            },
-                            isVat = isVat,
-                            onSetVat = {
-                                viewModel.setVat(!isVat)
-                            },
-                            onUsersAdmin = {
-                                navController.navigate(
-                                    LaiksScreen.Users.route,
-                                ) {
-                                    launchSingleTop = true
-                                    popUpTo(LaiksScreen.Clock.route)
-                                }
-                            },
-                            onAppliancesAdmin = {
-                                navController.navigate(
-                                    LaiksScreen.Appliances.route,
-                                ) {
-                                    launchSingleTop = true
-                                    popUpTo(LaiksScreen.Clock.route)
-                                }
+                    UserMenu(
+                        onUsersAdmin = {
+                            navController.navigate(
+                                LaiksScreen.Users.route,
+                            ) {
+                                launchSingleTop = true
+                                popUpTo(LaiksScreen.Clock.route)
                             }
-                        )
-                    } else {
-                        NotLoggedUserMenu(
-                            onLogin = { loginLauncher.launch(getSignInIntent()) },
-                        )
-                    }
+                        },
+                        onAppliancesAdmin = {
+                            navController.navigate(
+                                LaiksScreen.Appliances.route,
+                            ) {
+                                launchSingleTop = true
+                                popUpTo(LaiksScreen.Clock.route)
+                            }
+                        },
+                        onLogout = {
+                            navController.popBackStack(
+                                LaiksScreen.Clock.route,
+                                false
+                            )
+                        }
+                    )
                 },
                 scrollBehavior = scrollBehavior
             )
@@ -176,7 +150,6 @@ fun LaiksAppScreen(
 
             composable(LaiksScreen.Clock.route) {
                 ClockScreen(
-                    pricesAllowed = uiState is LaiksUiState.LoggedIn && uiState.isPricesAllowed,
                     onShowPrices = {
                         navController.navigate(LaiksScreen.Prices.name)
                     }

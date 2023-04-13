@@ -10,8 +10,10 @@ interface AccountService {
 
     val authUser: FirebaseUser?
 
-    fun laiksUsersFlow(): Flow<List<LaiksUser>>
+    val laiksUserFlow: Flow<LaiksUser?>
+
     fun laiksUserFlow(uId: String): Flow<LaiksUser?>
+    fun laiksUsersFlow(): Flow<List<LaiksUser>>
 
     suspend fun laiksUser(uId: String): LaiksUser?
     suspend fun signWithEmailAndPassword(email: String, password: String)
