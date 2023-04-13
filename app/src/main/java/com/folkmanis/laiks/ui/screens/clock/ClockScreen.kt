@@ -43,7 +43,6 @@ fun ClockScreen(
             modifier = Modifier
                 .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center,
         ) {
 
             Column(
@@ -101,7 +100,8 @@ fun ClockScreen(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.euro_symbol_48px),
-                    contentDescription = stringResource(id = R.string.show_prices_button)
+                    contentDescription = stringResource(id = R.string.show_prices_button),
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
