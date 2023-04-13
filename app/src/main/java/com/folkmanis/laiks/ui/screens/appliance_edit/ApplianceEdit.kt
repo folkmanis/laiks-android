@@ -22,25 +22,17 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakePricesService
 
 @Composable
-fun ApplianceEdit(
-    id: String?,
+internal fun ApplianceEdit(
     onNavigateBack: () -> Unit,
     onCopy: (String) -> Unit,
+    viewModel: ApplianceEditViewModel,
     modifier: Modifier = Modifier,
-    createCopy: Boolean = false,
-    viewModel: ApplianceEditViewModel = hiltViewModel(),
 ) {
 
     val state by viewModel.uiState
         .collectAsStateWithLifecycle(initialValue = ApplianceUiState())
 
     val scroll = rememberScrollState()
-
-    LaunchedEffect(id) {
-        if (id != null) {
-            viewModel.loadAppliance(id, createCopy)
-        }
-    }
 
     Box(
         modifier = modifier

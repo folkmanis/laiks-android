@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.appliance_edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.PricesService
+import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +12,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed interface EditActions {
+    data class Edit(val id: String) : EditActions
+    data class Copy(val id: String) : EditActions
+    object CreateNew : EditActions
+}
 
 @HiltViewModel
 class ApplianceEditViewModel @Inject constructor(
@@ -64,17 +70,29 @@ class ApplianceEditViewModel @Inject constructor(
         }
     }
 
-    fun loadAppliance(id: String, createCopy: Boolean = false) {
+    fun loadAppliance(action: EditActions) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val appliance = pricesService.getAppliance(id)
-            if (appliance != null) {
-                _uiState.update { state ->
-                    state.copy(appliance)
-                }
-                if (createCopy) {
+            when (action) {
+                is EditActions.Edit -> {
+                    val appliance = pricesService.getAppliance(action.id)
+                    if(appliance != null)
                     _uiState.update { state ->
-                        state.copy(id = "", name = "")
+                        state.copy(appliance)
+                    }
+
+                }
+                is EditActions.Copy -> {
+                    val appliance = pricesService.getAppliance(action.id)
+                    if(appliance != null)
+                        _uiState.update { state ->
+                            state.copy(appliance).copy(id = "", name = "")
+                        }
+
+                }
+                is EditActions.CreateNew -> {
+                    _uiState.update { state ->
+                        state.copy(PowerAppliance())
                     }
                 }
             }

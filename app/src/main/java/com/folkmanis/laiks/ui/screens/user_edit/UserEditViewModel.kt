@@ -26,19 +26,10 @@ data class LaiksUserState(
 @HiltViewModel
 class UserEditViewModel @Inject constructor(
     private val accountService: AccountService,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
-    private val uId: String? = savedStateHandle[USER_ID]
 
     private val _uiState = MutableStateFlow(LaiksUserState())
     val uiState = _uiState.asStateFlow()
-
-    init {
-        if (uId != null) {
-            loadUser(uId)
-        }
-    }
 
     fun setNpAllowed() {
         _uiState.update {
@@ -71,7 +62,7 @@ class UserEditViewModel @Inject constructor(
         }
     }
 
-    private fun loadUser(id: String) {
+    fun loadUser(id: String) {
 
         _uiState.update { it.copy(isLoading = true) }
 

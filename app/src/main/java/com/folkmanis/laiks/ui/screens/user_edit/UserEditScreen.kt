@@ -1,13 +1,18 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.folkmanis.laiks.ui.screens.user_edit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,21 +21,48 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.LaiksUser
 
 @Composable
-fun UserEditScreen(
+internal fun UserEditScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: UserEditViewModel,
     modifier: Modifier = Modifier,
-    viewModel: UserEditViewModel = hiltViewModel(),
 ) {
 
     val userState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    UserFormScreen(
-        laiksUser = userState.laiksUser,
-        enabled = userState.enabled,
-        onIsAdminChange = viewModel::setIsAdmin,
-        adminChangeEnabled = !userState.isCurrentUser,
-        onNpAllowedChange = viewModel::setNpAllowed,
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        userState.laiksUser.name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back_button)
+                        )
+                    }
+                },
+            )
+
+        },
         modifier = modifier,
-    )
+    ) { innerPadding ->
+
+        UserFormScreen(
+            laiksUser = userState.laiksUser,
+            enabled = userState.enabled,
+            onIsAdminChange = viewModel::setIsAdmin,
+            adminChangeEnabled = !userState.isCurrentUser,
+            onNpAllowedChange = viewModel::setNpAllowed,
+            modifier = Modifier.padding(innerPadding),
+        )
+
+    }
 
 }
 
@@ -47,10 +79,6 @@ fun UserFormScreen(
         modifier = modifier
             .padding(16.dp)
     ) {
-        Text(
-            text = laiksUser.name,
-            style = MaterialTheme.typography.headlineMedium
-        )
         Text(
             text = laiksUser.email,
             style = MaterialTheme.typography.titleSmall

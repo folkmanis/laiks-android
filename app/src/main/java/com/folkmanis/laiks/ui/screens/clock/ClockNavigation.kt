@@ -11,12 +11,14 @@ import com.folkmanis.laiks.LaiksAppState
 import com.folkmanis.laiks.LaiksScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
 
+private const val ROUTE = "Clock"
+
 fun NavGraphBuilder.clockScreen(
     appState: LaiksAppState,
     onNavigateToPrices: () -> Unit,
 ) {
 
-    composable("Clock") {
+    composable(ROUTE) {
 
         val viewModel: ClockViewModel = hiltViewModel()
         val uiState by viewModel
@@ -30,13 +32,6 @@ fun NavGraphBuilder.clockScreen(
             onShowPrices = onNavigateToPrices,
             updateOffset = viewModel::updateOffset,
             actions = { appState.AppUserMenu() }
-//            {
-//                UserMenu(
-//                    onUsersAdmin = appState::navigateToUsersAdmin,
-//                    onAppliancesAdmin = appState::navigateToAppliancesAdmin,
-//                    onLogout = appState::navigateToDefault
-//                )
-//            }
         )
 
     }
@@ -44,5 +39,5 @@ fun NavGraphBuilder.clockScreen(
 }
 
 fun NavController.navigateToClock(navOptions: NavOptions? = null) {
-    this.navigate(LaiksScreen.Clock.route, navOptions)
+    this.navigate(ROUTE, navOptions)
 }

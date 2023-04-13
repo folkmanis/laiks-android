@@ -15,16 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.NpPrice
-import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Composable
 fun PricesScreen(
@@ -56,7 +51,6 @@ fun PricesScreen(
             )
         },
         modifier = modifier
-
     ) { innerPadding ->
 
         when (state) {

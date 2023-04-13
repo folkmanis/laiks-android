@@ -6,6 +6,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.folkmanis.laiks.ui.screens.appliance_edit.ApplianceEdit
+import com.folkmanis.laiks.ui.screens.appliance_edit.editAppliance
+import com.folkmanis.laiks.ui.screens.appliance_edit.newAppliance
 import com.folkmanis.laiks.ui.screens.appliances.AppliancesScreen
 import com.folkmanis.laiks.ui.screens.appliances.appliancesScreen
 import com.folkmanis.laiks.ui.screens.clock.ClockScreen
@@ -14,7 +16,10 @@ import com.folkmanis.laiks.ui.screens.prices.PricesScreen
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.UserEditScreen
+import com.folkmanis.laiks.ui.screens.user_edit.editUser
+import com.folkmanis.laiks.ui.screens.user_edit.userEditScreen
 import com.folkmanis.laiks.ui.screens.users.UsersScreen
+import com.folkmanis.laiks.ui.screens.users.usersScreen
 
 enum class LaiksScreen(@StringRes val title: Int) {
     Clock(title = R.string.app_name),
@@ -48,44 +53,23 @@ enum class LaiksScreen(@StringRes val title: Int) {
 
 fun NavGraphBuilder.laiksGraph(appState: LaiksAppState) {
 
+    val navController = appState.navController
+
     clockScreen(
         appState = appState,
-        onNavigateToPrices = appState.navController::navigateToPrices
+        onNavigateToPrices = navController::navigateToPrices
     )
 
     pricesScreen(appState)
 
-    composable(LaiksScreen.Users.route) {
-        UsersScreen(
-            onEdit = { user ->
-                appState.navigate(
-                    LaiksScreen.UserEditor.withParam(user.id)
-                )
-            }
-        )
-    }
+    usersScreen(appState) { navController.editUser(it) }
 
-    composable(
-        route = LaiksScreen.UserEditor.route,
-        arguments = listOf(navArgument(USER_ID) {
-            type = NavType.StringType
-        })
-    ) {
-        UserEditScreen()
-    }
+    userEditScreen(appState)
 
     appliancesScreen(
         appState = appState,
-        onEditAppliance = { applianceId ->
-            appState.navigate(
-                LaiksScreen.ApplianceEditor.withParam(applianceId)
-            )
-        },
-        onAddAppliance = {
-            appState.navigate(
-                LaiksScreen.ApplianceEditor.route
-            )
-        }
+        onEditAppliance = { navController.editAppliance(it) },
+        onAddAppliance = { navController.newAppliance() }
     )
 
     composable(
