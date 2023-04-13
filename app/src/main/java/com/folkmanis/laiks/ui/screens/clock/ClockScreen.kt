@@ -43,58 +43,13 @@ fun ClockScreen(
         modifier = modifier
             .fillMaxSize(),
     ) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-
-                LargeFloatingActionButton(
-                    onClick = { viewModel.updateOffset(STEP_UP_VALUE) },
-                    modifier = Modifier
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add),
-                        contentDescription = stringResource(id = R.string.hour_plus_button)
-                    )
-                }
-
-                Text(
-                    text = uiState.offset.toSignedString(),
-                    fontSize = 64.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                )
-
-                LargeFloatingActionButton(
-                    onClick = { viewModel.updateOffset(STEP_DOWN_VALUE) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.remove),
-                        contentDescription = stringResource(id = R.string.hour_minus_button)
-                    )
-                }
-
-            }
-
-            Column(
-                modifier = Modifier
-                    .padding(top = 16.dp),
-            ) {
-                TimeComponent(
-                    hours = uiState.time.hoursString,
-                    minutes = uiState.time.minutesString,
-                )
-            }
-
-
-        }
-
+        ClockSelector(
+            offset = uiState.offset,
+            time = uiState.time,
+            onOffsetChange = viewModel::updateOffset
+        )
+        
         if (pricesAllowed) {
             FloatingActionButton(
                 onClick = onShowPrices,
@@ -111,42 +66,8 @@ fun ClockScreen(
 
         }
 
-
     }
 
-}
-
-@Composable
-fun TimeComponent(
-    hours: String,
-    minutes: String,
-    modifier: Modifier = Modifier
-) {
-
-    Row(modifier = modifier) {
-
-        TimeSymbols(text = hours)
-
-        TimeSymbols(
-            text = stringResource(id = R.string.minutes_separator),
-        )
-
-        TimeSymbols(text = minutes)
-
-    }
-}
-
-@Composable
-fun TimeSymbols(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = text,
-        fontWeight = FontWeight.Bold,
-        fontSize = 48.sp,
-        modifier = modifier,
-    )
 }
 
 @Preview(showBackground = true)

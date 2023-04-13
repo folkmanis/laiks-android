@@ -3,7 +3,7 @@ package com.folkmanis.laiks
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.folkmanis.laiks.ui.screens.laiks.LaiksAppScreen
+import androidx.compose.material3.Surface
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -14,7 +14,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LaiksTheme {
-                LaiksAppScreen()
+                Surface {
+                    LaiksAppScreen()
+                }
             }
         }
     }
