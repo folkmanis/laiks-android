@@ -7,8 +7,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.folkmanis.laiks.ui.screens.appliance_edit.ApplianceEdit
 import com.folkmanis.laiks.ui.screens.appliances.AppliancesScreen
+import com.folkmanis.laiks.ui.screens.appliances.appliancesScreen
 import com.folkmanis.laiks.ui.screens.clock.ClockScreen
+import com.folkmanis.laiks.ui.screens.clock.clockScreen
 import com.folkmanis.laiks.ui.screens.prices.PricesScreen
+import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
+import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.UserEditScreen
 import com.folkmanis.laiks.ui.screens.users.UsersScreen
 
@@ -44,17 +48,12 @@ enum class LaiksScreen(@StringRes val title: Int) {
 
 fun NavGraphBuilder.laiksGraph(appState: LaiksAppState) {
 
-    composable(LaiksScreen.Clock.route) {
-        ClockScreen(
-            onShowPrices = {
-                appState.navigate(LaiksScreen.Prices.name)
-            }
-        )
-    }
+    clockScreen(
+        appState = appState,
+        onNavigateToPrices = appState.navController::navigateToPrices
+    )
 
-    composable(LaiksScreen.Prices.route) {
-        PricesScreen()
-    }
+    pricesScreen(appState)
 
     composable(LaiksScreen.Users.route) {
         UsersScreen(
@@ -75,20 +74,19 @@ fun NavGraphBuilder.laiksGraph(appState: LaiksAppState) {
         UserEditScreen()
     }
 
-    composable(route = LaiksScreen.Appliances.route) {
-        AppliancesScreen(
-            onEdit = { applianceId ->
-                appState.navigate(
-                    LaiksScreen.ApplianceEditor.withParam(applianceId)
-                )
-            },
-            onAdd = {
-                appState.navigate(
-                    LaiksScreen.ApplianceEditor.route
-                )
-            }
-        )
-    }
+    appliancesScreen(
+        appState = appState,
+        onEditAppliance = { applianceId ->
+            appState.navigate(
+                LaiksScreen.ApplianceEditor.withParam(applianceId)
+            )
+        },
+        onAddAppliance = {
+            appState.navigate(
+                LaiksScreen.ApplianceEditor.route
+            )
+        }
+    )
 
     composable(
         route = LaiksScreen.ApplianceEditor.route,

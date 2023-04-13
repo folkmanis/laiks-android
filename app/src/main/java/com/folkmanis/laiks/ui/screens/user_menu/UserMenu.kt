@@ -11,11 +11,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.utilities.oauth.getSignInIntent
 
+
 @Composable
 fun UserMenu(
-    onUsersAdmin: ()->Unit,
-    onAppliancesAdmin: ()->Unit,
-    onLogout: ()->Unit,
+    onUsersAdmin: () -> Unit,
+    onAppliancesAdmin: () -> Unit,
+    onLogout: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UserMenuViewModel = hiltViewModel(),
 ) {

@@ -39,13 +39,12 @@ fun LaiksAppScreen(
 
     val appState = rememberAppState()
 
+
+/*
     val backStackEntry by appState.navController.currentBackStackEntryAsState()
-
     val currentScreen = LaiksScreen.byRoute(backStackEntry?.destination?.route)
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
-    Scaffold(
+Scaffold(
         topBar = {
             TopAppBar(
                 title = {
@@ -80,13 +79,13 @@ fun LaiksAppScreen(
             )
         },
         modifier = modifier
-    ) { innerPadding ->
+    )
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+    */
         NavHost(
             navController = appState.navController,
             startDestination = LaiksScreen.defaultScreen.route,
             modifier = modifier
-                .padding(innerPadding)
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
 
             laiksGraph(appState)
@@ -94,4 +93,3 @@ fun LaiksAppScreen(
         }
     }
 
-}
