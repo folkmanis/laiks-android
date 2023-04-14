@@ -19,10 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.PowerApplianceCycle
 
-fun PowerApplianceCycle.isValid(): Boolean {
-    return consumption >= 0 && length >= 0
-}
-
 fun Long.toMinutes(): Long =
     this / 60_000
 
@@ -56,7 +52,7 @@ fun PowerConsumptionCycleRow(
             value = cycle.length.toMinutes(),
             onValueChange = {
                 onCycleChange(
-                    cycle.copy(length = it?.toMilliseconds() ?: 0)
+                    cycle.copy(length = it.toMilliseconds())
                 )
             },
             suffix = {
@@ -72,7 +68,7 @@ fun PowerConsumptionCycleRow(
             value = cycle.consumption,
             onValueChange = {
                 onCycleChange(
-                    cycle.copy(consumption = it ?: 0)
+                    cycle.copy(consumption = it)
                 )
             },
             suffix = {

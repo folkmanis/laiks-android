@@ -1,9 +1,7 @@
 package com.folkmanis.laiks.ui.screens.user_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.USER_ID
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.model.LaiksUser
 import dagger.hilt.android.lifecycle.HiltViewModel

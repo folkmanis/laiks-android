@@ -30,7 +30,7 @@ class ApplianceEditViewModel @Inject constructor(
         _uiState.update { it.copy(name = name) }
     }
 
-    fun setMinimumDelay(time: Long?) {
+    fun setMinimumDelay(time: Long) {
         _uiState.update { it.copy(minimumDelay = time) }
     }
 

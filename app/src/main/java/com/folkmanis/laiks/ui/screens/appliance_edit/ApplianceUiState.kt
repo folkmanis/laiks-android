@@ -14,7 +14,7 @@ data class ApplianceUiState(
     val color: String = "#CCCCCC",
     val delay: String = "start",
     val enabled: Boolean = true,
-    val minimumDelay: Long? = 0,
+    val minimumDelay: Long = 0,
     val cycles: List<PowerApplianceCycle> = emptyList(),
 
     ) {
@@ -29,7 +29,7 @@ data class ApplianceUiState(
         get() = name.isNotBlank()
 
     val isMinimumDelayValid: Boolean
-        get() = minimumDelay != null && minimumDelay >= 0
+        get() = minimumDelay >= 0
 
     private val isDelayValid: Boolean
         get() = PowerApplianceDelay.values().map { it.name }.contains(delay)

@@ -12,8 +12,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 
 @Composable
 fun NumberInput(
-    value: Long?,
-    onValueChange: (Long?) -> Unit,
+    value: Long,
+    onValueChange: (Long) -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable() (() -> Unit)? = null,
     isError: Boolean = false,
@@ -26,9 +26,9 @@ fun NumberInput(
         mutableStateOf(TextFieldValue(""))
     }
 
-    val valueStr = value?.toString() ?: ""
+    val valueStr = value.toString()
 
-    if (value != null && valueStr != inputState.text) {
+    if (valueStr != inputState.text) {
         inputState = TextFieldValue(
             text = valueStr,
             selection = TextRange(valueStr.length)
@@ -39,7 +39,10 @@ fun NumberInput(
         value = inputState,
         onValueChange = {
             inputState = it
-            onValueChange(inputState.text.toLongOrNull())
+            val valueLong = inputState.text.toLongOrNull()
+            if (valueLong != null) {
+                onValueChange(valueLong)
+            }
         },
         modifier = modifier
             .onFocusChanged { focusState ->

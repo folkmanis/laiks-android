@@ -48,7 +48,8 @@ internal fun ApplianceEdit(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets(16.dp),
         topBar = {
             TopAppBar(
@@ -81,9 +82,8 @@ internal fun ApplianceEdit(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .verticalScroll(scroll)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .padding(innerPadding)
         ) {
 
             Spacer(modifier = Modifier.height(16.dp))
