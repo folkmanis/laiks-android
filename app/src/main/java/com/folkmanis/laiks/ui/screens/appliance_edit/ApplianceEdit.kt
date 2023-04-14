@@ -1,19 +1,24 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,23 +30,60 @@ import com.folkmanis.laiks.data.fake.FakePricesService
 internal fun ApplianceEdit(
     onNavigateBack: () -> Unit,
     onCopy: (String) -> Unit,
-    viewModel: ApplianceEditViewModel,
+    editAction: EditActions,
     modifier: Modifier = Modifier,
+    viewModel: ApplianceEditViewModel = hiltViewModel()
 ) {
+
 
     val state by viewModel.uiState
         .collectAsStateWithLifecycle(initialValue = ApplianceUiState())
 
     val scroll = rememberScrollState()
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
+    LaunchedEffect(editAction) {
+        viewModel.loadAppliance(editAction)
+    }
+
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(16.dp),
+        topBar = {
+            TopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        stringResource(id = R.string.appliance_screen),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back_button)
+                        )
+                    }
+                },
+                actions = {
+                    EditorActions(
+                        onSave = { viewModel.save { onNavigateBack() } },
+                        onCopy = { onCopy(state.id) },
+                        saveEnabled = state.isValid,
+                        copyEnabled = !state.isNew,
+                    )
+                }
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, bottom = 56.dp)
+                .padding(innerPadding)
                 .verticalScroll(scroll)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -149,67 +191,29 @@ internal fun ApplianceEdit(
 
         }
 
-        EditorActions(
-            onSave = {
-                viewModel.save { onNavigateBack() }
-            },
-            onCancel = onNavigateBack,
-            onCopy = {
-                onCopy(state.id)
-            },
-            saveEnabled = state.isValid,
-            cancelEnabled = !state.isLoading && !state.isSaving,
-            copyEnabled = !state.isNew,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                )
-        )
-
     }
 }
 
 @Composable
 fun EditorActions(
     onSave: () -> Unit,
-    onCancel: () -> Unit,
     onCopy: () -> Unit,
     saveEnabled: Boolean,
-    cancelEnabled: Boolean,
     copyEnabled: Boolean,
-    modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .height(56.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
+    TextButton(
+        onClick = onCopy,
+        enabled = copyEnabled,
     ) {
-
-        TextButton(
-            onClick = onCopy,
-            enabled = copyEnabled,
-        ) {
-            Text(text = stringResource(id = R.string.copy))
-        }
-
-        TextButton(
-            enabled = cancelEnabled,
-            onClick = onCancel,
-        ) {
-            Text(text = stringResource(id = R.string.action_cancel))
-        }
-
-        TextButton(
-            enabled = saveEnabled,
-            onClick = onSave,
-        ) {
-            Text(text = stringResource(id = R.string.action_save))
-        }
+        Text(text = stringResource(id = R.string.copy))
     }
 
+    Button(
+        enabled = saveEnabled,
+        onClick = onSave,
+    ) {
+        Text(text = stringResource(id = R.string.action_save))
+    }
 }
 
 @Composable
@@ -234,7 +238,7 @@ fun ApplianceEditPreview() {
             viewModel = viewModel,
             onNavigateBack = {},
             onCopy = {},
-            id = "12AFE34",
+            editAction = EditActions.Edit("12AFE34")
         )
     }
 }

@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.LaiksAppState
 
@@ -28,11 +28,11 @@ fun NavGraphBuilder.appliancesScreen(
             onEdit = onEditAppliance,
             onAdd = onAddAppliance,
             onDelete = viewModel::delete,
-            onNavigateBack = appState::navigateToDefault,
+            onNavigateBack = appState::popUp,
         )
     }
 }
 
-fun NavController.navigateToAppliances(navOptions: NavOptions? = null) {
-    navigate(ROUTE, navOptions)
+fun NavController.navigateToAppliances(builder: (NavOptionsBuilder.()->Unit) = {}) {
+    navigate(ROUTE, builder)
 }

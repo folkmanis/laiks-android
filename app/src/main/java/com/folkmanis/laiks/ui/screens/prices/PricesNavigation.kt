@@ -24,7 +24,7 @@ fun NavGraphBuilder.pricesScreen(
         PricesScreen(
             state = uiState,
             actions = { state.AppUserMenu() },
-            popUp = state::navigateToDefault,
+            popUp = state::popUp,
         )
 
     }

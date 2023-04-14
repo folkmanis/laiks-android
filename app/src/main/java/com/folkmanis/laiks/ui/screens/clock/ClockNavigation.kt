@@ -5,20 +5,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.LaiksAppState
-import com.folkmanis.laiks.LaiksScreen
-import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
 
-private const val ROUTE = "Clock"
+const val CLOCK_ROUTE = "Clock"
 
 fun NavGraphBuilder.clockScreen(
     appState: LaiksAppState,
     onNavigateToPrices: () -> Unit,
 ) {
 
-    composable(ROUTE) {
+    composable(CLOCK_ROUTE) {
 
         val viewModel: ClockViewModel = hiltViewModel()
         val uiState by viewModel
@@ -38,6 +36,6 @@ fun NavGraphBuilder.clockScreen(
 
 }
 
-fun NavController.navigateToClock(navOptions: NavOptions? = null) {
-    this.navigate(ROUTE, navOptions)
+fun NavController.navigateToClock(builder: NavOptionsBuilder.() -> Unit = {}) {
+    this.navigate(CLOCK_ROUTE, builder)
 }

@@ -2,9 +2,12 @@ package com.folkmanis.laiks
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.folkmanis.laiks.ui.screens.appliances.navigateToAppliances
+import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
+import com.folkmanis.laiks.ui.screens.clock.navigateToClock
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
+import com.folkmanis.laiks.ui.screens.users.navigateToUsers
 import kotlinx.coroutines.CoroutineScope
 
 @Stable
@@ -14,46 +17,34 @@ class LaiksAppState(
 ) {
 
     @Composable
-    fun AppUserMenu()  {
-       UserMenu(
+    fun AppUserMenu() {
+        UserMenu(
             onUsersAdmin = ::navigateToUsersAdmin,
             onAppliancesAdmin = ::navigateToAppliancesAdmin,
             onLogout = ::navigateToDefault
         )
     }
 
-
-    val canNavigateBack: Boolean
-        get() = navController.previousBackStackEntry != null
-
     fun popUp() {
         navController.popBackStack()
     }
 
-    fun navigate(route: String) {
-        navController.navigate(route) { launchSingleTop = true }
+    private fun navigateToUsersAdmin() {
+        navController.navigateToUsers {
+            popUpTo(CLOCK_ROUTE)
+        }
     }
 
-    fun navigateAndPop(route: String, popUp: String) {
-        navController.navigate(route) {
+    private fun navigateToAppliancesAdmin() {
+        navController.navigateToAppliances {
+            popUpTo(CLOCK_ROUTE)
+        }
+    }
+
+    private fun navigateToDefault() {
+        navController.navigateToClock {
             launchSingleTop = true
-            popUpTo(popUp)
+            popUpTo(0) { inclusive = true }
         }
-    }
-
-    fun navigateToUsersAdmin() {
-        navController.navigate(LaiksScreen.Users.route) {
-            popUpTo(LaiksScreen.defaultScreen.route)
-        }
-    }
-
-    fun navigateToAppliancesAdmin() {
-        navController.navigate(LaiksScreen.Appliances.route) {
-            popUpTo(LaiksScreen.defaultScreen.route)
-        }
-    }
-
-    fun navigateToDefault() {
-        navController.popBackStack(LaiksScreen.Clock.route, false)
     }
 }

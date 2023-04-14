@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.LaiksAppState
 
@@ -22,12 +22,12 @@ fun NavGraphBuilder.usersScreen(
         UsersScreen(
             onEdit = onEditUser,
             state = state,
-            popUp = appState::navigateToDefault,
+            popUp = appState::popUp,
             actions = { appState.AppUserMenu() },
         )
     }
 }
 
-fun NavController.navigateToUsers(navOptions: NavOptions? = null) {
-    navigate(ROUTE, navOptions)
+fun NavController.navigateToUsers(builder: (NavOptionsBuilder.()->Unit) = {}) {
+    navigate(ROUTE, builder)
 }

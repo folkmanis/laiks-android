@@ -1,9 +1,8 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.composable
+import com.folkmanis.laiks.LaiksAppState
 
 private const val ROUTE = "ApplianceEditor"
 private const val APPLIANCE_ID = "applianceId"
@@ -12,67 +11,88 @@ private const val COPY = "copy"
 
 
 fun NavGraphBuilder.applianceEditScreen(
-    onCopy: (String) -> Unit,
-    popUp: ()->Unit,
+    onCopy: (String, NavOptionsBuilder.() -> Unit) -> Unit,
+    appState: LaiksAppState,
 ) {
 
     composable(
-        route = "$ROUTE/{$APPLIANCE_ID}?$COPY={$COPY}",
+        route = "$ROUTE/{$APPLIANCE_ID}",
         arguments = listOf(
             navArgument(APPLIANCE_ID) {
                 type = NavType.StringType
             },
-            navArgument(COPY) {
-                type = NavType.BoolType
-                defaultValue = false
-            }
         ),
     ) { backStackEntry ->
 
         val applianceId =
-            backStackEntry.arguments?.getString(com.folkmanis.laiks.APPLIANCE_ID) ?: ""
-        val createCopy =
-            backStackEntry.arguments?.getBoolean(com.folkmanis.laiks.COPY) ?: false
-
-        val viewModel: ApplianceEditViewModel = hiltViewModel()
-
-        val editAction = if (applianceId == NEW_APPLIANCE) {
-            EditActions.CreateNew
-        } else if (createCopy) {
-            EditActions.Copy(applianceId)
-        } else {
-            EditActions.Edit(applianceId)
-        }
-        LaunchedEffect(applianceId) {
-            viewModel.loadAppliance(editAction)
-        }
+            backStackEntry.arguments?.getString(APPLIANCE_ID) ?: ""
 
         ApplianceEdit(
-            onNavigateBack = popUp,
-            onCopy = onCopy,
-            viewModel = viewModel,
+            onNavigateBack = appState::popUp,
+            onCopy = {
+                onCopy(it) {
+                    launchSingleTop = true
+                    popUpTo(ROUTE) { inclusive = true }
+                }
+            },
+            editAction = EditActions.Edit(applianceId)
         )
 
     }
 }
 
-fun NavController.editAppliance(applianceId: String, navOptions: NavOptions? = null) {
+fun NavGraphBuilder.applianceCopyRoute(
+    appState: LaiksAppState,
+) {
+    composable(
+        route = "$ROUTE/{$APPLIANCE_ID}/$COPY",
+        arguments = listOf(
+            navArgument(APPLIANCE_ID) { type = NavType.StringType },
+        ),
+    ) { backStackEntry ->
+        val applianceId =
+            backStackEntry.arguments?.getString(APPLIANCE_ID) ?: ""
+
+        ApplianceEdit(
+            onNavigateBack = appState::popUp,
+            editAction = EditActions.Copy(applianceId),
+            onCopy = {},
+        )
+
+    }
+}
+
+fun NavGraphBuilder.applianceNewRoute(
+    appState: LaiksAppState,
+) {
+    composable(
+        route = "$ROUTE/$NEW_APPLIANCE"
+    ) {
+        ApplianceEdit(
+            onNavigateBack = appState::popUp,
+            editAction = EditActions.CreateNew,
+            onCopy = {},
+        )
+    }
+}
+
+fun NavController.editAppliance(applianceId: String, builder: (NavOptionsBuilder.() -> Unit) = {}) {
     navigate(
         route = "$ROUTE/$applianceId",
-        navOptions = navOptions
+        builder
     )
 }
 
-fun NavController.copyAppliance(applianceId: String, navOptions: NavOptions? = null) {
+fun NavController.copyAppliance(applianceId: String, builder: NavOptionsBuilder.() -> Unit = {}) {
     navigate(
-        route = "$ROUTE/$applianceId?$COPY=true",
-        navOptions = navOptions
+        route = "$ROUTE/$applianceId/$COPY",
+        builder = builder
     )
 }
 
-fun NavController.newAppliance(navOptions: NavOptions? = null) {
+fun NavController.newAppliance(builder: NavOptionsBuilder.() -> Unit = {}) {
     navigate(
         route = "$ROUTE/$NEW_APPLIANCE",
-        navOptions = navOptions,
+        builder = builder,
     )
 }
