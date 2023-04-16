@@ -3,7 +3,6 @@ package com.folkmanis.laiks.ui.screens.appliances
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.model.PowerAppliance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

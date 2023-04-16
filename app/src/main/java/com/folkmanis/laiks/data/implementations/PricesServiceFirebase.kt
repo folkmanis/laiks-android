@@ -15,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class PricesServiceFirebase @Inject constructor(
-    private val firestore: FirebaseFirestore
+    firestore: FirebaseFirestore
 ) : PricesService {
 
     private val npData = firestore
