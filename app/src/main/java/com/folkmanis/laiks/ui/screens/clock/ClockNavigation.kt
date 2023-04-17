@@ -14,6 +14,7 @@ const val CLOCK_ROUTE = "Clock"
 fun NavGraphBuilder.clockScreen(
     appState: LaiksAppState,
     onNavigateToPrices: () -> Unit,
+    onNpPrices: ()->Unit,
 ) {
 
     composable(CLOCK_ROUTE) {
@@ -29,7 +30,8 @@ fun NavGraphBuilder.clockScreen(
             pricesAllowed = pricesAllowed,
             onShowPrices = onNavigateToPrices,
             updateOffset = viewModel::updateOffset,
-            actions = { appState.AppUserMenu() }
+            actions = { appState.AppUserMenu() },
+            onNpPrices = onNpPrices,
         )
 
     }

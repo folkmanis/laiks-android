@@ -3,6 +3,7 @@ package com.folkmanis.laiks.data.module
 import com.folkmanis.laiks.data.*
 import com.folkmanis.laiks.data.implementations.AccountServiceFirebase
 import com.folkmanis.laiks.data.implementations.LocalUserPreferencesRepository
+import com.folkmanis.laiks.data.implementations.NetworkNpRepository
 import com.folkmanis.laiks.data.implementations.PricesServiceFirebase
 import dagger.Binds
 import dagger.Module
@@ -21,6 +22,9 @@ abstract class ServiceModule {
 
     @Binds
     abstract  fun providePreferencesService(impl: LocalUserPreferencesRepository): UserPreferencesRepository
+
+    @Binds
+    abstract  fun provideNpApiService(impl: NetworkNpRepository): NpRepository
 
 
 }

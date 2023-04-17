@@ -11,6 +11,8 @@ import com.folkmanis.laiks.ui.screens.appliance_edit.*
 import com.folkmanis.laiks.ui.screens.appliances.appliancesScreen
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
 import com.folkmanis.laiks.ui.screens.clock.clockScreen
+import com.folkmanis.laiks.ui.screens.np_data.navigateToNpPrices
+import com.folkmanis.laiks.ui.screens.np_data.npDataScreen
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.editUser
@@ -45,7 +47,8 @@ fun LaiksAppScreen(
 
         clockScreen(
             appState = appState,
-            onNavigateToPrices = navController::navigateToPrices
+            onNavigateToPrices = navController::navigateToPrices,
+            onNpPrices = navController::navigateToNpPrices,
         )
 
         pricesScreen(appState)
@@ -68,6 +71,8 @@ fun LaiksAppScreen(
         applianceNewRoute(appState)
 
         applianceCopyRoute(appState)
+
+        npDataScreen()
     }
 }
 

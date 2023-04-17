@@ -21,6 +21,7 @@ internal fun ClockScreen(
     pricesAllowed: Boolean,
     updateOffset: (Int) -> Unit,
     onShowPrices: () -> Unit,
+    onNpPrices: ()->Unit ={},
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit,
 ) {
@@ -47,6 +48,10 @@ internal fun ClockScreen(
                 .padding(innerPadding)
                 .fillMaxSize(),
         ) {
+
+            Button(onClick = onNpPrices) {
+                Text(text = "Load Np Prices")
+            }
 
             ClockSelector(
                 offset = uiState.offset,
