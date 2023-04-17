@@ -59,7 +59,7 @@ data class ApplianceUiState(
             color = color,
             delay = delay,
             enabled = enabled,
-            minimumDelay = minimumDelay ?: 0,
+            minimumDelay = minimumDelay,
             cycles = cycles,
         )
     }

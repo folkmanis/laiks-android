@@ -15,10 +15,10 @@ fun NumberInput(
     value: Long,
     onValueChange: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    label: @Composable() (() -> Unit)? = null,
+    label: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    prefix: @Composable() (() -> Unit)? = null,
-    suffix: @Composable() (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
 ) {
 

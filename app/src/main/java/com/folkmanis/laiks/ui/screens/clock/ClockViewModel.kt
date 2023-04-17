@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ClockViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
-    private val accountService: AccountService,
+    accountService: AccountService,
     ) : ViewModel() {
 
     val isPricesAllowed = accountService.laiksUserFlow
