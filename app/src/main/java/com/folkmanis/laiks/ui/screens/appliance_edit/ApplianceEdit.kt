@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.data.fake.FakePricesService
+import com.folkmanis.laiks.data.fake.FakeAppliancesService
 
 @Composable
 internal fun ApplianceEdit(
@@ -230,7 +230,7 @@ fun OptionsDivider(modifier: Modifier = Modifier) {
 fun ApplianceEditPreview() {
 
     val viewModel = ApplianceEditViewModel(
-        pricesService = FakePricesService(),
+        appliancesService = FakeAppliancesService(),
     )
 
     MaterialTheme {

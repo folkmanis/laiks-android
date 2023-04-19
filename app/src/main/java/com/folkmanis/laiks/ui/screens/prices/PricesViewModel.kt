@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.prices
 import androidx.lifecycle.ViewModel
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
 import com.folkmanis.laiks.VAT
+import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.model.NpPrice
@@ -27,6 +28,7 @@ fun List<NpPrice>.addVat(amount: Double): List<NpPrice> =
 class PricesViewModel @Inject constructor(
     pricesService: PricesService,
     userPreferencesRepository: UserPreferencesRepository,
+    appliancesService: AppliancesService,
 ) : ViewModel() {
 
     private val vatAmount = userPreferencesRepository.includeVat
@@ -50,7 +52,7 @@ class PricesViewModel @Inject constructor(
             state.copy(npPrices = npPrices)
         }
         .map { state ->
-            state.copy(appliances = pricesService.activeAppliances())
+            state.copy(appliances = appliancesService.activeAppliances())
         }
         .combine(minuteTicks()) { state, minute ->
             state.copy(minute = minute)

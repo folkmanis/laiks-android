@@ -6,8 +6,10 @@ import com.folkmanis.laiks.model.np_data.NpServerData
 import javax.inject.Inject
 
 class NetworkNpRepository @Inject constructor(
-    private val npApiService: NpApiService
+    private val npApiService: NpApiService,
 ): NpRepository {
     override suspend fun getNpData(): NpServerData =
         npApiService.getNpData()
+
+
 }

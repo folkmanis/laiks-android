@@ -2,7 +2,7 @@ package com.folkmanis.laiks.ui.screens.appliance_edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.PricesService
+import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ sealed interface EditActions {
 
 @HiltViewModel
 class ApplianceEditViewModel @Inject constructor(
-    private val pricesService: PricesService,
+    private val appliancesService: AppliancesService,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ApplianceUiState())
@@ -59,9 +59,9 @@ class ApplianceEditViewModel @Inject constructor(
         viewModelScope.launch {
             val appliance = _uiState.value.toPowerAppliance()
             if (appliance.id.isBlank()) {
-                pricesService.addAppliance(appliance)
+                appliancesService.addAppliance(appliance)
             } else {
-                pricesService.updateAppliance(appliance)
+                appliancesService.updateAppliance(appliance)
             }
             _uiState.update {
                 it.copy(isSaving = false)
@@ -75,7 +75,7 @@ class ApplianceEditViewModel @Inject constructor(
         viewModelScope.launch {
             when (action) {
                 is EditActions.Edit -> {
-                    val appliance = pricesService.getAppliance(action.id)
+                    val appliance = appliancesService.getAppliance(action.id)
                     if(appliance != null)
                     _uiState.update { state ->
                         state.copy(appliance)
@@ -83,7 +83,7 @@ class ApplianceEditViewModel @Inject constructor(
 
                 }
                 is EditActions.Copy -> {
-                    val appliance = pricesService.getAppliance(action.id)
+                    val appliance = appliancesService.getAppliance(action.id)
                     if(appliance != null)
                         _uiState.update { state ->
                             state.copy(appliance).copy(id = "", name = "")
