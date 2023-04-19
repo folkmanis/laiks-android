@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
@@ -15,15 +16,20 @@ import javax.inject.Singleton
 
 private const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/page/"
 
+@OptIn(ExperimentalSerializationApi::class)
 @InstallIn(SingletonComponent::class)
 @Module
 object NpApiModule {
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
 
     @Singleton
     @Provides
     fun provideRetrofit(): Retrofit = Retrofit
         .Builder()
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
         .build()
 

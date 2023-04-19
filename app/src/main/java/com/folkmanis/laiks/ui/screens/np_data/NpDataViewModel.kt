@@ -13,22 +13,30 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed interface NpDataUiState {
+    data class Error(val reason: String) : NpDataUiState
+    object Loading : NpDataUiState
+    data class Success(
+        val data: Any
+    ) : NpDataUiState
+}
+
 @HiltViewModel
 class NpDataViewModel @Inject constructor(
     private val npRepository: NpRepository
 ) : ViewModel() {
 
-    private val _npData = MutableStateFlow<List<NpPrice>>(emptyList())
+    private val _npData = MutableStateFlow<NpDataUiState>(NpDataUiState.Loading)
     val npData = _npData.asStateFlow()
-
-    init {
-        loadData()
-    }
 
     fun loadData() {
         viewModelScope.launch {
-            val data = npRepository.getNpData()
-            _npData.update { data }
+            try {
+                val data = npRepository.getNpData()
+                _npData.update { NpDataUiState.Success(data) }
+            } catch (err: Error) {
+                _npData.update { NpDataUiState.Error(err.toString()) }
+            }
         }
     }
 }

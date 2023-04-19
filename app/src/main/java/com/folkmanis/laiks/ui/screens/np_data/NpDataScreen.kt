@@ -19,29 +19,29 @@ import java.nio.channels.Channels
 
 @Composable
 fun NpDataScreen(
-//    viewModel: NpDataViewModel = hiltViewModel()
+    viewModel: NpDataViewModel = hiltViewModel()
 ) {
-//    val data by viewModel.npData.collectAsStateWithLifecycle()
 
-    var data by remember {
-        mutableStateOf("")
-    }
+    val data by viewModel.npData.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
+//    var data by remember {
+//        mutableStateOf("")
+//    }
+
+//    val context = LocalContext.current
 
     Column {
         Button(onClick = {
-            val file = File(context.filesDir, "npData.json")
-            data = download(file)
+//            val file = File(context.filesDir, "npData.json")
+//            data = download(file)
+            viewModel.loadData()
         }) {
             Text(text = "Download")
         }
 
-        Text(text = data)
+        Text(text = data.toString())
     }
 
-
-//    Text(text = data.toString())
 }
 
 fun download(file: File): String {

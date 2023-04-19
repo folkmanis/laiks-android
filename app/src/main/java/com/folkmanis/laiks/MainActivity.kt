@@ -14,8 +14,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       val policy= StrictMode.ThreadPolicy.Builder().permitNetwork().build()
-        StrictMode.setThreadPolicy(policy)
+//       val policy= StrictMode.ThreadPolicy.Builder().permitNetwork().build()
+//        StrictMode.setThreadPolicy(policy)
         setContent {
             LaiksTheme {
                 Surface {
