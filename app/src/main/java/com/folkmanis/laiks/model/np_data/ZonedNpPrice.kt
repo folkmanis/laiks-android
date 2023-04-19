@@ -8,4 +8,3 @@ data class ZonedNpPrice(
     val endTime: ZonedDateTime,
 )
 
-//startTime = Timestamp(Date.from(startTime.minusDays(column.index).toInstant())),
