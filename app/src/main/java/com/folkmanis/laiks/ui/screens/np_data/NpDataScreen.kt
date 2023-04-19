@@ -1,6 +1,9 @@
 package com.folkmanis.laiks.ui.screens.np_data
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -8,9 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOError
@@ -22,7 +28,7 @@ fun NpDataScreen(
     viewModel: NpDataViewModel = hiltViewModel()
 ) {
 
-    val data by viewModel.npData.collectAsStateWithLifecycle()
+    val data = viewModel.npData.collectAsStateWithLifecycle().value
 
 //    var data by remember {
 //        mutableStateOf("")
@@ -39,7 +45,16 @@ fun NpDataScreen(
             Text(text = "Download")
         }
 
-        Text(text = data.toString())
+        if (data is NpDataUiState.Success) {
+            data.data.forEach { price ->
+                Row {
+                    Text(text = price.startTime.toLocalDateTime().toString())
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(text = price.value.toString())
+                }
+            }
+        }
+//        Text(text = data.toString())
     }
 
 }

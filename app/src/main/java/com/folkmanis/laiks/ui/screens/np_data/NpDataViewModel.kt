@@ -17,7 +17,7 @@ sealed interface NpDataUiState {
     data class Error(val reason: String) : NpDataUiState
     object Loading : NpDataUiState
     data class Success(
-        val data: Any
+        val data: List<NpPrice>
     ) : NpDataUiState
 }
 
@@ -32,7 +32,7 @@ class NpDataViewModel @Inject constructor(
     fun loadData() {
         viewModelScope.launch {
             try {
-                val data = npRepository.getNpData()
+                val data = npRepository.getNpData().data.toNpPrices()
                 _npData.update { NpDataUiState.Success(data) }
             } catch (err: Error) {
                 _npData.update { NpDataUiState.Error(err.toString()) }

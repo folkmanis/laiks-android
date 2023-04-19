@@ -1,12 +1,16 @@
 package com.folkmanis.laiks.model.np_data
 
+import com.folkmanis.laiks.model.NpPrice
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 
 
-@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Data(
-    @JsonNames("Rows") val rows: ArrayList<Row> = arrayListOf(),
-)
+    @SerialName("Rows") val rows: List<Row> = listOf(),
+) {
+    fun toNpPrices(): List<NpPrice> = rows.map { it.toNpPrices() }.flatten()
+
+}

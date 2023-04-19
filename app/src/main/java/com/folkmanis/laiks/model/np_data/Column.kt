@@ -2,6 +2,7 @@ package com.folkmanis.laiks.model.np_data
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -34,9 +35,9 @@ object ValueSerializer : KSerializer<Double> {
 @Serializable
 data class Column(
 
-    @JsonNames("Index") val index: Int = 0,
+    @SerialName("Index") val index: Long = 0,
 
-    @JsonNames("Value")
+    @SerialName("Value")
     @Serializable(with = ValueSerializer::class)
     val value: Double = 0.0,
 

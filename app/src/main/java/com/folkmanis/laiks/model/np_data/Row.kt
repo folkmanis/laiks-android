@@ -1,7 +1,10 @@
 package com.folkmanis.laiks.model.np_data
 
+import com.folkmanis.laiks.model.NpPrice
+import com.google.firebase.Timestamp
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -11,22 +14,21 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonNames
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 object NpDateSerializer : KSerializer<ZonedDateTime> {
 
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dTHH:mm:ss")
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-d'T'HH:mm:ss")
 
     override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor(
-            "com.folkmanis.laiks.model.np_data.date",
-            PrimitiveKind.STRING
-        )
+        PrimitiveSerialDescriptor("np_data.date", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): ZonedDateTime {
         val string = decoder.decodeString()
-        return ZonedDateTime.parse(string, formatter)
+        return LocalDateTime.parse(string, formatter).atZone(ZoneId.of("CET"))
     }
 
     override fun serialize(encoder: Encoder, value: ZonedDateTime) {
@@ -34,25 +36,31 @@ object NpDateSerializer : KSerializer<ZonedDateTime> {
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Row(
 
-    @JsonNames("Columns")
-    val columns: ArrayList<Column> = arrayListOf(),
+    @SerialName("Columns")
+    val columns: List<Column> = listOf(),
 
-    @JsonNames("StartTime")
+    @SerialName("StartTime")
     @Serializable(with = NpDateSerializer::class)
     val startTime: ZonedDateTime = ZonedDateTime.now(),
 
-    @JsonNames("EndTime")
-    val endTime: String = "",
+    @SerialName("EndTime")
+    @Serializable(with = NpDateSerializer::class)
+    val endTime: ZonedDateTime = ZonedDateTime.now(),
 
-    @JsonNames("IsExtraRow") val isExtraRow: Boolean = false,
+    @SerialName("IsExtraRow") val isExtraRow: Boolean = false,
 
     ) {
 
-    fun toNpPrices() {
-        // TODO
-    }
+    fun toNpPrices(): List<NpPrice> =
+        columns.map { column ->
+            NpPrice(
+                value = column.value,
+                startTime = Timestamp(Date.from(startTime.minusDays(column.index).toInstant())),
+                endTime = Timestamp(Date.from(endTime.minusDays(column.index).toInstant()))
+            )
+        }
+
 }
