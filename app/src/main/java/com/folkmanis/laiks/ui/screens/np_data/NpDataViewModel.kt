@@ -1,7 +1,5 @@
 package com.folkmanis.laiks.ui.screens.np_data
 
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.NpRepository

@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.model.np_data
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,9 +8,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonNames
 
-object ValueSerializer : KSerializer<Double> {
+private object ValueSerializer : KSerializer<Double> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor(
             "kotlinx.serialization.primitive",
@@ -31,7 +29,6 @@ object ValueSerializer : KSerializer<Double> {
 }
 
 
-@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class Column(
 

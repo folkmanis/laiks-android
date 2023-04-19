@@ -1,10 +1,8 @@
 package com.folkmanis.laiks.model.np_data
 
 import com.folkmanis.laiks.model.NpPrice
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonNames
 
 
 @Serializable

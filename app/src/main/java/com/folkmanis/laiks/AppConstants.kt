@@ -8,3 +8,6 @@ const val CURRENCY_DECIMALS = 2
 const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
 const val INCLUDE_AVERAGE_DAYS = 5L
 const val MSW_TO_KWH = 1.0 / 1000.0 / 1000.0 / 3600.0
+
+const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/"
+const val DAY_AHEAD_LV = "page/59?currency=,EUR,EUR,EUR"

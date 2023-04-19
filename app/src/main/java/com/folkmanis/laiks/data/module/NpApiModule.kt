@@ -1,6 +1,6 @@
 package com.folkmanis.laiks.data.module
 
-import com.folkmanis.laiks.data.NpRepository
+import com.folkmanis.laiks.BASE_URL
 import com.folkmanis.laiks.data.implementations.NetworkNpRepository
 import com.folkmanis.laiks.data.network.NpApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -14,7 +14,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-private const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/page/"
 
 @OptIn(ExperimentalSerializationApi::class)
 @InstallIn(SingletonComponent::class)

@@ -7,21 +7,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.utilities.ext.toLocalDateTime
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOError
-import java.net.URL
-import java.nio.channels.Channels
 
 @Composable
 fun NpDataScreen(
@@ -30,16 +20,8 @@ fun NpDataScreen(
 
     val data = viewModel.npData.collectAsStateWithLifecycle().value
 
-//    var data by remember {
-//        mutableStateOf("")
-//    }
-
-//    val context = LocalContext.current
-
     Column {
         Button(onClick = {
-//            val file = File(context.filesDir, "npData.json")
-//            data = download(file)
             viewModel.loadData()
         }) {
             Text(text = "Download")
@@ -54,24 +36,6 @@ fun NpDataScreen(
                 }
             }
         }
-//        Text(text = data.toString())
     }
 
-}
-
-fun download(file: File): String {
-    return try {
-        val url = URL("https://www.nordpoolgroup.com/api/marketdata/page/59?currency=,EUR,EUR,EUR")
-        url.openStream().use {
-            Channels.newChannel(it).use { rbc ->
-                FileOutputStream(file).use { fos ->
-                    fos.channel.transferFrom(rbc, 0, Long.MAX_VALUE)
-                }
-            }
-        }
-        "Download OK"
-
-    } catch (err: Error) {
-        err.toString()
-    }
 }
