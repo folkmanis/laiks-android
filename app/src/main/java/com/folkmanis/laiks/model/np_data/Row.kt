@@ -1,7 +1,5 @@
 package com.folkmanis.laiks.model.np_data
 
-import com.folkmanis.laiks.model.NpPrice
-import com.google.firebase.Timestamp
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -13,7 +11,6 @@ import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.Date
 
 private object NpDateSerializer : KSerializer<ZonedDateTime> {
 
@@ -48,12 +45,12 @@ data class Row(
 
     ) {
 
-    fun toNpPrices(): List<NpPrice> =
+    fun toZonedNpPrices(): List<ZonedNpPrice> =
         columns.map { column ->
-            NpPrice(
+            ZonedNpPrice(
                 value = column.value,
-                startTime = Timestamp(Date.from(startTime.minusDays(column.index).toInstant())),
-                endTime = Timestamp(Date.from(endTime.minusDays(column.index).toInstant()))
+                startTime = startTime.minusDays(column.index),
+                endTime = endTime.minusDays(column.index)
             )
         }
 
