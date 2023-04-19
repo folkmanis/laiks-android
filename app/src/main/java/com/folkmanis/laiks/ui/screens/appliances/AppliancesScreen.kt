@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.folkmanis.laiks.ui.screens.appliances
 
 import androidx.compose.foundation.layout.padding
@@ -30,6 +28,7 @@ import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.model.PowerAppliance
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AppliancesScreen(
     appliances: List<PowerAppliance>,
