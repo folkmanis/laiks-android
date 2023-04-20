@@ -22,7 +22,6 @@ import com.folkmanis.laiks.utilities.offsetCosts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.io.IOError
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
@@ -160,8 +159,8 @@ class PricesViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 npUpdateService.updateNpPrices()
-            } catch (err: IOError) {
-                Log.e(TAG, "Request failed: $err", err)
+            } catch (err: Throwable) {
+                Log.e(TAG, "Error: $err")
             }
         }
     }

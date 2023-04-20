@@ -17,16 +17,22 @@ class NpUpdateServiceFirebase @Inject constructor(
 
     override suspend fun updateNpPrices(): Int {
 
-        val npPrices = npRepository.getNpData()
+        val npPrices = npRepository.getNpData().toNpPrices()
+
+        Log.d(TAG, "Retrieved ${npPrices.size} hourly prices")
+
+        if (npPrices.isEmpty()) {
+            return 0
+        }
+
 
         val lastDbUpdate = pricesService.lastUpdate()
 
-        val newData = npPrices.toNpPrices().filter { it.startTime.toInstant() > lastDbUpdate }
+        val newData = npPrices.filter { it.startTime.toInstant() > lastDbUpdate }
+
+        Log.d(TAG, "${newData.size} new records")
 
         if (newData.isNotEmpty()) {
-
-            Log.d(TAG, "New data on server! ${newData.size} records.")
-
             withContext(Dispatchers.IO) {
                 pricesService.uploadPrices(newData)
             }
