@@ -21,6 +21,10 @@ class FakePricesService : PricesService {
         return testPrices(startTimestamp.toLocalDateTime())
     }
 
+    override fun pricesFromDateTime(dateTime: LocalDateTime): Flow<List<NpPrice>> {
+        return flowOf(testPrices(dateTime))
+    }
+
     override suspend fun lastUpdate(): Instant {
         return Instant.MIN
     }

@@ -10,6 +10,8 @@ interface PricesService {
     suspend fun npPrices(startTimestamp: Timestamp): List<NpPrice>
     fun lastDaysPricesFlow(days: Long): Flow<List<NpPrice>>
 
+    fun pricesFromDateTime(dateTime: LocalDateTime): Flow<List<NpPrice>>
+
    suspend fun lastUpdate(): Instant
 
    suspend fun uploadPrices(prices: List<NpPrice>)

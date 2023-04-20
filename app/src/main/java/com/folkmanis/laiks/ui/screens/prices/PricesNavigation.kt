@@ -23,6 +23,8 @@ fun NavGraphBuilder.pricesScreen(
             .value
         val npUploadAllowed by viewModel.npUploadAllowed
             .collectAsStateWithLifecycle(initialValue = false)
+        val statistics by viewModel.pricesStatistics
+            .collectAsStateWithLifecycle(initialValue = PricesStatistics())
 
         PricesScreen(
             state = uiState,
@@ -30,6 +32,7 @@ fun NavGraphBuilder.pricesScreen(
             actions = { state.AppUserMenu() },
             popUp = state::popUp,
             onRefresh = viewModel::updateNpPrices,
+            statistics = statistics,
         )
 
     }

@@ -20,6 +20,7 @@ import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -29,6 +30,7 @@ import javax.inject.Inject
 fun List<NpPrice>.addVat(amount: Double): List<NpPrice> =
     map { it.copy(value = it.value.withVat(amount)) }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PricesViewModel @Inject constructor(
     pricesService: PricesService,
@@ -45,28 +47,24 @@ class PricesViewModel @Inject constructor(
         .laiksUserFlow
         .map { it?.npUploadAllowed ?: false }
 
-    val uiState: Flow<PricesUiState> = pricesService
+    val pricesStatistics: Flow<PricesStatistics> = pricesService
         .lastDaysPricesFlow(INCLUDE_AVERAGE_DAYS)
+        .filter(List<NpPrice>::isNotEmpty)
         .combine(vatAmount) { prices, vat ->
             prices.addVat(vat)
         }
         .map { prices ->
-            Log.d(TAG, "Prices ${prices.size} records")
-            if (prices.isNotEmpty()) {
-                PricesUiState.Success(
-                    npPrices = prices,
-                    average = prices.average,
-                    stDev = prices.stDev(),
-                )
-            } else {
-                PricesUiState.Success(npPrices = prices)
-            }
+            PricesStatistics(
+                average = prices.average,
+                stDev = prices.stDev(),
+            )
         }
-        .combine(hourTicks()) { state, hour ->
-            val npPrices = state.npPrices
-                .filter { it.startTime.toLocalDateTime() >= hour }
-            state.copy(npPrices = npPrices)
+
+    val uiState: Flow<PricesUiState> = hourTicks()
+        .flatMapLatest { hour ->
+            pricesService.pricesFromDateTime(hour.minusHours(2))
         }
+        .map { PricesUiState.Success(npPrices = it) }
         .map { state ->
             state.copy(appliances = appliancesService.activeAppliances())
         }
@@ -85,6 +83,7 @@ class PricesViewModel @Inject constructor(
                 }
             )
         }
+
 
     private fun appliancesCostsFromMinute(
         prices: List<NpPrice>,

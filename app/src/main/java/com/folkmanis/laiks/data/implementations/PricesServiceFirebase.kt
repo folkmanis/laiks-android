@@ -6,19 +6,19 @@ import com.folkmanis.laiks.model.*
 import com.folkmanis.laiks.utilities.ext.minusDays
 import com.folkmanis.laiks.utilities.ext.toInstant
 import com.folkmanis.laiks.utilities.ext.toLocalDateTime
+import com.folkmanis.laiks.utilities.ext.toTimestamp
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.snapshots
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import javax.inject.Inject
 
 class PricesServiceFirebase @Inject constructor(
@@ -56,6 +56,16 @@ class PricesServiceFirebase @Inject constructor(
                 npPrices(fromTime)
             }
     }
+
+    override fun pricesFromDateTime(dateTime: LocalDateTime): Flow<List<NpPrice>> =
+        npPricesCollection
+            .orderBy("startTime")
+            .whereGreaterThanOrEqualTo(
+                "startTime",
+                dateTime.atZone(ZoneId.systemDefault()).toTimestamp()
+            )
+            .snapshots()
+            .map { it.toObjects() }
 
     override suspend fun lastUpdate(): Instant {
         val lastPrice = npPricesCollection

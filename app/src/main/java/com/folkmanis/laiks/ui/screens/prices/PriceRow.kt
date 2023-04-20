@@ -1,6 +1,12 @@
 package com.folkmanis.laiks.ui.screens.prices
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +25,12 @@ import androidx.compose.ui.unit.sp
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
-import com.folkmanis.laiks.utilities.ext.*
+import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
+import com.folkmanis.laiks.utilities.ext.hoursString
+import com.folkmanis.laiks.utilities.ext.isDark
+import com.folkmanis.laiks.utilities.ext.minutesString
+import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
+import com.folkmanis.laiks.utilities.ext.toSignedString
 import java.time.LocalTime
 import kotlin.math.absoluteValue
 
@@ -28,7 +39,9 @@ val largeNumberStyle = TextStyle(
     fontWeight = FontWeight.Bold
 )
 
-fun PowerHour.priceScore(average: Double?, stDev: Double?): Double {
+fun PowerHour.priceScore(statistics: PricesStatistics): Double {
+    val average = statistics.average
+    val stDev = statistics.stDev
     if (average == null || stDev == null) return 0.0
     var score = (average - price) / stDev
     if (score < -1.0) score = -1.0
@@ -50,8 +63,7 @@ fun scoreColor(score: Double, background: Color): Color {
 @Composable
 fun PriceRow(
     powerHour: PowerHour,
-    average: Double?,
-    stDev: Double?,
+    statistics: PricesStatistics,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -99,7 +111,7 @@ fun PriceRow(
                 .toFormattedDecimals(),
             style = largeNumberStyle,
             color = scoreColor(
-                powerHour.priceScore(average, stDev),
+                powerHour.priceScore(statistics),
                 MaterialTheme.colorScheme.surface,
             ),
             modifier = Modifier
@@ -158,7 +170,7 @@ fun TimeText(
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun PriceRowPreview() {
 
@@ -177,8 +189,10 @@ fun PriceRowPreview() {
                     PowerApplianceHour(),
                 ),
             ),
-            average = 12.5,
-            stDev = 0.9
+            statistics = PricesStatistics(
+                average = 12.5,
+                stDev = 0.9
+            ),
         )
     }
 }

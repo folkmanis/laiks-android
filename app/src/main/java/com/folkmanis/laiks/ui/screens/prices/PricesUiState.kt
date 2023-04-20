@@ -17,7 +17,5 @@ sealed interface PricesUiState {
         val appliances: List<PowerAppliance> = emptyList(),
         val minute: LocalDateTime = LocalDateTime.now(),
         val groupedCosts: Map<LocalDate, List<PowerHour>> = emptyMap(),
-        val average: Double = 0.0,
-        val stDev: Double = 0.0,
     ) : PricesUiState
 }

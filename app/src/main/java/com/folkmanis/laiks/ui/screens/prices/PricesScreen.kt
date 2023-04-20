@@ -25,6 +25,7 @@ import java.time.LocalDate
 @Composable
 fun PricesScreen(
     state: PricesUiState,
+    statistics: PricesStatistics,
     actions: @Composable RowScope.() -> Unit,
     popUp: () -> Unit,
     npUploadAllowed: Boolean,
@@ -67,8 +68,7 @@ fun PricesScreen(
         when (state) {
             is PricesUiState.Success -> PricesList(
                 groupedCosts = state.groupedCosts,
-                average = state.average,
-                stDev = state.stDev,
+                statistics = statistics,
                 modifier = Modifier.padding(innerPadding),
             )
 
@@ -91,8 +91,7 @@ fun PricesScreen(
 @Composable
 fun PricesList(
     groupedCosts: Map<LocalDate, List<PowerHour>>,
-    average: Double,
-    stDev: Double,
+    statistics: PricesStatistics,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -110,8 +109,7 @@ fun PricesList(
             items(powerHour, key = { it.id }) {
                 PriceRow(
                     powerHour = it,
-                    average = average,
-                    stDev = stDev,
+                    statistics = statistics,
                     modifier = Modifier
                         .fillMaxWidth(),
                 )
