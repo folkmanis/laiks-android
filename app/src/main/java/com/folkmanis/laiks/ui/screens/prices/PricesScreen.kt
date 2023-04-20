@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,8 +26,10 @@ import java.time.LocalDate
 fun PricesScreen(
     state: PricesUiState,
     actions: @Composable RowScope.() -> Unit,
-    popUp: ()->Unit,
+    popUp: () -> Unit,
+    npUploadAllowed: Boolean,
     modifier: Modifier = Modifier,
+    onRefresh: () -> Unit = {},
 ) {
 
     Scaffold(
@@ -40,17 +43,25 @@ fun PricesScreen(
                     )
                 },
                 navigationIcon = {
-                        IconButton(onClick = popUp) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.back_button)
-                            )
-                        }
+                    IconButton(onClick = popUp) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back_button)
+                        )
+                    }
                 },
                 actions = actions,
             )
         },
-        modifier = modifier
+        modifier = modifier,
+        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButton = {
+            if (npUploadAllowed) {
+                FloatingActionButton(onClick = onRefresh) {
+                    Icon(imageVector = Icons.Filled.Refresh, contentDescription = null)
+                }
+            }
+        }
     ) { innerPadding ->
 
         when (state) {
@@ -60,9 +71,11 @@ fun PricesScreen(
                 stDev = state.stDev,
                 modifier = Modifier.padding(innerPadding),
             )
+
             is PricesUiState.Loading -> LoadingScreen(
                 modifier = Modifier.padding(innerPadding),
             )
+
             is PricesUiState.Error -> ErrorScreen(
                 reason = state.reason,
                 modifier = Modifier.padding(innerPadding),

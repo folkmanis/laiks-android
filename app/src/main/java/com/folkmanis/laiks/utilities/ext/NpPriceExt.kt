@@ -5,10 +5,12 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 val List<NpPrice>.average: Double
-    get() = sumOf { it.value } / size.toDouble()
+    get() = map { it.value }.average()
 
-fun List<NpPrice>.stDev(): Double {
-    val avg = average
-    val sum = map { it.value }.reduce { sum, price -> sum + (price - avg).pow(2) }
-    return sqrt(sum / size)
-}
+fun List<NpPrice>.stDev(): Double =
+    if (isNotEmpty()) {
+        val avg = average
+        val sum = map { it.value }.reduce { sum, price -> sum + (price - avg).pow(2) }
+        sqrt(sum / size)
+    } else 0.0
+

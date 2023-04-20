@@ -9,7 +9,7 @@ import com.google.firebase.firestore.DocumentId
 
 fun ZonedNpPrice.toNpPrice(): NpPrice =
     NpPrice(
-        id = startTime.toTimestamp().toString(),
+        id = id,
         startTime = startTime.toTimestamp(),
         endTime = endTime.toTimestamp(),
         value = value,

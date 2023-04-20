@@ -1,9 +1,13 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
 import com.folkmanis.laiks.VAT
+import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.AppliancesService
+import com.folkmanis.laiks.data.NpUpdateService
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.model.NpPrice
@@ -17,6 +21,8 @@ import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.io.IOError
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
@@ -29,10 +35,16 @@ class PricesViewModel @Inject constructor(
     pricesService: PricesService,
     userPreferencesRepository: UserPreferencesRepository,
     appliancesService: AppliancesService,
+    private val npUpdateService: NpUpdateService,
+    accountService: AccountService,
 ) : ViewModel() {
 
     private val vatAmount = userPreferencesRepository.includeVat
         .map { if (it) VAT else 1.0 }
+
+    val npUploadAllowed: Flow<Boolean> = accountService
+        .laiksUserFlow
+        .map { it?.npUploadAllowed ?: false }
 
     val uiState: Flow<PricesUiState> = pricesService
         .lastDaysPricesFlow(INCLUDE_AVERAGE_DAYS)
@@ -40,11 +52,16 @@ class PricesViewModel @Inject constructor(
             prices.addVat(vat)
         }
         .map { prices ->
-            PricesUiState.Success(
-                npPrices = prices,
-                average = prices.average,
-                stDev = prices.stDev(),
-            )
+            Log.d(TAG, "Prices ${prices.size} records")
+            if (prices.isNotEmpty()) {
+                PricesUiState.Success(
+                    npPrices = prices,
+                    average = prices.average,
+                    stDev = prices.stDev(),
+                )
+            } else {
+                PricesUiState.Success(npPrices = prices)
+            }
         }
         .combine(hourTicks()) { state, hour ->
             val npPrices = state.npPrices
@@ -134,6 +151,17 @@ class PricesViewModel @Inject constructor(
                         )
                     )
                 }
+            }
+        }
+    }
+
+    fun updateNpPrices() {
+        Log.d(TAG, "NpUpdate requested")
+        viewModelScope.launch {
+            try {
+                npUpdateService.updateNpPrices()
+            } catch (err: IOError) {
+                Log.e(TAG, "Request failed: $err", err)
             }
         }
     }

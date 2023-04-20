@@ -6,6 +6,7 @@ import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
@@ -20,8 +21,8 @@ class FakePricesService : PricesService {
         return testPrices(startTimestamp.toLocalDateTime())
     }
 
-    override suspend fun lastUpdate(): LocalDateTime {
-        return LocalDateTime.MIN
+    override suspend fun lastUpdate(): Instant {
+        return Instant.MIN
     }
 
     override suspend fun uploadPrices(prices: List<NpPrice>) {

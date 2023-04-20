@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -20,11 +21,15 @@ fun NavGraphBuilder.pricesScreen(
         val uiState = viewModel.uiState
             .collectAsStateWithLifecycle(PricesUiState.Loading)
             .value
+        val npUploadAllowed by viewModel.npUploadAllowed
+            .collectAsStateWithLifecycle(initialValue = false)
 
         PricesScreen(
             state = uiState,
+            npUploadAllowed = npUploadAllowed,
             actions = { state.AppUserMenu() },
             popUp = state::popUp,
+            onRefresh = viewModel::updateNpPrices,
         )
 
     }

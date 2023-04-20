@@ -36,7 +36,7 @@ fun offsetCosts(
         time -= appliance.cycleLengthSeconds
     }
 
-    val lastTime = npPrices.maxOf { it.endTime.seconds }
+    val lastTime = npPrices.maxOfOrNull { it.endTime.seconds } ?: Long.MIN_VALUE
 
     while (time < lastTime) {
 

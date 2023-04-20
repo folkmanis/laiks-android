@@ -1,8 +1,10 @@
 package com.folkmanis.laiks.data.implementations
 
+import android.util.Log
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.*
 import com.folkmanis.laiks.utilities.ext.minusDays
+import com.folkmanis.laiks.utilities.ext.toInstant
 import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
@@ -15,6 +17,7 @@ import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.time.Instant
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -41,22 +44,20 @@ class PricesServiceFirebase @Inject constructor(
 
     override fun lastDaysPricesFlow(days: Long): Flow<List<NpPrice>> {
         return npPricesCollection
-            .orderBy("endTime", Query.Direction.DESCENDING)
+            .orderBy("startTime", Query.Direction.DESCENDING)
             .limit(1)
             .snapshots()
-            .map { snapshot ->
-                snapshot
-                    .toObjects<NpPrice>()
-                    .first()
-                    .endTime
-                    .minusDays(days)
+            .map {
+                it.toObjects<NpPrice>().firstOrNull()?.endTime ?: Timestamp.now()
             }
+            .map { it.minusDays(days) }
             .map { fromTime ->
+                Log.d(TAG, "Prices from day ${fromTime.toLocalDateTime()}")
                 npPrices(fromTime)
             }
     }
 
-    override suspend fun lastUpdate(): LocalDateTime {
+    override suspend fun lastUpdate(): Instant {
         val lastPrice = npPricesCollection
             .orderBy("startTime", Query.Direction.DESCENDING)
             .limit(1)
@@ -64,13 +65,13 @@ class PricesServiceFirebase @Inject constructor(
             .await()
             .toObjects<NpPrice>()
             .firstOrNull()
-        return lastPrice?.startTime?.toLocalDateTime() ?: LocalDateTime.MIN
+        return lastPrice?.startTime?.toInstant() ?: Instant.MIN
     }
 
     override suspend fun uploadPrices(prices: List<NpPrice>) {
         val batch = firestore.batch()
         prices.forEach { price ->
-            val docRef = npPricesCollection.document(price.startTime.toString())
+            val docRef = npPricesCollection.document(price.id)
             batch.set(docRef, price)
         }
         batch.set(
@@ -78,14 +79,14 @@ class PricesServiceFirebase @Inject constructor(
             NpPricesDocument(),
             SetOptions.merge()
         )
-       batch.commit().await()
+        batch.commit().await()
     }
 
 
     companion object {
         @Suppress("unused")
         private const val TAG = "Prices Service"
-        private const val LAIKS_COLLECTION = "laiks"
+        private const val LAIKS_COLLECTION = "laiks-test"
         private const val NP_DATA = "np-data"
         private const val NP_PRICES_COLLECTION = "prices"
     }

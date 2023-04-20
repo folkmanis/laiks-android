@@ -6,5 +6,8 @@ data class ZonedNpPrice(
     val value: Double,
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
-)
+) {
+    val id: String
+        get() = startTime.toInstant().toString()
+}
 

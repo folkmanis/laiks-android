@@ -5,6 +5,7 @@ import com.folkmanis.laiks.data.implementations.AccountServiceFirebase
 import com.folkmanis.laiks.data.implementations.AppliancesServiceFirebase
 import com.folkmanis.laiks.data.implementations.LocalUserPreferencesRepository
 import com.folkmanis.laiks.data.implementations.NetworkNpRepository
+import com.folkmanis.laiks.data.implementations.NpUpdateServiceFirebase
 import com.folkmanis.laiks.data.implementations.PricesServiceFirebase
 import dagger.Binds
 import dagger.Module
@@ -29,6 +30,9 @@ abstract class ServiceModule {
 
     @Binds
     abstract  fun provideNpApiService(impl: NetworkNpRepository): NpRepository
+
+    @Binds
+    abstract fun provideNpUpdateService(impl: NpUpdateServiceFirebase): NpUpdateService
 
 
 }
