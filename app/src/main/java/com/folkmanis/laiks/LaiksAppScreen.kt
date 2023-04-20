@@ -7,12 +7,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.folkmanis.laiks.ui.screens.appliance_edit.*
+import com.folkmanis.laiks.ui.screens.appliance_edit.applianceCopyRoute
+import com.folkmanis.laiks.ui.screens.appliance_edit.applianceEditScreen
+import com.folkmanis.laiks.ui.screens.appliance_edit.applianceNewRoute
+import com.folkmanis.laiks.ui.screens.appliance_edit.copyAppliance
+import com.folkmanis.laiks.ui.screens.appliance_edit.editAppliance
+import com.folkmanis.laiks.ui.screens.appliance_edit.newAppliance
 import com.folkmanis.laiks.ui.screens.appliances.appliancesScreen
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
 import com.folkmanis.laiks.ui.screens.clock.clockScreen
-import com.folkmanis.laiks.ui.screens.np_data.navigateToNpPrices
-import com.folkmanis.laiks.ui.screens.np_data.npDataScreen
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.editUser
@@ -48,7 +51,6 @@ fun LaiksAppScreen(
         clockScreen(
             appState = appState,
             onNavigateToPrices = navController::navigateToPrices,
-            onNpPrices = navController::navigateToNpPrices,
         )
 
         pricesScreen(appState)
@@ -72,7 +74,6 @@ fun LaiksAppScreen(
 
         applianceCopyRoute(appState)
 
-        npDataScreen()
     }
 }
 
