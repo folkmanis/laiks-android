@@ -54,11 +54,12 @@ internal fun UserEditScreen(
 
         UserFormScreen(
             laiksUser = userState.laiksUser,
+            modifier = Modifier.padding(innerPadding),
             enabled = userState.enabled,
             onIsAdminChange = viewModel::setIsAdmin,
             adminChangeEnabled = !userState.isCurrentUser,
             onNpAllowedChange = viewModel::setNpAllowed,
-            modifier = Modifier.padding(innerPadding),
+            onNpUploadAllowedChange = viewModel::setNpUploadAllowed,
         )
 
     }
@@ -71,8 +72,9 @@ fun UserFormScreen(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     adminChangeEnabled: Boolean = false,
-    onNpAllowedChange: () -> Unit = {},
-    onIsAdminChange: () -> Unit = {},
+    onNpAllowedChange: (Boolean) -> Unit = {},
+    onIsAdminChange: (Boolean) -> Unit = {},
+    onNpUploadAllowedChange: (Boolean)->Unit={},
 ) {
     Column(
         modifier = modifier
@@ -88,16 +90,27 @@ fun UserFormScreen(
         ) {
             Checkbox(
                 checked = laiksUser.npAllowed,
-                onCheckedChange = { onNpAllowedChange() },
+                onCheckedChange = onNpAllowedChange,
                 enabled = enabled,
             )
             Text(text = stringResource(id = R.string.np_allowed_checkbox))
         }
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = laiksUser.npUploadAllowed,
+                onCheckedChange = onNpUploadAllowedChange,
+                enabled = enabled,
+            )
+            Text(text = stringResource(id = R.string.np_upload_allowed_checkbox))
+        }
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = laiksUser.isAdmin,
-                onCheckedChange = { onIsAdminChange() },
+                onCheckedChange = onIsAdminChange,
                 enabled = enabled && adminChangeEnabled
             )
             Text(text = stringResource(id = R.string.is_admin_checkbox))

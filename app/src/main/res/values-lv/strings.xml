@@ -40,4 +40,5 @@
     <string name="action_cancel">Atcelt</string>
     <string name="action_save">Saglabāt</string>
     <string name="edit">Labot</string>
+    <string name="np_upload_allowed_checkbox">Tiesības atjaunot cenas</string>
 </resources>

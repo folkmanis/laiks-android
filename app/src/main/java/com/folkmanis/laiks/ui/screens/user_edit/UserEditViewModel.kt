@@ -29,20 +29,30 @@ class UserEditViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LaiksUserState())
     val uiState = _uiState.asStateFlow()
 
-    fun setNpAllowed() {
+    fun setNpAllowed(value: Boolean) {
         _uiState.update {
             val user = with(it.laiksUser) {
-                copy(npAllowed = !npAllowed)
+                copy(npAllowed = value)
             }
             it.copy(laiksUser = user)
         }
         saveUser()
     }
 
-    fun setIsAdmin() {
+    fun setNpUploadAllowed(value: Boolean) {
+        _uiState.update {
+            val user= with(it.laiksUser) {
+                copy(npUploadAllowed = value)
+            }
+            it.copy(laiksUser = user)
+        }
+        saveUser()
+    }
+
+    fun setIsAdmin(value: Boolean) {
         _uiState.update {
             val user = with(it.laiksUser) {
-                copy(isAdmin = !isAdmin)
+                copy(isAdmin = value)
             }
             it.copy(laiksUser = user)
         }
