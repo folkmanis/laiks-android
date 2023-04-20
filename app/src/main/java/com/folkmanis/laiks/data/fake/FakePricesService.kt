@@ -20,6 +20,14 @@ class FakePricesService : PricesService {
         return testPrices(startTimestamp.toLocalDateTime())
     }
 
+    override suspend fun lastUpdate(): LocalDateTime {
+        return LocalDateTime.MIN
+    }
+
+    override suspend fun uploadPrices(prices: List<NpPrice>) {
+
+    }
+
     companion object {
 
 
