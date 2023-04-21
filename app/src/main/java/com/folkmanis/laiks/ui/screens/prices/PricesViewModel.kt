@@ -61,10 +61,28 @@ class PricesViewModel @Inject constructor(
             )
         }
 
+    val appliancesState: Flow<Map<Int, List<PowerApplianceHour>>> = hourTicks()
+        .flatMapLatest { hour ->
+            pricesService.pricesFromDateTime(hour)
+        }
+        .combine(minuteTicks()) { prices, minute ->
+            val appliances = appliancesService.activeAppliances()
+            appliancesCostsFromMinute(
+                prices, minute, appliances
+            )
+        }
+
     val uiState: Flow<PricesUiState> = hourTicks()
         .flatMapLatest { hour ->
             pricesService.pricesFromDateTime(hour.minusHours(2))
         }
+        .map { prices ->
+            val groupedPrices = prices.groupBy { price ->
+                price.startTime.toLocalDateTime().toLocalDate()
+            }
+            PricesUiState.Success(groupedPrices)
+        }
+/*
         .map { PricesUiState.Success(npPrices = it) }
         .map { state ->
             state.copy(appliances = appliancesService.activeAppliances())
@@ -84,21 +102,24 @@ class PricesViewModel @Inject constructor(
                 }
             )
         }
+*/
 
 
     private fun appliancesCostsFromMinute(
         prices: List<NpPrice>,
         minute: LocalDateTime,
         appliances: List<PowerAppliance>,
-    ): List<PowerHour> {
+    ): Map<Int, List<PowerApplianceHour>> {
 
         val startTime = minute.atZone(ZoneId.systemDefault()).toInstant()
-        val appliancesAllCosts = buildMap {
-            appliances.forEach { appliance ->
-                val costs = offsetCosts(prices, startTime, appliance)
-                put(appliance, costs)
+        val appliancesAllCosts: Map<PowerAppliance, Map<Long, Double>> =
+            buildMap {
+                appliances.forEach { appliance ->
+                    val costs = offsetCosts(prices, startTime, appliance)
+                    put(appliance, costs)
+                }
             }
-        }
+
         val bestOffsets = buildMap {
             appliancesAllCosts.forEach { (powerAppliance, costs) ->
                 val bestOffset = costs
@@ -109,6 +130,21 @@ class PricesViewModel @Inject constructor(
             }
         }
 
+        val hourlyCosts: Map<Int, List<PowerApplianceHour>> = buildMap {
+            prices.forEach { npPrice ->
+                val offset = npPrice.startTime.hoursFrom(minute)
+                val appliancesHour = appliances.toPowerApplianceHour(
+                    appliancesAllCosts,
+                    offset,
+                    bestOffsets
+                )
+                put(offset, appliancesHour)
+            }
+        }
+
+        return hourlyCosts
+
+/*
         val powerHours = prices.map { price ->
             val offset = price.startTime.hoursFrom(minute)
             val appliancesHours = appliances.toPowerApplianceHour(
@@ -126,8 +162,8 @@ class PricesViewModel @Inject constructor(
                 appliancesHours = appliancesHours,
             )
         }
+*/
 
-        return powerHours
     }
 
     private fun List<PowerAppliance>.toPowerApplianceHour(
@@ -158,7 +194,7 @@ class PricesViewModel @Inject constructor(
         Log.d(TAG, "NpUpdate requested")
         viewModelScope.launch {
             try {
-               val newRecords= npUpdateService.updateNpPrices()
+                val newRecords = npUpdateService.updateNpPrices()
                 SnackbarManager.showMessage("$newRecords hourly prices retrieved")
             } catch (err: Throwable) {
                 Log.e(TAG, "Error: $err")

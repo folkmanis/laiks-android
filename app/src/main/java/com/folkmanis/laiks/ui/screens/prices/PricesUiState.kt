@@ -13,9 +13,15 @@ sealed interface PricesUiState {
         val exception: Throwable,
         ) : PricesUiState
     data class Success(
-        val npPrices: List<NpPrice> = emptyList(),
-        val appliances: List<PowerAppliance> = emptyList(),
-        val minute: LocalDateTime = LocalDateTime.now(),
-        val groupedCosts: Map<LocalDate, List<PowerHour>> = emptyMap(),
+//        val npPrices: List<NpPrice> = emptyList(),
+//        val appliances: List<PowerAppliance> = emptyList(),
+//        val minute: LocalDateTime = LocalDateTime.now(),
+        val groupedCosts: Map<LocalDate, List<NpPrice>> = emptyMap(),
     ) : PricesUiState
+
+    companion object {
+        fun List<NpPrice>.toPowerHours() {
+
+        }
+    }
 }

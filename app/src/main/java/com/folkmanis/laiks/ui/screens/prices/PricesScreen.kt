@@ -100,7 +100,7 @@ fun PricesList(
     ) {
         groupedCosts.forEach { (date, powerHour) ->
             item {
-                DateHeader(date = date)
+                DateHeaderScreen(date = date)
                 Divider(
                     thickness = 2.dp,
                     modifier = Modifier

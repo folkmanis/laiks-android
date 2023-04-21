@@ -6,20 +6,20 @@ import com.folkmanis.laiks.model.PowerApplianceCycle
 import com.folkmanis.laiks.utilities.ext.sWtoMWh
 import java.time.Instant
 
-val PowerAppliance.cycleLengthSeconds: Long
-    get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.seconds }
-
 fun Map<Long, Double>.bestOffset(): Int? {
     return minByOrNull { mapEntry -> mapEntry.value }?.key?.toInt()
 }
 
-fun PowerAppliance.startTime(time: Long): Long {
+private fun PowerAppliance.startTime(time: Long): Long {
     return if (this.delay == "end") {
         time - this.cycleLengthSeconds
     } else {
         time
     }
 }
+
+private val PowerAppliance.cycleLengthSeconds: Long
+    get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.seconds }
 
 fun offsetCosts(
     npPrices: List<NpPrice>,
