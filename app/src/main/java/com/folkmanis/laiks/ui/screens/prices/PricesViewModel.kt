@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
+import com.folkmanis.laiks.R
 import com.folkmanis.laiks.VAT
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.AppliancesService
@@ -13,13 +14,13 @@ import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceHour
-import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.utilities.bestOffset
 import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
 import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
+import com.folkmanis.laiks.utilities.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -88,28 +89,6 @@ class PricesViewModel @Inject constructor(
                     PricesUiState.Success(groupedPrices, hour)
                 }
         }
-/*
-        .map { PricesUiState.Success(npPrices = it) }
-        .map { state ->
-            state.copy(appliances = appliancesService.activeAppliances())
-        }
-        .combine(minuteTicks()) { state, minute ->
-            state.copy(minute = minute)
-        }
-        .map { state ->
-            val powerHours = appliancesCostsFromMinute(
-                prices = state.npPrices,
-                minute = state.minute,
-                appliances = state.appliances,
-            )
-            state.copy(
-                groupedCosts = powerHours.groupBy {
-                    it.startTime.toLocalDate()
-                }
-            )
-        }
-*/
-
 
     private fun appliancesCostsFromMinute(
         prices: List<NpPrice>,
@@ -150,26 +129,6 @@ class PricesViewModel @Inject constructor(
 
         return hourlyCosts
 
-/*
-        val powerHours = prices.map { price ->
-            val offset = price.startTime.hoursFrom(minute)
-            val appliancesHours = appliances.toPowerApplianceHour(
-                appliancesAllCosts,
-                offset,
-                bestOffsets
-            )
-            PowerHour(
-                id = price.id,
-                offset = offset,
-                minute = minute,
-                price = price.value,
-                startTime = price.startTime.toLocalDateTime(),
-                endTime = price.endTime.toLocalDateTime(),
-                appliancesHours = appliancesHours,
-            )
-        }
-*/
-
     }
 
     private fun List<PowerAppliance>.toPowerApplianceHour(
@@ -201,8 +160,16 @@ class PricesViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val newRecords = npUpdateService.updateNpPrices()
-                SnackbarManager.showMessage("$newRecords hourly prices retrieved")
+                Log.d(TAG, "$newRecords retrieved")
+                SnackbarManager.showMessage(
+                    R.plurals.prices_retrieved,
+                    newRecords,
+                    newRecords
+                )
             } catch (err: Throwable) {
+                SnackbarManager.showMessage(
+                    err.toSnackbarMessage()
+                )
                 Log.e(TAG, "Error: $err")
             }
         }

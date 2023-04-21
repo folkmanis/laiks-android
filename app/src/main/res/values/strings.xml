@@ -44,4 +44,8 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
     <string name="generic_error">Error!</string>
+    <plurals name="prices_retrieved">
+        <item quantity="one">%1$d price retrieved</item>
+        <item quantity="other">%1$d prices retrieved</item>
+    </plurals>
 </resources>

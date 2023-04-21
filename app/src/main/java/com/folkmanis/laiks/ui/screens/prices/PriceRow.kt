@@ -24,14 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
-import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.isDark
 import com.folkmanis.laiks.utilities.ext.minutesString
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
-import com.folkmanis.laiks.utilities.ext.toLocalDateTime
 import com.folkmanis.laiks.utilities.ext.toLocalTime
 import com.folkmanis.laiks.utilities.ext.toSignedString
 import java.time.LocalTime

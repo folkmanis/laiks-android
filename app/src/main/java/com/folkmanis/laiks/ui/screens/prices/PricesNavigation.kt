@@ -18,9 +18,8 @@ fun NavGraphBuilder.pricesScreen(
     composable(ROUTE) {
 
         val viewModel: PricesViewModel = hiltViewModel()
-        val uiState = viewModel.uiState
+        val uiState by viewModel.uiState
             .collectAsStateWithLifecycle(PricesUiState.Loading)
-            .value
         val npUploadAllowed by viewModel.npUploadAllowed
             .collectAsStateWithLifecycle(initialValue = false)
         val statistics by viewModel.pricesStatistics

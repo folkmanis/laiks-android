@@ -1,19 +1,26 @@
 package com.folkmanis.laiks.utilities.snackbar
 
 import android.content.res.Resources
+import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import com.folkmanis.laiks.R
 
 sealed class SnackbarMessage {
 
-    class StringSnackbar(val message: String): SnackbarMessage()
-    class ResourceSnackbar(@StringRes val message: Int): SnackbarMessage()
+    class StringSnackbar(val message: String) : SnackbarMessage()
+    class ResourceSnackbar(@StringRes val message: Int) : SnackbarMessage()
+    class PluralsSnackbar(
+        @PluralsRes val message: Int,
+        val count: Int,
+        vararg val formatArgs: Any
+    ) : SnackbarMessage()
 
     companion object {
         fun SnackbarMessage.toMessage(resources: Resources): String {
-            return when(this) {
-                is StringSnackbar -> this.message
-                is ResourceSnackbar -> resources.getString(this.message)
+            return when (this) {
+                is StringSnackbar -> message
+                is ResourceSnackbar -> resources.getString(message)
+                is PluralsSnackbar -> resources.getQuantityString(message, count, *formatArgs)
             }
         }
 
