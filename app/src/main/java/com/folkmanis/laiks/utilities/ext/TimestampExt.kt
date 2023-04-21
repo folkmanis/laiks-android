@@ -4,6 +4,7 @@ import com.folkmanis.laiks.utilities.hoursUntilTimestamp
 import com.google.firebase.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 
 fun Timestamp.hoursFrom(dateNow: LocalDateTime): Int {
@@ -16,6 +17,9 @@ fun Timestamp.toLocalDateTime(): LocalDateTime {
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
 }
+
+fun Timestamp.toLocalTime(): LocalTime =
+    toLocalDateTime().toLocalTime()
 
 fun Timestamp.minusDays(days: Long): Timestamp =
     Timestamp(seconds - days * 24 * 60 * 60, nanoseconds)

@@ -25,8 +25,9 @@ fun NavGraphBuilder.pricesScreen(
             .collectAsStateWithLifecycle(initialValue = false)
         val statistics by viewModel.pricesStatistics
             .collectAsStateWithLifecycle(initialValue = PricesStatistics())
+        val appliances by viewModel.appliancesState
+            .collectAsStateWithLifecycle(initialValue = emptyMap())
 
-        state.snackbarHostState
         PricesScreen(
             state = uiState,
             npUploadAllowed = npUploadAllowed,
@@ -35,6 +36,7 @@ fun NavGraphBuilder.pricesScreen(
             onRefresh = viewModel::updateNpPrices,
             statistics = statistics,
             snackbarHostState = state.snackbarHostState,
+            appliances = appliances
         )
 
     }

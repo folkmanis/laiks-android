@@ -65,6 +65,9 @@ class PricesViewModel @Inject constructor(
         .flatMapLatest { hour ->
             pricesService.pricesFromDateTime(hour)
         }
+        .combine(vatAmount) { prices, vat ->
+            prices.addVat(vat)
+        }
         .combine(minuteTicks()) { prices, minute ->
             val appliances = appliancesService.activeAppliances()
             appliancesCostsFromMinute(
@@ -75,12 +78,15 @@ class PricesViewModel @Inject constructor(
     val uiState: Flow<PricesUiState> = hourTicks()
         .flatMapLatest { hour ->
             pricesService.pricesFromDateTime(hour.minusHours(2))
-        }
-        .map { prices ->
-            val groupedPrices = prices.groupBy { price ->
-                price.startTime.toLocalDateTime().toLocalDate()
-            }
-            PricesUiState.Success(groupedPrices)
+                .combine(vatAmount) { prices, vat ->
+                    prices.addVat(vat)
+                }
+                .map { prices ->
+                    val groupedPrices = prices.groupBy { price ->
+                        price.startTime.toLocalDateTime().toLocalDate()
+                    }
+                    PricesUiState.Success(groupedPrices, hour)
+                }
         }
 /*
         .map { PricesUiState.Success(npPrices = it) }

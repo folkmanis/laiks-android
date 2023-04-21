@@ -22,6 +22,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PowerHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
@@ -30,6 +31,8 @@ import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.isDark
 import com.folkmanis.laiks.utilities.ext.minutesString
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
+import com.folkmanis.laiks.utilities.ext.toLocalDateTime
+import com.folkmanis.laiks.utilities.ext.toLocalTime
 import com.folkmanis.laiks.utilities.ext.toSignedString
 import java.time.LocalTime
 import kotlin.math.absoluteValue
@@ -39,11 +42,11 @@ val largeNumberStyle = TextStyle(
     fontWeight = FontWeight.Bold
 )
 
-fun PowerHour.priceScore(statistics: PricesStatistics): Double {
+fun Double.priceScore(statistics: PricesStatistics): Double {
     val average = statistics.average
     val stDev = statistics.stDev
     if (average == null || stDev == null) return 0.0
-    var score = (average - price) / stDev
+    var score = (average - this) / stDev
     if (score < -1.0) score = -1.0
     if (score > 1.0) score = 1.0
     return score
@@ -62,7 +65,9 @@ fun scoreColor(score: Double, background: Color): Color {
 
 @Composable
 fun PriceRow(
-    powerHour: PowerHour,
+    offset: Int,
+    npPrice: NpPrice,
+    appliances: List<PowerApplianceHour>,
     statistics: PricesStatistics,
     modifier: Modifier = Modifier,
 ) {
@@ -77,10 +82,9 @@ fun PriceRow(
             modifier = Modifier
                 .width(48.dp),
         ) {
-            val hours = powerHour.offset
-            if (hours >= 0) {
+            if (offset >= 0) {
                 Text(
-                    text = hours.toSignedString(),
+                    text = offset.toSignedString(),
                     style = largeNumberStyle,
                 )
             }
@@ -95,23 +99,23 @@ fun PriceRow(
         ) {
 
             TimeIntervalText(
-                startTime = powerHour.startTime.toLocalTime(),
-                endTime = powerHour.endTime.toLocalTime(),
+                startTime = npPrice.startTime.toLocalTime(),
+                endTime = npPrice.endTime.toLocalTime(),
                 modifier = Modifier
                     .width(116.dp)
             )
 
-            AppliancesCosts(appliances = powerHour.appliancesHours)
+            AppliancesCosts(appliances = appliances)
         }
 
         Text(
             text =
-            powerHour.price
+            npPrice.value
                 .eurMWhToCentsKWh()
                 .toFormattedDecimals(),
             style = largeNumberStyle,
             color = scoreColor(
-                powerHour.priceScore(statistics),
+                npPrice.value.priceScore(statistics),
                 MaterialTheme.colorScheme.surface,
             ),
             modifier = Modifier
@@ -176,18 +180,18 @@ fun PriceRowPreview() {
 
     LaiksTheme(darkTheme = true) {
         PriceRow(
-            powerHour = PowerHour(
+            offset = 2,
+            npPrice = NpPrice(
                 id = "ACD12",
-                offset = 2,
-                price = 12.5,
-                appliancesHours = listOf(
-                    PowerApplianceHour(
-                        isBest = true,
-                        cost = 0.185,
-                        name = "Veļasmašīna"
-                    ),
-                    PowerApplianceHour(),
+                value = 12.5,
+            ),
+            appliances = listOf(
+                PowerApplianceHour(
+                    name = "Veļasmašīna",
+                    isBest = true,
+                    cost = 0.185,
                 ),
+                PowerApplianceHour(),
             ),
             statistics = PricesStatistics(
                 average = 12.5,

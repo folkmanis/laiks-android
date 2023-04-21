@@ -17,21 +17,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.PowerHour
+import com.folkmanis.laiks.model.NpPrice
+import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
+import com.folkmanis.laiks.utilities.ext.hoursFrom
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
 fun PricesScreen(
     state: PricesUiState,
     statistics: PricesStatistics,
+    appliances: Map<Int, List<PowerApplianceHour>>,
     actions: @Composable RowScope.() -> Unit,
     popUp: () -> Unit,
     npUploadAllowed: Boolean,
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit = {},
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     Scaffold(
         topBar = {
@@ -68,9 +72,11 @@ fun PricesScreen(
 
         when (state) {
             is PricesUiState.Success -> PricesList(
-                groupedCosts = state.groupedCosts,
+                groupedPrices = state.groupedPrices,
+                hour = state.hour,
                 statistics = statistics,
                 modifier = Modifier.padding(innerPadding),
+                appliances = appliances,
             )
 
             is PricesUiState.Loading -> LoadingScreen(
@@ -91,14 +97,16 @@ fun PricesScreen(
 
 @Composable
 fun PricesList(
-    groupedCosts: Map<LocalDate, List<PowerHour>>,
+    groupedPrices: Map<LocalDate, List<NpPrice>>,
+    appliances: Map<Int, List<PowerApplianceHour>>,
+    hour: LocalDateTime,
     statistics: PricesStatistics,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier
     ) {
-        groupedCosts.forEach { (date, powerHour) ->
+        groupedPrices.forEach { (date, npPrices) ->
             item {
                 DateHeaderScreen(date = date)
                 Divider(
@@ -107,12 +115,15 @@ fun PricesList(
                         .padding(horizontal = 16.dp)
                 )
             }
-            items(powerHour, key = { it.id }) {
+            items(npPrices, key = { it.id }) { npPrice ->
+                val offset = npPrice.startTime.hoursFrom(hour)
                 PriceRow(
-                    powerHour = it,
+                    npPrice = npPrice,
                     statistics = statistics,
                     modifier = Modifier
                         .fillMaxWidth(),
+                    appliances = appliances.getOrDefault(offset, emptyList()),
+                    offset = offset
                 )
                 Divider(
                     thickness = 2.dp,
