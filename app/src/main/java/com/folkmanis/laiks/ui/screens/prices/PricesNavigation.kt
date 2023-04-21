@@ -26,6 +26,7 @@ fun NavGraphBuilder.pricesScreen(
         val statistics by viewModel.pricesStatistics
             .collectAsStateWithLifecycle(initialValue = PricesStatistics())
 
+        state.snackbarHostState
         PricesScreen(
             state = uiState,
             npUploadAllowed = npUploadAllowed,
@@ -33,6 +34,7 @@ fun NavGraphBuilder.pricesScreen(
             popUp = state::popUp,
             onRefresh = viewModel::updateNpPrices,
             statistics = statistics,
+            snackbarHostState = state.snackbarHostState,
         )
 
     }

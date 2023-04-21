@@ -31,8 +31,8 @@ fun PricesScreen(
     npUploadAllowed: Boolean,
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit = {},
+    snackbarHostState: SnackbarHostState
 ) {
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -62,7 +62,8 @@ fun PricesScreen(
                     Icon(imageVector = Icons.Filled.Refresh, contentDescription = null)
                 }
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
 
         when (state) {

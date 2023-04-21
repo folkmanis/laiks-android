@@ -41,4 +41,5 @@
     <string name="action_save">Saglabāt</string>
     <string name="edit">Labot</string>
     <string name="np_upload_allowed_checkbox">Tiesības atjaunot cenas</string>
+    <string name="generic_error">Radusies kļūda!</string>
 </resources>

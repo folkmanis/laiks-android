@@ -19,6 +19,7 @@ import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
+import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -157,7 +158,8 @@ class PricesViewModel @Inject constructor(
         Log.d(TAG, "NpUpdate requested")
         viewModelScope.launch {
             try {
-                npUpdateService.updateNpPrices()
+               val newRecords= npUpdateService.updateNpPrices()
+                SnackbarManager.showMessage("$newRecords hourly prices retrieved")
             } catch (err: Throwable) {
                 Log.e(TAG, "Error: $err")
             }

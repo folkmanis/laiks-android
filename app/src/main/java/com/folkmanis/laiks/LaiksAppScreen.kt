@@ -1,9 +1,14 @@
 package com.folkmanis.laiks
 
+import android.content.res.Resources
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +26,7 @@ import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.editUser
 import com.folkmanis.laiks.ui.screens.user_edit.userEditScreen
 import com.folkmanis.laiks.ui.screens.users.usersScreen
+import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -28,10 +34,26 @@ import kotlinx.coroutines.CoroutineScope
 fun rememberAppState(
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    snackbarManager: SnackbarManager = SnackbarManager,
+    resources: Resources = resources(),
 ) =
-    remember(navController, coroutineScope) {
-        LaiksAppState(navController, coroutineScope)
+    remember(navController, coroutineScope, snackbarHostState, snackbarManager, resources) {
+        LaiksAppState(
+            navController,
+            coroutineScope,
+            snackbarHostState,
+            snackbarManager,
+            resources,
+        )
     }
+
+@Composable
+@ReadOnlyComposable
+fun resources(): Resources {
+    LocalConfiguration.current
+    return LocalContext.current.resources
+}
 
 @Composable
 fun LaiksAppScreen(
