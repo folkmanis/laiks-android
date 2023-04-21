@@ -8,6 +8,9 @@ import kotlinx.serialization.Serializable
 data class Data(
     @SerialName("Rows") val rows: List<Row> = listOf(),
 ) {
-    fun toZonedNpPrices(): List<ZonedNpPrice> = rows.map { it.toZonedNpPrices() }.flatten()
+    fun toZonedNpPrices(): List<ZonedNpPrice> = rows
+        .filter { it.isExtraRow.not() }
+        .map { it.toZonedNpPrices() }
+        .flatten()
 
 }
