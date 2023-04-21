@@ -1,25 +1,22 @@
 package com.folkmanis.laiks
 
-import com.folkmanis.laiks.data.fake.FakePricesService.Companion.dishWasher
-import com.folkmanis.laiks.data.fake.FakePricesService.Companion.washer
+import com.folkmanis.laiks.data.fake.FakeAppliancesService.Companion.dishWasher
+import com.folkmanis.laiks.data.fake.FakeAppliancesService.Companion.washer
 import com.folkmanis.laiks.data.fake.FakePricesService.Companion.testPrices
 import com.folkmanis.laiks.model.NpPrice
-import com.folkmanis.laiks.utilities.*
+import com.folkmanis.laiks.utilities.bestOffset
+import com.folkmanis.laiks.utilities.cycleCost
+import com.folkmanis.laiks.utilities.cycleLengthSeconds
 import com.folkmanis.laiks.utilities.ext.sWtoMWh
-import com.google.firebase.Timestamp
+import com.folkmanis.laiks.utilities.offsetCosts
+import com.folkmanis.laiks.utilities.timeCost
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
 
-
-private fun LocalDateTime.toTimestamp(): Timestamp {
-    val instant = this.atZone(ZoneId.systemDefault()).toInstant()
-    return Timestamp(Date.from(instant))
-}
 
 private val pricesStart = LocalDateTime.of(2023, 3, 24, 23, 0)
 val prices: List<NpPrice> = testPrices(pricesStart)

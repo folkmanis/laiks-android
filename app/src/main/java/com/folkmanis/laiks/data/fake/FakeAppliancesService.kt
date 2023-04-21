@@ -31,7 +31,7 @@ class FakeAppliancesService : AppliancesService {
     }
 
     companion object {
-        private val dishWasher = PowerAppliance(
+        val dishWasher = PowerAppliance(
             cycles = listOf(
                 PowerApplianceCycle(
                     consumption = 100,
@@ -54,7 +54,7 @@ class FakeAppliancesService : AppliancesService {
             id = "12AFE34",
         )
 
-        private val washer = dishWasher.copy(
+        val washer = dishWasher.copy(
             id = "12AFE35",
             delay = "end",
             minimumDelay = 3L,
