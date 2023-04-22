@@ -20,8 +20,6 @@ fun NavGraphBuilder.pricesScreen(
         val viewModel: PricesViewModel = hiltViewModel()
         val uiState by viewModel.uiState
             .collectAsStateWithLifecycle(PricesUiState.Loading)
-        val npUploadAllowed by viewModel.npUploadAllowed
-            .collectAsStateWithLifecycle(initialValue = false)
         val statistics by viewModel.pricesStatistics
             .collectAsStateWithLifecycle(initialValue = PricesStatistics())
         val appliances by viewModel.appliancesState
@@ -29,10 +27,8 @@ fun NavGraphBuilder.pricesScreen(
 
         PricesScreen(
             state = uiState,
-            npUploadAllowed = npUploadAllowed,
             actions = { state.AppUserMenu() },
             popUp = state::popUp,
-            onRefresh = viewModel::updateNpPrices,
             statistics = statistics,
             snackbarHostState = state.snackbarHostState,
             appliances = appliances

@@ -1,13 +1,21 @@
 package com.folkmanis.laiks.ui.screens.user_menu
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -17,15 +25,13 @@ import com.folkmanis.laiks.utilities.composables.AvatarIcon
 
 @Composable
 fun LoggedInUserMenu(
-    photoUrl: Uri?,
-    displayName: String,
-    isAdmin: Boolean,
-    npAllowed: Boolean,
+    state: UserMenuUiState.LoggedIn,
     onLogout: () -> Unit,
     isVat: Boolean,
     onSetVat: (Boolean) -> Unit,
     onUsersAdmin: () -> Unit,
     onAppliancesAdmin: () -> Unit,
+    onNpPricesReload: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -35,10 +41,10 @@ fun LoggedInUserMenu(
         modifier = modifier
     ) {
         IconButton(onClick = { menuExpanded = !menuExpanded }) {
-            if (photoUrl != null) {
+            if (state.photoUrl != null) {
                 AvatarIcon(
-                    photoUrl = photoUrl,
-                    displayName = displayName,
+                    photoUrl = state.photoUrl,
+                    displayName = state.displayName,
                     modifier = Modifier.size(30.dp)
                 )
             } else {
@@ -71,7 +77,7 @@ fun LoggedInUserMenu(
                 }
             )
             // PVN
-            if (npAllowed) {
+            if (state.isPricesAllowed) {
                 DropdownMenuItem(
                     text = {
                         Text(text = stringResource(id = R.string.include_vat))
@@ -88,7 +94,7 @@ fun LoggedInUserMenu(
                 )
             }
             // Admin
-            if (isAdmin) {
+            if (state.isAdmin) {
                 // Users
                 DropdownMenuItem(
                     text = {
@@ -121,6 +127,26 @@ fun LoggedInUserMenu(
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                         )
+                    }
+                )
+            }
+            // Reload
+            if (state.isNpUploadAllowed) {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(id = R.string.load_np_data))
+                    },
+                    onClick = {
+                        menuExpanded = false
+                        onNpPricesReload()
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                        )
+
                     }
                 )
             }

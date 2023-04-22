@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,9 +31,7 @@ fun PricesScreen(
     appliances: Map<Int, List<PowerApplianceHour>>,
     actions: @Composable RowScope.() -> Unit,
     popUp: () -> Unit,
-    npUploadAllowed: Boolean,
     modifier: Modifier = Modifier,
-    onRefresh: () -> Unit = {},
     snackbarHostState: SnackbarHostState,
 ) {
     Scaffold(
@@ -59,14 +56,6 @@ fun PricesScreen(
             )
         },
         modifier = modifier,
-        floatingActionButtonPosition = FabPosition.End,
-        floatingActionButton = {
-            if (npUploadAllowed) {
-                FloatingActionButton(onClick = onRefresh) {
-                    Icon(imageVector = Icons.Filled.Refresh, contentDescription = null)
-                }
-            }
-        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
 

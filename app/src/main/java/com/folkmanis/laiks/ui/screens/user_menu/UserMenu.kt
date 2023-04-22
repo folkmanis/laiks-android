@@ -23,11 +23,9 @@ fun UserMenu(
 
     val isVat by viewModel.isVat.collectAsStateWithLifecycle(initialValue = true)
 
-    val uiState =
-        viewModel.uiState
-            .collectAsStateWithLifecycle(initialValue = UserMenuUiState.NotLoggedIn)
-            .value
-
+    val uiState = viewModel.uiState
+        .collectAsStateWithLifecycle(initialValue = UserMenuUiState.NotLoggedIn)
+        .value
     val context = LocalContext.current
 
     val loginLauncher = rememberLauncherForActivityResult(
@@ -38,13 +36,8 @@ fun UserMenu(
         }
     }
 
-
     if (uiState is UserMenuUiState.LoggedIn) {
         LoggedInUserMenu(
-            photoUrl = uiState.photoUrl,
-            displayName = uiState.displayName,
-            npAllowed = uiState.isPricesAllowed,
-            isAdmin = uiState.isAdmin,
             onLogout = {
                 viewModel.logout(context)
                 onLogout()
@@ -55,7 +48,9 @@ fun UserMenu(
             },
             onUsersAdmin = onUsersAdmin,
             onAppliancesAdmin = onAppliancesAdmin,
-            modifier = modifier
+            state = uiState,
+            onNpPricesReload = viewModel::updateNpPrices,
+            modifier = modifier,
         )
     } else {
         NotLoggedInUserMenu(

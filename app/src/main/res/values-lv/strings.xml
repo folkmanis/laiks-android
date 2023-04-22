@@ -42,6 +42,7 @@
     <string name="edit">Labot</string>
     <string name="np_upload_allowed_checkbox">Tiesības atjaunot cenas</string>
     <string name="generic_error">Radusies kļūda!</string>
+    <string name="load_np_data">Atjaunot cenas</string>
     <plurals name="prices_retrieved">
         <item quantity="one">%d ieraksts pievienots</item>
         <item quantity="zero">%d ierakstu pievienoti</item>
