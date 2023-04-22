@@ -5,12 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.VAT
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.NpUpdateService
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.data.UserPreferencesRepository
+import com.folkmanis.laiks.data.domain.LastDaysPricesUseCase
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceHour
@@ -27,67 +26,57 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
 import javax.inject.Inject
-
-fun List<NpPrice>.addVat(amount: Double): List<NpPrice> =
-    map { it.copy(value = it.value.withVat(amount)) }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PricesViewModel @Inject constructor(
-    pricesService: PricesService,
-    userPreferencesRepository: UserPreferencesRepository,
+//    pricesService: PricesService,
     appliancesService: AppliancesService,
     private val npUpdateService: NpUpdateService,
     accountService: AccountService,
+    lastDaysPrices: LastDaysPricesUseCase,
 ) : ViewModel() {
-
-    private val vatAmount = userPreferencesRepository.includeVat
-        .map { if (it) VAT else 1.0 }
 
     val npUploadAllowed: Flow<Boolean> = accountService
         .laiksUserFlow
         .map { it?.npUploadAllowed ?: false }
 
-    val pricesStatistics: Flow<PricesStatistics> = pricesService
-        .lastDaysPricesFlow(INCLUDE_AVERAGE_DAYS)
-        .filter(List<NpPrice>::isNotEmpty)
-        .combine(vatAmount) { prices, vat ->
-            prices.addVat(vat)
-        }
-        .map { prices ->
-            PricesStatistics(
-                average = prices.average,
-                stDev = prices.stDev(),
+    private val lastPricesFlow: Flow<List<NpPrice>> =
+        lastDaysPrices(INCLUDE_AVERAGE_DAYS)
+            .shareIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000L)
             )
-        }
 
-    val appliancesState: Flow<Map<Int, List<PowerApplianceHour>>> = hourTicks()
-        .flatMapLatest { hour ->
-            pricesService.pricesFromDateTime(hour)
-        }
-        .combine(vatAmount) { prices, vat ->
-            prices.addVat(vat)
-        }
-        .combine(minuteTicks()) { prices, minute ->
+    val pricesStatistics: Flow<PricesStatistics> =
+        lastPricesFlow
+            .map { prices ->
+                PricesStatistics(
+                    average = prices.average,
+                    stDev = prices.stDev(),
+                )
+            }
+
+    val uiState: Flow<PricesUiState> = combine(hourTicks(), lastPricesFlow) { hour, prices ->
+        val groupedPrices = prices
+            .filter { it.startTime.toLocalDateTime() >= hour }
+            .groupBy { price ->
+                price.startTime.toLocalDateTime().toLocalDate()
+            }
+        PricesUiState.Success(groupedPrices, hour)
+    }
+
+    val appliancesState: Flow<Map<Int, List<PowerApplianceHour>>> =
+        combine(minuteTicks(), lastPricesFlow) { minute, prices ->
             val appliances = appliancesService.activeAppliances()
             appliancesCostsFromMinute(
-                prices, minute, appliances
+                prices,
+                minute,
+                appliances
             )
-        }
-
-    val uiState: Flow<PricesUiState> = hourTicks()
-        .flatMapLatest { hour ->
-            pricesService.pricesFromDateTime(hour.minusHours(2))
-                .combine(vatAmount) { prices, vat ->
-                    prices.addVat(vat)
-                }
-                .map { prices ->
-                    val groupedPrices = prices.groupBy { price ->
-                        price.startTime.toLocalDateTime().toLocalDate()
-                    }
-                    PricesUiState.Success(groupedPrices, hour)
-                }
         }
 
     private fun appliancesCostsFromMinute(
