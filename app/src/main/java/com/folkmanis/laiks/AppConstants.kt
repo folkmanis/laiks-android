@@ -11,3 +11,6 @@ const val MSW_TO_KWH = 1.0 / 1000.0 / 1000.0 / 3600.0
 
 const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/"
 const val DAY_AHEAD_LV = "page/59"
+const val REFRESH_AT_HOURS = 13
+const val REFRESH_AT_MINUTES = 0
+const val REFRESH_AT_TZ = "CET"
