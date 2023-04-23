@@ -18,7 +18,7 @@ private fun PowerAppliance.startTime(time: Long): Long {
     }
 }
 
-private val PowerAppliance.cycleLengthSeconds: Long
+internal val PowerAppliance.cycleLengthSeconds: Long
     get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.seconds }
 
 fun offsetCosts(
