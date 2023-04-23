@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.AuthUI
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
-import com.folkmanis.laiks.data.NpUpdateService
 import com.folkmanis.laiks.data.UserPreferencesRepository
+import com.folkmanis.laiks.data.domain.NpUpdate
 import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
 import com.folkmanis.laiks.utilities.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
     private val settingsService: UserPreferencesRepository,
-    private val npUpdateService: NpUpdateService,
+    private val npUpdate: NpUpdate,
 ) : ViewModel() {
 
     val isVat = settingsService.includeVat
@@ -80,7 +80,7 @@ class UserMenuViewModel @Inject constructor(
         Log.d(TAG, "NpUpdate requested")
         viewModelScope.launch {
             try {
-                val newRecords = npUpdateService.updateNpPrices()
+                val newRecords = npUpdate()
                 Log.d(TAG, "$newRecords retrieved")
                 SnackbarManager.showMessage(
                     R.plurals.prices_retrieved,
