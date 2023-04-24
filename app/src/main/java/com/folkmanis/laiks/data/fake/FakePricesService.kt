@@ -25,12 +25,16 @@ class FakePricesService : PricesService {
         return flowOf(testPrices(dateTime))
     }
 
-    override suspend fun lastUpdate(): Instant {
+    override suspend fun latestPriceStartTime(): Instant {
         return Instant.MIN
     }
 
     override suspend fun uploadPrices(prices: List<NpPrice>) {
 
+    }
+
+    override suspend fun lastUpdate(): Instant {
+        return Instant.MIN
     }
 
     companion object {

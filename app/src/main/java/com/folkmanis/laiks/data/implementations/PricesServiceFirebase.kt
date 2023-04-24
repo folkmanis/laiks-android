@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.snapshots
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -67,7 +68,7 @@ class PricesServiceFirebase @Inject constructor(
             .snapshots()
             .map { it.toObjects() }
 
-    override suspend fun lastUpdate(): Instant {
+    override suspend fun latestPriceStartTime(): Instant {
         val lastPrice = npPricesCollection
             .orderBy("startTime", Query.Direction.DESCENDING)
             .limit(1)
@@ -90,6 +91,14 @@ class PricesServiceFirebase @Inject constructor(
             SetOptions.merge()
         )
         batch.commit().await()
+    }
+
+    override suspend fun lastUpdate(): Instant {
+        val doc: NpPricesDocument? = npPricesDocumentRef
+            .get()
+            .await()
+            .toObject()
+        return doc?.lastUpdate?.toInstant() ?: Instant.MIN
     }
 
 

@@ -12,8 +12,10 @@ interface PricesService {
 
     fun pricesFromDateTime(dateTime: LocalDateTime): Flow<List<NpPrice>>
 
-   suspend fun lastUpdate(): Instant
+    suspend fun latestPriceStartTime(): Instant
 
-   suspend fun uploadPrices(prices: List<NpPrice>)
+    suspend fun uploadPrices(prices: List<NpPrice>)
+
+    suspend fun lastUpdate(): Instant
 
 }

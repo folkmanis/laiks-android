@@ -27,7 +27,7 @@ fun millisecondsToNextUpdate(
     else
         todayUpdateTime.minusDays(1)
 
-    return if (lastUpdate.atZone(zoneId) < pastDateTime)
+    return if (lastUpdate < pastDateTime.toInstant())
         0
     else {
         pastDateTime.plusDays(1).toInstant().toEpochMilli() - now.toEpochMilli()

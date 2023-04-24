@@ -8,7 +8,7 @@ import com.firebase.ui.auth.AuthUI
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.UserPreferencesRepository
-import com.folkmanis.laiks.data.domain.NpUpdate
+import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
 import com.folkmanis.laiks.utilities.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
     private val settingsService: UserPreferencesRepository,
-    private val npUpdate: NpUpdate,
+    private val npUpdate: NpUpdateUseCase,
 ) : ViewModel() {
 
     val isVat = settingsService.includeVat

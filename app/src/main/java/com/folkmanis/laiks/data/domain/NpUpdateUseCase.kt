@@ -7,7 +7,7 @@ import com.folkmanis.laiks.model.toNpPrices
 import com.folkmanis.laiks.utilities.ext.toInstant
 import javax.inject.Inject
 
-class NpUpdate @Inject constructor(
+class NpUpdateUseCase @Inject constructor(
     private val pricesService: PricesService,
     private val npRepository: NpRepository,
 ) {
@@ -20,7 +20,7 @@ class NpUpdate @Inject constructor(
             return 0
         }
 
-        val lastDbUpdate = pricesService.lastUpdate()
+        val lastDbUpdate = pricesService.latestPriceStartTime()
 
         val newData = npPrices.filter { it.startTime.toInstant() > lastDbUpdate }
 

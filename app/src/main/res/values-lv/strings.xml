@@ -48,4 +48,5 @@
         <item quantity="zero">%d ierakstu pievienoti</item>
         <item quantity="other">%d ieraksti pievienoti</item>
     </plurals>
+    <string name="retrieving_prices">Tiek meklēti jauni dati serverī</string>
 </resources>

@@ -3,6 +3,7 @@ package com.folkmanis.laiks
 import com.folkmanis.laiks.utilities.millisecondsToNextUpdate
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -68,6 +69,16 @@ class MillisecondsToNextUpdateTest {
         val lastUpdate = ZonedDateTime.of(
             testDay.minusDays(2), LocalTime.of(13, 10), zoneId
         ).toInstant()
+        val millisecondsToNextUpdate = millisecondsToNextUpdate(now, lastUpdate, H, M, TZ)
+        assertEquals(0, millisecondsToNextUpdate)
+    }
+
+    @Test
+    fun nextUpdate_noData_runToday() {
+        val now = ZonedDateTime.of(
+            testDay.plusDays(1), LocalTime.of(12, 0), zoneId
+        ).toInstant()
+        val lastUpdate = Instant.MIN
         val millisecondsToNextUpdate = millisecondsToNextUpdate(now, lastUpdate, H, M, TZ)
         assertEquals(0, millisecondsToNextUpdate)
     }

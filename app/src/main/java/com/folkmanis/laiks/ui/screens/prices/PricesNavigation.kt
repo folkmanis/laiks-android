@@ -1,6 +1,9 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -24,6 +27,20 @@ fun NavGraphBuilder.pricesScreen(
             .collectAsStateWithLifecycle(initialValue = PricesStatistics())
         val appliances by viewModel.appliancesState
             .collectAsStateWithLifecycle(initialValue = emptyMap())
+
+        val lifecycle = LocalLifecycleOwner.current.lifecycle
+        DisposableEffect(lifecycle) {
+            lifecycle.addObserver(viewModel)
+            onDispose {
+                lifecycle.removeObserver(viewModel)
+            }
+        }
+
+        val checkForUpdateNow by viewModel.checkForUpdatesNow
+            .collectAsState(initial = false)
+        if(checkForUpdateNow) {
+            viewModel.checkForUpdate()
+        }
 
         PricesScreen(
             state = uiState,
