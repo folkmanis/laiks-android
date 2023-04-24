@@ -5,8 +5,6 @@ import com.folkmanis.laiks.data.NpRepository
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.toNpPrices
 import com.folkmanis.laiks.utilities.ext.toInstant
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NpUpdate @Inject constructor(
@@ -29,9 +27,7 @@ class NpUpdate @Inject constructor(
         Log.d(TAG, "${newData.size} new records")
 
         if (newData.isNotEmpty()) {
-            withContext(Dispatchers.IO) {
-                pricesService.uploadPrices(newData)
-            }
+            pricesService.uploadPrices(newData)
         }
 
         return newData.size

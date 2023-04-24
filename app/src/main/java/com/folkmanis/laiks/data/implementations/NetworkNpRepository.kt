@@ -4,8 +4,6 @@ import android.util.Log
 import com.folkmanis.laiks.data.NpRepository
 import com.folkmanis.laiks.data.network.NpApiService
 import com.folkmanis.laiks.model.np_data.NpServerData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NetworkNpRepository @Inject constructor(
@@ -13,9 +11,8 @@ class NetworkNpRepository @Inject constructor(
 ) : NpRepository {
     override suspend fun getNpData(): NpServerData {
 
-        val npData = withContext(Dispatchers.IO) {
-            npApiService.getNpData()
-        }
+        val npData = npApiService.getNpData()
+
         Log.d(TAG, "Retrieved ${npData.data.rows.size} rows")
         return npData
     }
