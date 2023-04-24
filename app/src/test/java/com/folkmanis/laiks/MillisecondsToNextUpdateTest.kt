@@ -1,7 +1,7 @@
 package com.folkmanis.laiks
 
-import com.folkmanis.laiks.utilities.NextUpdate
-import org.junit.Assert.assertTrue
+import com.folkmanis.laiks.utilities.millisecondsToNextUpdate
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
@@ -12,7 +12,7 @@ const val H = 13
 const val M = 0
 const val TZ = "CET"
 
-class NextUpdateTest {
+class MillisecondsToNextUpdateTest {
 
     private val zoneId = ZoneId.of(TZ)
     private val testDay = LocalDate.of(2023, 4, 23)
@@ -26,8 +26,8 @@ class NextUpdateTest {
         val lastUpdate = ZonedDateTime.of(
             testDay.minusDays(1), testHour, zoneId
         ).toInstant()
-        val nextUpdate = NextUpdate.build(now, lastUpdate, H, M, TZ)
-        assertTrue(nextUpdate is NextUpdate.Now)
+        val millisecondsToNextUpdate = millisecondsToNextUpdate(now, lastUpdate, H, M, TZ)
+        assertEquals(0, millisecondsToNextUpdate)
     }
 
     @Test
@@ -40,12 +40,9 @@ class NextUpdateTest {
         ).toInstant()
         val nextTestUpdate = ZonedDateTime.of(
             testDay.plusDays(1), LocalTime.of(H, M), zoneId
-        ).toInstant()
-        val nextUpdate = NextUpdate.build(now, lastUpdate, H, M, TZ)
-        assertTrue(
-            nextUpdate is NextUpdate.At &&
-                    nextUpdate.instant == nextTestUpdate
-        )
+        ).toInstant().toEpochMilli() - now.toEpochMilli()
+        val millisecondsToNextUpdate = millisecondsToNextUpdate(now, lastUpdate, H, M, TZ)
+        assertEquals(nextTestUpdate, millisecondsToNextUpdate)
     }
 
     @Test
@@ -58,13 +55,11 @@ class NextUpdateTest {
         ).toInstant()
         val nextTestUpdate = ZonedDateTime.of(
             testDay.plusDays(1), LocalTime.of(H, M), zoneId
-        ).toInstant()
-        val nextUpdate = NextUpdate.build(now, lastUpdate, H, M, TZ)
-        assertTrue(
-            nextUpdate is NextUpdate.At &&
-                    nextUpdate.instant == nextTestUpdate
-        )
+        ).toInstant().toEpochMilli() - now.toEpochMilli()
+        val millisecondsToNextUpdate = millisecondsToNextUpdate(now, lastUpdate, H, M, TZ)
+        assertEquals(nextTestUpdate, millisecondsToNextUpdate)
     }
+
     @Test
     fun nextUpdate_oldData_runToday() {
         val now = ZonedDateTime.of(
@@ -73,10 +68,8 @@ class NextUpdateTest {
         val lastUpdate = ZonedDateTime.of(
             testDay.minusDays(2), LocalTime.of(13, 10), zoneId
         ).toInstant()
-        val nextUpdate = NextUpdate.build(now, lastUpdate, H, M, TZ)
-        assertTrue(
-            nextUpdate is NextUpdate.Now
-        )
+        val millisecondsToNextUpdate = millisecondsToNextUpdate(now, lastUpdate, H, M, TZ)
+        assertEquals(0, millisecondsToNextUpdate)
     }
 }
 
