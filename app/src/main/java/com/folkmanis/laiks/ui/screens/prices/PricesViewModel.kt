@@ -96,13 +96,7 @@ class PricesViewModel @Inject constructor(
             )
 
     val pricesStatistics: Flow<PricesStatistics> =
-        lastPricesFlow
-            .map { prices ->
-                PricesStatistics(
-                    average = prices.average,
-                    stDev = prices.stDev(),
-                )
-            }
+        lastPricesFlow.statisticsFlow
 
     val uiState: Flow<PricesUiState> = combine(hourTicks(), lastPricesFlow) { hour, prices ->
         val futurePrices = prices
