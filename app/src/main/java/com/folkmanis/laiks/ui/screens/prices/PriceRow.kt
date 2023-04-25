@@ -102,8 +102,7 @@ fun PriceRow(
         }
 
         Text(
-            text =
-            value
+            text = value
                 .eurMWhToCentsKWh()
                 .toFormattedDecimals(),
             style = largeNumberStyle,
