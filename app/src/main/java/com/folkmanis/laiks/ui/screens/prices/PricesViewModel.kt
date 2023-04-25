@@ -7,18 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.REFRESH_AT_HOURS
-import com.folkmanis.laiks.REFRESH_AT_MINUTES
-import com.folkmanis.laiks.REFRESH_AT_TZ
-import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.data.domain.AppliancesCostsUseCase
+import com.folkmanis.laiks.data.domain.DelayToNextNpUpdateUseCase
 import com.folkmanis.laiks.data.domain.LastDaysPricesUseCase
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
-import com.folkmanis.laiks.utilities.millisecondsToNextUpdate
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
 import com.folkmanis.laiks.utilities.snackbar.SnackbarMessage.Companion.toSnackbarMessage
@@ -27,19 +23,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.time.Instant
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class PricesViewModel @Inject constructor(
     lastDaysPrices: LastDaysPricesUseCase,
     appliancesCosts: AppliancesCostsUseCase,
-    private val pricesRepository: PricesService,
     private val npUpdate: NpUpdateUseCase,
+    private val delayToNextNpUpdate: DelayToNextNpUpdateUseCase
 ) : ViewModel(), DefaultLifecycleObserver {
-
-    private val _checkForUpdatesNow = MutableStateFlow(false)
-    val checkForUpdatesNow = _checkForUpdatesNow.asStateFlow()
 
     private var updateCheckJob: Job? = null
     override fun onResume(owner: LifecycleOwner) {
@@ -53,24 +46,23 @@ class PricesViewModel @Inject constructor(
     }
 
     private fun createUpdateCheckJob(): Job = viewModelScope.launch {
-        val lastUpdateTime = pricesRepository.lastUpdate()
-        val toNext = millisecondsToNextUpdate(
-            Instant.now(),
-            lastUpdateTime,
-            REFRESH_AT_HOURS, REFRESH_AT_MINUTES, REFRESH_AT_TZ
-        )
+
+        val toNext = delayToNextNpUpdate()+ Random.nextLong(10000)
+
         Log.d(TAG, "Delayed for $toNext ms")
-        delay(toNext)
-        Log.d(TAG, "_checkForUpdatesNow = true")
-        _checkForUpdatesNow.value = true
+
+        delay(toNext )
+
+        checkForUpdate()
     }
 
-    fun checkForUpdate() {
-        _checkForUpdatesNow.value = false
+    private suspend fun checkForUpdate() {
+
         Log.d(TAG, "Checking for update")
-        SnackbarManager.showMessage(R.string.retrieving_prices)
-        viewModelScope.launch {
-            try {
+
+        try {
+            if (delayToNextNpUpdate() == 0L) {
+                SnackbarManager.showMessage(R.string.retrieving_prices)
                 val newRecords = npUpdate()
                 Log.d(TAG, "$newRecords retrieved")
                 SnackbarManager.showMessage(
@@ -78,14 +70,14 @@ class PricesViewModel @Inject constructor(
                     newRecords,
                     newRecords
                 )
-            } catch (err: Throwable) {
-                SnackbarManager.showMessage(
-                    err.toSnackbarMessage()
-                )
-                Log.e(TAG, "Error: $err")
             }
-            updateCheckJob = createUpdateCheckJob()
+        } catch (err: Throwable) {
+            SnackbarManager.showMessage(
+                err.toSnackbarMessage()
+            )
+            Log.e(TAG, "Error: $err")
         }
+        updateCheckJob = createUpdateCheckJob()
     }
 
     private val lastPricesFlow: Flow<List<NpPrice>> =
