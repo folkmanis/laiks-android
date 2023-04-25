@@ -1,6 +1,9 @@
 package com.folkmanis.laiks.data.implementations
 
 import android.util.Log
+import com.folkmanis.laiks.BuildConfig
+import com.folkmanis.laiks.NP_DATA
+import com.folkmanis.laiks.NP_PRICES_COLLECTION
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.*
 import com.folkmanis.laiks.utilities.ext.minusDays
@@ -22,12 +25,13 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
 
+
 class PricesServiceFirebase @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : PricesService {
 
     private val npPricesDocumentRef = firestore
-        .collection(LAIKS_COLLECTION)
+        .collection(BuildConfig.LAIKS_COLLECTION)
         .document(NP_DATA)
 
     private val npPricesCollection = npPricesDocumentRef
@@ -105,8 +109,5 @@ class PricesServiceFirebase @Inject constructor(
     companion object {
         @Suppress("unused")
         private const val TAG = "Prices Service"
-        private const val LAIKS_COLLECTION = "laiks-test"
-        private const val NP_DATA = "np-data"
-        private const val NP_PRICES_COLLECTION = "prices"
     }
 }

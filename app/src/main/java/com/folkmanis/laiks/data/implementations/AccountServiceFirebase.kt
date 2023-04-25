@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.data.implementations
 
 import android.util.Log
+import com.folkmanis.laiks.USER_COLLECTION
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.model.LaiksUser
 import com.google.firebase.auth.FirebaseAuth
@@ -103,7 +104,6 @@ class AccountServiceFirebase @Inject constructor(
 
     companion object {
         private const val TAG = "Account Service"
-        private const val USER_COLLECTION = "users"
     }
 
 }

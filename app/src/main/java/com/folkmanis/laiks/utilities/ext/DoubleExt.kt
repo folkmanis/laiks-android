@@ -1,10 +1,11 @@
 package com.folkmanis.laiks.utilities.ext
 
 import com.folkmanis.laiks.CURRENCY_DECIMALS
-import com.folkmanis.laiks.EUR_MWH_TO_CENTS_KWH
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.Locale
+
+const val EUR_MWH_TO_CENTS_KWH = 1.0 / 1000.0 * 100.0
 
 fun Double.eurMWhToCentsKWh(): Double {
     return this * EUR_MWH_TO_CENTS_KWH

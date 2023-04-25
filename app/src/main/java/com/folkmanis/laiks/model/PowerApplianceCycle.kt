@@ -1,6 +1,6 @@
 package com.folkmanis.laiks.model
 
-import com.folkmanis.laiks.MSW_TO_KWH
+const val MSW_TO_KWH = 1.0 / 1000.0 / 1000.0 / 3600.0
 
 data class PowerApplianceCycle(
     val consumption: Long = 0,
