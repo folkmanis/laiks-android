@@ -4,6 +4,7 @@ import com.folkmanis.laiks.REFRESH_AT_HOURS
 import com.folkmanis.laiks.REFRESH_AT_MINUTES
 import com.folkmanis.laiks.REFRESH_AT_TZ
 import com.folkmanis.laiks.data.PricesService
+import com.folkmanis.laiks.utilities.ext.toInstant
 import com.folkmanis.laiks.utilities.millisecondsToNextUpdate
 import java.time.Instant
 import javax.inject.Inject
@@ -13,7 +14,8 @@ class DelayToNextNpUpdateUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Long {
-        val lastUpdateTime = pricesRepository.lastUpdate()
+        val lastUpdateTime =
+            pricesRepository.npPricesDocument()?.lastUpdate?.toInstant() ?: Instant.MIN
         return millisecondsToNextUpdate(
             Instant.now(),
             lastUpdateTime,

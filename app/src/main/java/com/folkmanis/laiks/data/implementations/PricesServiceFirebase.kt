@@ -6,10 +6,10 @@ import com.folkmanis.laiks.NP_DATA
 import com.folkmanis.laiks.NP_PRICES_COLLECTION
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.*
+import com.folkmanis.laiks.utilities.ext.instant.toTimestamp
 import com.folkmanis.laiks.utilities.ext.minusDays
 import com.folkmanis.laiks.utilities.ext.toInstant
 import com.folkmanis.laiks.utilities.ext.toLocalDateTime
-import com.folkmanis.laiks.utilities.ext.toTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -21,8 +21,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 import javax.inject.Inject
 
 
@@ -37,9 +35,9 @@ class PricesServiceFirebase @Inject constructor(
     private val npPricesCollection = npPricesDocumentRef
         .collection(NP_PRICES_COLLECTION)
 
-    override suspend fun npPrices(startTimestamp: Timestamp): List<NpPrice> {
+    override suspend fun npPrices(start: Instant): List<NpPrice> {
         return npPricesCollection
-            .whereGreaterThanOrEqualTo("startTime", startTimestamp)
+            .whereGreaterThanOrEqualTo("startTime", start)
             .orderBy("startTime")
             .get()
             .await()
@@ -58,16 +56,16 @@ class PricesServiceFirebase @Inject constructor(
             .map { it.minusDays(days) }
             .map { fromTime ->
                 Log.d(TAG, "Prices from day ${fromTime.toLocalDateTime()}")
-                npPrices(fromTime)
+                npPrices(fromTime.toInstant())
             }
     }
 
-    override fun pricesFromDateTime(dateTime: LocalDateTime): Flow<List<NpPrice>> =
+    override fun pricesFromDateTimeFlow(dateTime: Instant): Flow<List<NpPrice>> =
         npPricesCollection
             .orderBy("startTime")
             .whereGreaterThanOrEqualTo(
                 "startTime",
-                dateTime.atZone(ZoneId.systemDefault()).toTimestamp()
+                dateTime.toTimestamp()
             )
             .snapshots()
             .map { it.toObjects() }
@@ -83,7 +81,10 @@ class PricesServiceFirebase @Inject constructor(
         return lastPrice?.startTime?.toInstant() ?: Instant.MIN
     }
 
-    override suspend fun uploadPrices(prices: List<NpPrice>) {
+    override suspend fun uploadPrices(
+        prices: List<NpPrice>,
+        npPricesDocument: NpPricesDocument
+    ) {
         val batch = firestore.batch()
         prices.forEach { price ->
             val docRef = npPricesCollection.document(price.id)
@@ -91,19 +92,21 @@ class PricesServiceFirebase @Inject constructor(
         }
         batch.set(
             npPricesDocumentRef,
-            NpPricesDocument(),
+            npPricesDocument,
             SetOptions.merge()
         )
         batch.commit().await()
     }
 
-    override suspend fun lastUpdate(): Instant {
-        val doc: NpPricesDocument? = npPricesDocumentRef
+    override suspend fun npPricesDocument(): NpPricesDocument? = npPricesDocumentRef
             .get()
             .await()
             .toObject()
-        return doc?.lastUpdate?.toInstant() ?: Instant.MIN
-    }
+
+    override fun npPricesDocumentFlow(): Flow<NpPricesDocument?> =
+        npPricesDocumentRef
+            .snapshots()
+            .map { it.toObject() }
 
 
     companion object {

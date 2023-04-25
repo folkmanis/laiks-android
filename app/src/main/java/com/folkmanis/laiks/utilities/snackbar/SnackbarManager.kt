@@ -31,5 +31,5 @@ object SnackbarManager {
         messages.value = message
     }
 
-    const val TAG = "SnackbarManager"
+    private const val TAG = "SnackbarManager"
 }

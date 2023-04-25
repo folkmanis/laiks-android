@@ -14,3 +14,5 @@ fun List<NpPrice>.stDev(): Double =
         sqrt(sum / size)
     } else 0.0
 
+fun List<NpPrice>.addVat(amount: Double): List<NpPrice> =
+    map { it.copy(value = it.value.withVat(amount)) }

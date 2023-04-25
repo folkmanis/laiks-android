@@ -1,21 +1,22 @@
 package com.folkmanis.laiks.data
 
 import com.folkmanis.laiks.model.NpPrice
-import com.google.firebase.Timestamp
+import com.folkmanis.laiks.model.NpPricesDocument
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
-import java.time.LocalDateTime
 
 interface PricesService {
-    suspend fun npPrices(startTimestamp: Timestamp): List<NpPrice>
+    suspend fun npPrices(start: Instant): List<NpPrice>
     fun lastDaysPricesFlow(days: Long): Flow<List<NpPrice>>
 
-    fun pricesFromDateTime(dateTime: LocalDateTime): Flow<List<NpPrice>>
+    fun pricesFromDateTimeFlow(dateTime: Instant): Flow<List<NpPrice>>
 
     suspend fun latestPriceStartTime(): Instant
 
-    suspend fun uploadPrices(prices: List<NpPrice>)
+    suspend fun uploadPrices(prices: List<NpPrice>, npPricesDocument: NpPricesDocument)
 
-    suspend fun lastUpdate(): Instant
+    suspend fun npPricesDocument(): NpPricesDocument?
+
+    fun npPricesDocumentFlow(): Flow<NpPricesDocument?>
 
 }

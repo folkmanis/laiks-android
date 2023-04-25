@@ -1,3 +1,5 @@
+@file:Suppress("RedundantNullableReturnType")
+
 package com.folkmanis.laiks.data.fake
 
 import com.folkmanis.laiks.data.AccountService
@@ -7,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 
+@Suppress("RedundantNullableReturnType")
 class FakeAccountService : AccountService {
 
     override val laiksUserFlow: Flow<LaiksUser?>

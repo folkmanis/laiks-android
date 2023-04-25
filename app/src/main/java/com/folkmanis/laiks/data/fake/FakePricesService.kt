@@ -2,26 +2,25 @@ package com.folkmanis.laiks.data.fake
 
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.NpPrice
-import com.folkmanis.laiks.utilities.ext.toLocalDateTime
-import com.google.firebase.Timestamp
+import com.folkmanis.laiks.model.NpPricesDocument
+import com.folkmanis.laiks.utilities.ext.instant.toTimestamp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
 
+@Suppress("RedundantNullableReturnType")
 class FakePricesService : PricesService {
 
     override fun lastDaysPricesFlow(days: Long): Flow<List<NpPrice>> {
-        return flowOf(testPrices(LocalDateTime.now()))
+        return flowOf(testPrices(Instant.now()))
     }
 
-    override suspend fun npPrices(startTimestamp: Timestamp): List<NpPrice> {
-        return testPrices(startTimestamp.toLocalDateTime())
+    override suspend fun npPrices(start: Instant): List<NpPrice> {
+        return testPrices(start)
     }
 
-    override fun pricesFromDateTime(dateTime: LocalDateTime): Flow<List<NpPrice>> {
+    override fun pricesFromDateTimeFlow(dateTime: Instant): Flow<List<NpPrice>> {
         return flowOf(testPrices(dateTime))
     }
 
@@ -29,23 +28,23 @@ class FakePricesService : PricesService {
         return Instant.MIN
     }
 
-    override suspend fun uploadPrices(prices: List<NpPrice>) {
+    override suspend fun uploadPrices(
+        prices: List<NpPrice>, npPricesDocument: NpPricesDocument
+    ) {
 
     }
 
-    override suspend fun lastUpdate(): Instant {
-        return Instant.MIN
+    override suspend fun npPricesDocument(): NpPricesDocument? {
+        return NpPricesDocument()
     }
+
+    override fun npPricesDocumentFlow(): Flow<NpPricesDocument?> =
+        flowOf(NpPricesDocument())
 
     companion object {
 
 
-        private fun LocalDateTime.toTimestamp(): Timestamp {
-            val instant = this.atZone(ZoneId.systemDefault()).toInstant()
-            return Timestamp(Date.from(instant))
-        }
-
-        fun testPrices(pricesStart: LocalDateTime): List<NpPrice> = listOf(
+        fun testPrices(pricesStart: Instant): List<NpPrice> = listOf(
             NpPrice(
                 startTime = pricesStart.toTimestamp(),
                 endTime = pricesStart.plusHours(1).toTimestamp(),
@@ -77,3 +76,7 @@ class FakePricesService : PricesService {
 
 
 }
+
+private fun Instant.plusHours(i: Long): Instant =
+    atZone(ZoneId.systemDefault()).plusHours(i).toInstant()
+

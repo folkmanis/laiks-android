@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import com.folkmanis.laiks.R
 import com.google.firebase.firestore.DocumentId
 
+@Suppress("EnumEntryName")
 enum class PowerApplianceDelay(@StringRes val label: Int) {
     start(R.string.appliance_delay_start_label),
     end(R.string.appliance_delay_end_label)
