@@ -23,9 +23,14 @@ class StatisticsUseCase @Inject constructor(
         .npPricesDocumentFlow()
         .filterNotNull()
         .combine(vatAmount) { doc, vat ->
-            PricesStatistics(
-                average = doc.average?.withVat(vat),
-                stDev = doc.stDev?.withVat(vat)
-            )
+            if (doc.average != null && doc.stDev != null) {
+                PricesStatistics(
+                    average = doc.average.withVat(vat),
+                    stDev = doc.stDev.withVat(vat)
+                )
+            } else {
+                null
+            }
         }
+        .filterNotNull()
 }

@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.folkmanis.laiks.ui.screens.prices
 
@@ -9,7 +9,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,13 +29,14 @@ import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.folkmanis.laiks.utilities.ext.hoursFrom
+import com.folkmanis.laiks.utilities.ext.toLocalTime
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Composable
 fun PricesScreen(
     state: PricesUiState,
-    statistics: PricesStatistics,
+    statistics: PricesStatistics?,
     appliances: Map<Int, List<PowerApplianceHour>>,
     actions: @Composable RowScope.() -> Unit,
     popUp: () -> Unit,
@@ -89,7 +98,7 @@ fun PricesList(
     groupedPrices: Map<LocalDate, List<NpPrice>>,
     appliances: Map<Int, List<PowerApplianceHour>>,
     hour: LocalDateTime,
-    statistics: PricesStatistics,
+    statistics: PricesStatistics?,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -107,12 +116,16 @@ fun PricesList(
             items(npPrices, key = { it.id }) { npPrice ->
                 val offset = npPrice.startTime.hoursFrom(hour)
                 PriceRow(
-                    npPrice = npPrice,
+                    startTime = npPrice.startTime.toLocalTime(),
+                    endTime = npPrice.endTime.toLocalTime(),
+                    value = npPrice.value,
                     statistics = statistics,
                     modifier = Modifier
                         .fillMaxWidth(),
-                    appliances = appliances.getOrDefault(offset, emptyList()),
-                    offset = offset
+                    offset = offset,
+                    list = {
+                        AppliancesCosts(appliances = appliances.getOrDefault(offset, emptyList()))
+                    }
                 )
                 Divider(
                     thickness = 2.dp,

@@ -29,7 +29,7 @@ fun NavGraphBuilder.pricesScreen(
         val uiState by viewModel.uiState
             .collectAsStateWithLifecycle(PricesUiState.Loading)
         val statistics by viewModel.pricesStatistics
-            .collectAsStateWithLifecycle(initialValue = PricesStatistics())
+            .collectAsStateWithLifecycle(initialValue = null)
         val appliances by viewModel.appliancesState
             .collectAsStateWithLifecycle(initialValue = emptyMap())
 

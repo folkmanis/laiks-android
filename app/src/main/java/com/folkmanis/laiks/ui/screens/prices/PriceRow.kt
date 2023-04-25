@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.prices
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,7 +23,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
@@ -30,25 +30,18 @@ import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.isDark
 import com.folkmanis.laiks.utilities.ext.minutesString
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
-import com.folkmanis.laiks.utilities.ext.toLocalTime
 import com.folkmanis.laiks.utilities.ext.toSignedString
 import java.time.LocalTime
 import kotlin.math.absoluteValue
 
-val largeNumberStyle = TextStyle(
+private val largeNumberStyle = TextStyle(
     fontSize = 24.sp,
     fontWeight = FontWeight.Bold
 )
 
-fun Double.priceScore(statistics: PricesStatistics): Double {
-    val average = statistics.average
-    val stDev = statistics.stDev
-    if (average == null || stDev == null) return 0.0
-    var score = (average - this) / stDev
-    if (score < -1.0) score = -1.0
-    if (score > 1.0) score = 1.0
-    return score
-}
+fun PricesStatistics.score(value: Double): Double =
+    ((average - value) / stDev).coerceIn(-1.0, 1.0)
+
 
 fun scoreColor(score: Double, background: Color): Color {
     val positiveHue = 122f
@@ -64,10 +57,12 @@ fun scoreColor(score: Double, background: Color): Color {
 @Composable
 fun PriceRow(
     offset: Int,
-    npPrice: NpPrice,
-    appliances: List<PowerApplianceHour>,
-    statistics: PricesStatistics,
+    startTime: LocalTime,
+    endTime: LocalTime,
+    value: Double,
+    statistics: PricesStatistics?,
     modifier: Modifier = Modifier,
+    list: @Composable RowScope.() -> Unit = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -97,23 +92,23 @@ fun PriceRow(
         ) {
 
             TimeIntervalText(
-                startTime = npPrice.startTime.toLocalTime(),
-                endTime = npPrice.endTime.toLocalTime(),
+                startTime = startTime,
+                endTime = endTime,
                 modifier = Modifier
                     .width(116.dp)
             )
 
-            AppliancesCosts(appliances = appliances)
+            list()
         }
 
         Text(
             text =
-            npPrice.value
+            value
                 .eurMWhToCentsKWh()
                 .toFormattedDecimals(),
             style = largeNumberStyle,
             color = scoreColor(
-                npPrice.value.priceScore(statistics),
+                statistics?.score(value) ?: 0.0,
                 MaterialTheme.colorScheme.surface,
             ),
             modifier = Modifier
@@ -176,25 +171,28 @@ fun TimeText(
 @Composable
 fun PriceRowPreview() {
 
+    val appliances = listOf(
+        PowerApplianceHour(
+            name = "Veļasmašīna",
+            isBest = true,
+            cost = 0.185,
+        ),
+        PowerApplianceHour(),
+    )
     LaiksTheme(darkTheme = true) {
         PriceRow(
+            value = 12.5,
             offset = 2,
-            npPrice = NpPrice(
-                id = "ACD12",
-                value = 12.5,
-            ),
-            appliances = listOf(
-                PowerApplianceHour(
-                    name = "Veļasmašīna",
-                    isBest = true,
-                    cost = 0.185,
-                ),
-                PowerApplianceHour(),
-            ),
             statistics = PricesStatistics(
                 average = 12.5,
                 stDev = 0.9
             ),
+            startTime = LocalTime.of(12, 0),
+            endTime = LocalTime.of(13, 0),
+            list = {
+                AppliancesCosts(appliances)
+            }
+
         )
     }
 }
