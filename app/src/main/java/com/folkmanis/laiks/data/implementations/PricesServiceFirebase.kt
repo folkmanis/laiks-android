@@ -37,7 +37,7 @@ class PricesServiceFirebase @Inject constructor(
 
     override suspend fun npPrices(start: Instant): List<NpPrice> {
         return npPricesCollection
-            .whereGreaterThanOrEqualTo("startTime", start)
+            .whereGreaterThanOrEqualTo("startTime", start.toTimestamp())
             .orderBy("startTime")
             .get()
             .await()

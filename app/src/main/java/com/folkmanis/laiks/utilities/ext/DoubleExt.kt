@@ -4,6 +4,8 @@ import com.folkmanis.laiks.CURRENCY_DECIMALS
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.Locale
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 const val EUR_MWH_TO_CENTS_KWH = 1.0 / 1000.0 * 100.0
 
@@ -32,3 +34,10 @@ fun Double.toFormattedDecimals(
         }
     return formatter.format(this)
 }
+
+fun Collection<Double>.stDev(): Double =
+    if (isNotEmpty()) {
+        val avg = average()
+        val sum = reduce { sum, price -> sum + (price - avg).pow(2) }
+        sqrt(sum / size)
+    } else 0.0

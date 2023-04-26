@@ -7,10 +7,10 @@ import com.folkmanis.laiks.model.ApplianceHourWithCosts
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.utilities.cycleLengthSeconds
 import com.folkmanis.laiks.utilities.ext.addVat
-import com.folkmanis.laiks.utilities.ext.eurToCents
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import com.folkmanis.laiks.utilities.offsetCosts
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -35,6 +35,7 @@ private fun PowerAppliance.endTime(time: LocalDateTime): LocalDateTime =
     }
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ApplianceHourlyCostsUseCase @Inject constructor(
     userPreferencesRepository: UserPreferencesRepository,
     private val pricesService: PricesService,
@@ -66,7 +67,7 @@ class ApplianceHourlyCostsUseCase @Inject constructor(
                     val offsetMinute = startMinute.plusHours(offset)
                     ApplianceHourWithCosts(
                         offset = offset.toInt(),
-                        value = value.eurToCents(),
+                        value = value,
                         startTime = appliance.startTime(offsetMinute),
                         endTime = appliance.endTime(offsetMinute)
                     )

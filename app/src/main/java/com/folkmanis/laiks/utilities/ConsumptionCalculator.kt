@@ -3,6 +3,7 @@ package com.folkmanis.laiks.utilities
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
+import com.folkmanis.laiks.utilities.ext.eurToCents
 import com.folkmanis.laiks.utilities.ext.sWtoMWh
 import java.time.Instant
 
@@ -20,6 +21,7 @@ fun PowerAppliance.startTime(time: Long): Long =
 val PowerAppliance.cycleLengthSeconds: Long
     get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.seconds }
 
+// returns cents
 fun offsetCosts(
     npPrices: List<NpPrice>,
     startTime: Instant,
@@ -42,7 +44,7 @@ fun offsetCosts(
         val price = timeCost(npPrices, time, appliance)
 
         if (price !== null) {
-            costs[offset] = price
+            costs[offset] = price.eurToCents()
         }
 
         offset++

@@ -34,6 +34,7 @@ fun NavGraphBuilder.applianceCostsScreen(
 
         val viewModel: ApplianceCostsViewModel = hiltViewModel()
         val state by viewModel.uiState.collectAsStateWithLifecycle(ApplianceCostsUiState.Loading)
+        val statistics by viewModel.statistics.collectAsStateWithLifecycle(initialValue = null)
 
         viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
 
@@ -43,7 +44,7 @@ fun NavGraphBuilder.applianceCostsScreen(
 
         ApplianceCostsScreen(
             state = state,
-            statistics = null,
+            statistics = statistics,
             snackbarHostState = appState.snackbarHostState,
             actions = { appState.AppUserMenu() },
             popUp = appState::popUp
