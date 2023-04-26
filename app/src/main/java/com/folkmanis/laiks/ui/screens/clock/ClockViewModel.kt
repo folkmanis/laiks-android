@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.clock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 class ClockViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     accountService: AccountService,
-    ) : ViewModel() {
+    appliancesService: AppliancesService,
+) : ViewModel() {
 
     val isPricesAllowed = accountService.laiksUserFlow
         .map { laiksUser -> laiksUser?.npAllowed ?: false }
@@ -33,6 +35,14 @@ class ClockViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = ClockUiState(),
         )
+
+    val appliances = isPricesAllowed
+        .map { allowed ->
+            if (allowed)
+                appliancesService.activeAppliances()
+            else
+                emptyList()
+        }
 
     fun updateOffset(value: Int) {
         val oldOffset = uiState.value.offset

@@ -24,7 +24,7 @@ import com.folkmanis.laiks.utilities.ext.toSignedString
 import java.time.LocalTime
 
 @Composable
-fun BoxScope.ClockSelector(
+fun ClockSelector(
     modifier: Modifier = Modifier,
     offset: Int,
     time: LocalTime,
@@ -32,8 +32,7 @@ fun BoxScope.ClockSelector(
 ) {
 
     Column(
-        modifier = modifier
-            .align(Alignment.Center),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 

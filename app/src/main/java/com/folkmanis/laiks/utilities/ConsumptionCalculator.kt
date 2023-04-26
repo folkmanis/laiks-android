@@ -10,15 +10,14 @@ fun Map<Long, Double>.bestOffset(): Int? {
     return minByOrNull { mapEntry -> mapEntry.value }?.key?.toInt()
 }
 
-private fun PowerAppliance.startTime(time: Long): Long {
-    return if (this.delay == "end") {
+fun PowerAppliance.startTime(time: Long): Long =
+    if (this.delay == "end")
         time - this.cycleLengthSeconds
-    } else {
+    else
         time
-    }
-}
 
-internal val PowerAppliance.cycleLengthSeconds: Long
+
+val PowerAppliance.cycleLengthSeconds: Long
     get() = this.cycles.fold(0) { acc, cycle -> acc + cycle.seconds }
 
 fun offsetCosts(

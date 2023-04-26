@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui.screens.prices
+package com.folkmanis.laiks.utilities.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,8 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.folkmanis.laiks.model.PowerApplianceHour
+import com.folkmanis.laiks.model.PricesStatistics
+import com.folkmanis.laiks.ui.screens.prices.AppliancesCosts
 import com.folkmanis.laiks.ui.theme.LaiksTheme
-import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.isDark
 import com.folkmanis.laiks.utilities.ext.minutesString
@@ -103,7 +104,6 @@ fun PriceRow(
 
         Text(
             text = value
-                .eurMWhToCentsKWh()
                 .toFormattedDecimals(),
             style = largeNumberStyle,
             color = scoreColor(

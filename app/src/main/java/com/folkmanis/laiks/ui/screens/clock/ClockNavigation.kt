@@ -8,12 +8,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.LaiksAppState
+import com.folkmanis.laiks.model.PowerAppliance
 
 const val CLOCK_ROUTE = "Clock"
 
 fun NavGraphBuilder.clockScreen(
     appState: LaiksAppState,
     onNavigateToPrices: () -> Unit,
+    onNavigateToAppliance: (PowerAppliance)->Unit,
 ) {
 
     composable(CLOCK_ROUTE) {
@@ -23,6 +25,7 @@ fun NavGraphBuilder.clockScreen(
             .uiState
             .collectAsStateWithLifecycle()
         val pricesAllowed by viewModel.isPricesAllowed.collectAsStateWithLifecycle(initialValue = false)
+        val appliances by viewModel.appliances.collectAsStateWithLifecycle(initialValue = emptyList())
 
         ClockScreen(
             uiState = uiState,
@@ -30,6 +33,8 @@ fun NavGraphBuilder.clockScreen(
             onShowPrices = onNavigateToPrices,
             updateOffset = viewModel::updateOffset,
             actions = { appState.AppUserMenu() },
+            onShowAppliance = onNavigateToAppliance,
+            appliances = appliances,
         )
 
     }

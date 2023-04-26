@@ -26,13 +26,16 @@ import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
+import com.folkmanis.laiks.model.PricesStatistics
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
+import com.folkmanis.laiks.utilities.composables.PriceRow
 import com.folkmanis.laiks.utilities.ext.hoursFrom
 import com.folkmanis.laiks.utilities.ext.toLocalTime
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PricesScreen(
     state: PricesUiState,

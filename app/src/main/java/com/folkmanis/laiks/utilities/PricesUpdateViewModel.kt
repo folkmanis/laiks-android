@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui.screens.prices
+package com.folkmanis.laiks.utilities
 
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver

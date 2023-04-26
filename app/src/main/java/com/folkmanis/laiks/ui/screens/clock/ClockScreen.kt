@@ -13,6 +13,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
+import com.folkmanis.laiks.data.fake.FakeAppliancesService
+import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 
 @Composable
@@ -21,6 +23,8 @@ internal fun ClockScreen(
     pricesAllowed: Boolean,
     updateOffset: (Int) -> Unit,
     onShowPrices: () -> Unit,
+    onShowAppliance: (PowerAppliance) -> Unit,
+    appliances: List<PowerAppliance>,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit,
 ) {
@@ -45,14 +49,35 @@ internal fun ClockScreen(
         Box(
             modifier = modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
         ) {
 
-            ClockSelector(
-                offset = uiState.offset,
-                time = uiState.time,
-                onOffsetChange = updateOffset
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    if (pricesAllowed) {
+                        AppliancesSelector(
+                            appliances = appliances,
+                            onSelected = onShowAppliance
+                        )
+                    }
+                }
+
+                ClockSelector(
+                    offset = uiState.offset,
+                    time = uiState.time,
+                    onOffsetChange = updateOffset
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+            }
+
 
             if (pricesAllowed) {
                 FloatingActionButton(
@@ -84,6 +109,8 @@ fun ClockScreenPreview() {
             uiState = ClockUiState(),
             updateOffset = {},
             actions = {},
+            onShowAppliance = {},
+            appliances = FakeAppliancesService.testAppliances
         )
     }
 }

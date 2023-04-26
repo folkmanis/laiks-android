@@ -6,6 +6,8 @@ import com.folkmanis.laiks.data.domain.HourlyPricesUseCase
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.data.domain.StatisticsUseCase
 import com.folkmanis.laiks.model.PowerApplianceHour
+import com.folkmanis.laiks.model.PricesStatistics
+import com.folkmanis.laiks.utilities.PricesUpdateViewModel
 import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
@@ -13,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
+import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -30,6 +33,9 @@ class PricesViewModel @Inject constructor(
     val uiState: Flow<PricesUiState> = hourTicks()
         .flatMapLatest { hour ->
             hourlyPrices(hour)
+                .map { prices ->
+                    prices.map { it.copy(value = it.value.eurMWhToCentsKWh()) }
+                }
                 .map { prices ->
                     if (prices.isEmpty())
                         PricesUiState.Loading
