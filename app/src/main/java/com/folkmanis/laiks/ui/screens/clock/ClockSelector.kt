@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.clock
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
@@ -25,10 +26,10 @@ import java.time.LocalTime
 
 @Composable
 fun ClockSelector(
-    modifier: Modifier = Modifier,
     offset: Int,
     time: LocalTime,
     onOffsetChange: (Int)->Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     Column(

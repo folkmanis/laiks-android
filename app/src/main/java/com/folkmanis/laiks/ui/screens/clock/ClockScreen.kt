@@ -4,6 +4,8 @@ package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +28,7 @@ internal fun ClockScreen(
     onShowAppliance: (PowerAppliance) -> Unit,
     appliances: List<PowerAppliance>,
     modifier: Modifier = Modifier,
+    windowHeight: WindowHeightSizeClass,
     actions: @Composable RowScope.() -> Unit,
 ) {
 
@@ -52,29 +55,55 @@ internal fun ClockScreen(
                 .fillMaxSize()
         ) {
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            when (windowHeight) {
+                WindowHeightSizeClass.Compact ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        if (pricesAllowed) {
+                            AppliancesSelector(
+                                appliances = appliances,
+                                onSelected = onShowAppliance,
+                            )
+                        }
 
-                Box(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    if (pricesAllowed) {
-                        AppliancesSelector(
-                            appliances = appliances,
-                            onSelected = onShowAppliance
+                        ClockSelector(
+                            offset = uiState.offset,
+                            time = uiState.time,
+                            onOffsetChange = updateOffset,
                         )
+
                     }
-                }
 
-                ClockSelector(
-                    offset = uiState.offset,
-                    time = uiState.time,
-                    onOffsetChange = updateOffset
-                )
+                else ->
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
 
-                Spacer(modifier = Modifier.weight(1f))
+                        Box(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            if (pricesAllowed) {
+                                AppliancesSelector(
+                                    appliances = appliances,
+                                    onSelected = onShowAppliance,
+                                    modifier = Modifier.fillMaxHeight()
+                                )
+                            }
+                        }
+
+                        ClockSelector(
+                            offset = uiState.offset,
+                            time = uiState.time,
+                            onOffsetChange = updateOffset
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                    }
 
             }
 
@@ -110,6 +139,28 @@ fun ClockScreenPreview() {
             updateOffset = {},
             actions = {},
             onShowAppliance = {},
+            appliances = FakeAppliancesService.testAppliances,
+            windowHeight = WindowHeightSizeClass.Medium,
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:parent=pixel_5," +
+            "orientation=landscape"
+)
+@Composable
+fun ClockScreenPreviewLandscape() {
+    LaiksTheme {
+        ClockScreen(
+            onShowPrices = {},
+            pricesAllowed = true,
+            uiState = ClockUiState(),
+            updateOffset = {},
+            actions = {},
+            onShowAppliance = {},
+            windowHeight = WindowHeightSizeClass.Compact,
             appliances = FakeAppliancesService.testAppliances
         )
     }

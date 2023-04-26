@@ -2,6 +2,7 @@ package com.folkmanis.laiks
 
 import android.content.res.Resources
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
@@ -59,6 +60,7 @@ fun resources(): Resources {
 
 @Composable
 fun LaiksAppScreen(
+    windowSize: WindowSizeClass,
     modifier: Modifier = Modifier,
 ) {
 
@@ -75,7 +77,8 @@ fun LaiksAppScreen(
         clockScreen(
             appState = appState,
             onNavigateToPrices = navController::navigateToPrices,
-            onNavigateToAppliance = navController::navigateToApplianceCosts
+            onNavigateToAppliance = navController::navigateToApplianceCosts,
+            windowSize = windowSize,
         )
 
         pricesScreen(appState)

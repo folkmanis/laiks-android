@@ -27,7 +27,7 @@ fun AppliancesSelector(
 ) {
 
     Column(
-        modifier = modifier.fillMaxHeight(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

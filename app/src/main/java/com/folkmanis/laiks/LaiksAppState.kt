@@ -2,6 +2,7 @@ package com.folkmanis.laiks
 
 import android.content.res.Resources
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.navigation.NavHostController

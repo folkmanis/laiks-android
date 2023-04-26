@@ -38,12 +38,14 @@ class ApplianceCostsViewModel @Inject constructor(
     private val applianceFlow = idFlow
         .filterNotNull()
         .map { id ->
+            Log.d(TAG, "Id: $id")
             appliancesService.getAppliance(id)
         }
         .filterNotNull()
         .shareIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5_000L)
+            SharingStarted.WhileSubscribed(5000L),
+            1
         )
 
     val statistics: Flow<PricesStatistics> = applianceFlow
