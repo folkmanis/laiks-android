@@ -9,7 +9,9 @@ import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -25,13 +27,9 @@ class ClockViewModel @Inject constructor(
     val isPricesAllowed = accountService.laiksUserFlow
         .map { laiksUser -> laiksUser?.npAllowed ?: false }
 
-    val appliances = isPricesAllowed
-        .map { pricesAllowed ->
-           if (pricesAllowed)
-                appliancesService.activeAppliances()
-            else
-                emptyList()
-        }
+    val appliances = accountService.laiksUserFlow
+        .filter { it?.npAllowed ?: false }
+        .map { appliancesService.activeAppliances() }
 
     val offsetState: StateFlow<Int> =
         userPreferencesRepository.savedTimeOffset
@@ -41,7 +39,7 @@ class ClockViewModel @Inject constructor(
                 0
             )
 
-    val timeState = combine( offsetState, minuteTicks()) { offset, minute ->
+    val timeState = combine(offsetState, minuteTicks()) { offset, minute ->
         minute.toLocalTime().plusHours(offset.toLong())
     }
 
