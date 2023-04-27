@@ -35,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun rememberAppState(
+    windowSize: WindowSizeClass,
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
@@ -43,6 +44,7 @@ fun rememberAppState(
 ) =
     remember(navController, coroutineScope, snackbarHostState, snackbarManager, resources) {
         LaiksAppState(
+            windowSize,
             navController,
             coroutineScope,
             snackbarHostState,
@@ -64,7 +66,7 @@ fun LaiksAppScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    val appState = rememberAppState()
+    val appState = rememberAppState(windowSize)
 
     val navController = appState.navController
 
@@ -78,7 +80,6 @@ fun LaiksAppScreen(
             appState = appState,
             onNavigateToPrices = navController::navigateToPrices,
             onNavigateToAppliance = navController::navigateToApplianceCosts,
-            windowSize = windowSize,
         )
 
         pricesScreen(appState)

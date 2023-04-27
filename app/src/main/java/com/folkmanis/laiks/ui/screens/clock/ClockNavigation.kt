@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.clock
 
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -17,7 +16,6 @@ fun NavGraphBuilder.clockScreen(
     appState: LaiksAppState,
     onNavigateToPrices: () -> Unit,
     onNavigateToAppliance: (PowerAppliance)->Unit,
-    windowSize: WindowSizeClass,
 ) {
 
     composable(CLOCK_ROUTE) {
@@ -37,7 +35,7 @@ fun NavGraphBuilder.clockScreen(
             actions = { appState.AppUserMenu() },
             onShowAppliance = onNavigateToAppliance,
             appliances = appliances,
-            windowHeight = windowSize.heightSizeClass,
+            windowHeight = appState.windowSize.heightSizeClass,
         )
 
     }

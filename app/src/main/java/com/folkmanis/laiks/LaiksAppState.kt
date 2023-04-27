@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 
 @Stable
 class LaiksAppState(
+    val windowSize: WindowSizeClass,
     val navController: NavHostController,
     coroutineScope: CoroutineScope,
     val snackbarHostState: SnackbarHostState,
