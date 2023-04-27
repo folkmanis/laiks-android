@@ -37,6 +37,7 @@ import kotlin.random.Random
 @Composable
 fun ApplianceCostsScreen(
     state: ApplianceCostsUiState,
+    name: String?,
     statistics: PricesStatistics?,
     snackbarHostState: SnackbarHostState,
     actions: @Composable RowScope.() -> Unit,
@@ -46,16 +47,11 @@ fun ApplianceCostsScreen(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    val name = when (state) {
-        is ApplianceCostsUiState.Success -> state.name
-        else -> stringResource(id = R.string.appliance_screen)
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = name)
+                    Text(text = name ?: stringResource(id = R.string.appliance_screen))
                 },
                 actions = actions,
                 navigationIcon = {
@@ -137,11 +133,11 @@ fun ApplianceCostsScreenPreview() {
     ApplianceCostsScreen(
         state = ApplianceCostsUiState.Success(
             hours,
-            name = "Veļasmašīna"
         ),
         statistics = PricesStatistics(10.5, 5.2),
         snackbarHostState = SnackbarHostState(),
         actions = {},
-        popUp = { }
+        popUp = { },
+        name = "Veļasmašīna",
     )
 }

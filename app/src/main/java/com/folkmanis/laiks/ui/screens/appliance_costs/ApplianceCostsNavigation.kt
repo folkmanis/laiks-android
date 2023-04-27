@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.appliance_costs
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,6 +16,7 @@ import com.folkmanis.laiks.ui.screens.prices.ObserveLifecycle
 
 private const val ROUTE = "ApplianceCosts"
 private const val APPLIANCE_ID = "applianceId"
+private const val APPLIANCE_NAME = "name"
 
 fun NavGraphBuilder.applianceCostsScreen(
     appState: LaiksAppState
@@ -27,6 +27,10 @@ fun NavGraphBuilder.applianceCostsScreen(
         arguments = listOf(
             navArgument(APPLIANCE_ID) {
                 type = NavType.StringType
+            },
+            navArgument(APPLIANCE_NAME) {
+                type = NavType.StringType
+                defaultValue = ""
             }
         )
     ) { backStackEntry ->
@@ -35,19 +39,21 @@ fun NavGraphBuilder.applianceCostsScreen(
         val viewModel: ApplianceCostsViewModel = hiltViewModel()
         val state by viewModel.uiState.collectAsStateWithLifecycle(ApplianceCostsUiState.Loading)
         val statistics by viewModel.statistics.collectAsStateWithLifecycle(initialValue = null)
+        val name by viewModel.nameState.collectAsStateWithLifecycle(
+            initialValue = backStackEntry.arguments?.getString(APPLIANCE_NAME)
+        )
 
         viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
 
-        LaunchedEffect(applianceId) {
-            viewModel.setApplianceId(applianceId)
-        }
+        viewModel.setApplianceId(applianceId)
 
         ApplianceCostsScreen(
             state = state,
+            name = name,
             statistics = statistics,
             snackbarHostState = appState.snackbarHostState,
             actions = { appState.AppUserMenu() },
-            popUp = appState::popUp
+            popUp = appState::popUp,
         )
 
     }
@@ -58,5 +64,5 @@ fun NavController.navigateToApplianceCosts(
     appliance: PowerAppliance,
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    navigate("$ROUTE/${appliance.id}", builder)
+    navigate("$ROUTE/${appliance.id}?$APPLIANCE_NAME=${appliance.name}", builder)
 }

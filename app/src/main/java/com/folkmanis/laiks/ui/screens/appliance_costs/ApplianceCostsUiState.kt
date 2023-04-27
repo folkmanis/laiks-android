@@ -11,6 +11,5 @@ sealed interface ApplianceCostsUiState {
     ) : ApplianceCostsUiState
     data class Success(
         val hoursWithCosts: List<ApplianceHourWithCosts>,
-        val name: String,
     ) : ApplianceCostsUiState
 }

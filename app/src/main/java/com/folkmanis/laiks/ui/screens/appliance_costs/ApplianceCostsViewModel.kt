@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -34,6 +35,9 @@ class ApplianceCostsViewModel @Inject constructor(
 ) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate) {
 
     private val idFlow = MutableStateFlow<String?>(null)
+
+    private val _nameState = MutableStateFlow<String?>(null)
+    val nameState = _nameState.asStateFlow()
 
     private val applianceFlow = idFlow
         .filterNotNull()
@@ -61,7 +65,8 @@ class ApplianceCostsViewModel @Inject constructor(
         .flatMapLatest { appliance ->
             applianceHourlyCosts(appliance)
                 .map { costs ->
-                    ApplianceCostsUiState.Success(costs, appliance.name)
+                    _nameState.value = appliance.name
+                    ApplianceCostsUiState.Success(costs)
                 }
         }
 
