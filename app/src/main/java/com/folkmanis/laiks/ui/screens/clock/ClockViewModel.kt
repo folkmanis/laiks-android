@@ -43,6 +43,7 @@ class ClockViewModel @Inject constructor(
             else
                 emptyList()
         }
+        .catch { emit(emptyList()) }
 
     fun updateOffset(value: Int) {
         val oldOffset = uiState.value.offset
