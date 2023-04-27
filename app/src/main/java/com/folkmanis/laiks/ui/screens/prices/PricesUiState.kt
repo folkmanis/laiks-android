@@ -9,10 +9,12 @@ sealed interface PricesUiState {
     data class Error(
         val reason: String,
         val exception: Throwable,
-        ) : PricesUiState
+    ) : PricesUiState
+
     data class Success(
         val groupedPrices: Map<LocalDate, List<NpPrice>> = emptyMap(),
         val hour: LocalDateTime = LocalDateTime.now(),
+        val currentOffsetIndex: Int = 0,
     ) : PricesUiState
 
 }

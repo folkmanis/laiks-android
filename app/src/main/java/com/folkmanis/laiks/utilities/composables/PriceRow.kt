@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -63,25 +64,26 @@ fun PriceRow(
     value: Double,
     statistics: PricesStatistics?,
     modifier: Modifier = Modifier,
+    disabled: Boolean = false,
     list: @Composable RowScope.() -> Unit = {},
 ) {
+    val alpha = if (disabled) 0.5f else 1.0f
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .height(64.dp),
+            .height(64.dp)
+            .alpha(alpha),
     ) {
         Box(
             modifier = Modifier
                 .width(48.dp),
         ) {
-            if (offset >= 0) {
-                Text(
-                    text = offset.toSignedString(),
-                    style = largeNumberStyle,
-                )
-            }
+            Text(
+                text = offset.toSignedString(),
+                style = largeNumberStyle,
+            )
         }
 
         Row(
@@ -166,18 +168,19 @@ fun TimeText(
     }
 }
 
-@Preview
+private val previewAppliances = listOf(
+    PowerApplianceHour(
+        name = "Veļasmašīna",
+        isBest = true,
+        cost = 0.185,
+    ),
+    PowerApplianceHour(),
+)
+
+@Preview(showBackground = true)
 @Composable
 fun PriceRowPreview() {
 
-    val appliances = listOf(
-        PowerApplianceHour(
-            name = "Veļasmašīna",
-            isBest = true,
-            cost = 0.185,
-        ),
-        PowerApplianceHour(),
-    )
     LaiksTheme(darkTheme = true) {
         PriceRow(
             value = 12.5,
@@ -189,7 +192,30 @@ fun PriceRowPreview() {
             startTime = LocalTime.of(12, 0),
             endTime = LocalTime.of(13, 0),
             list = {
-                AppliancesCosts(appliances)
+                AppliancesCosts(previewAppliances)
+            }
+
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PriceRowDisabledPreview() {
+
+    LaiksTheme(darkTheme = true) {
+        PriceRow(
+            value = 12.5,
+            offset = -2,
+            statistics = PricesStatistics(
+                average = 12.5,
+                stDev = 0.9
+            ),
+            startTime = LocalTime.of(12, 0),
+            endTime = LocalTime.of(13, 0),
+            disabled = true,
+            list = {
+                AppliancesCosts(previewAppliances)
             }
 
         )

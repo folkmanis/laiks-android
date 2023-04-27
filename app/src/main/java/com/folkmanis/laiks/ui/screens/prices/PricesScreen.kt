@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
@@ -19,6 +20,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +34,7 @@ import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.folkmanis.laiks.utilities.composables.PriceRow
 import com.folkmanis.laiks.utilities.ext.hoursFrom
 import com.folkmanis.laiks.utilities.ext.toLocalTime
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -75,6 +78,7 @@ fun PricesScreen(
             is PricesUiState.Success -> PricesList(
                 groupedPrices = state.groupedPrices,
                 hour = state.hour,
+                currentOffsetIndex = state.currentOffsetIndex,
                 statistics = statistics,
                 modifier = Modifier.padding(innerPadding),
                 appliances = appliances,
@@ -99,13 +103,22 @@ fun PricesScreen(
 @Composable
 fun PricesList(
     groupedPrices: Map<LocalDate, List<NpPrice>>,
+    currentOffsetIndex: Int,
     appliances: Map<Int, List<PowerApplianceHour>>,
     hour: LocalDateTime,
     statistics: PricesStatistics?,
     modifier: Modifier = Modifier,
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(groupedPrices) {
+        delay(500)
+        listState.animateScrollToItem(currentOffsetIndex, -10)
+    }
+
     LazyColumn(
-        modifier = modifier
+        modifier = modifier,
+        state = listState,
     ) {
         groupedPrices.forEach { (date, npPrices) ->
             item {
@@ -126,6 +139,7 @@ fun PricesList(
                     modifier = Modifier
                         .fillMaxWidth(),
                     offset = offset,
+                    disabled = offset < 0,
                     list = {
                         AppliancesCosts(appliances = appliances.getOrDefault(offset, emptyList()))
                     }
