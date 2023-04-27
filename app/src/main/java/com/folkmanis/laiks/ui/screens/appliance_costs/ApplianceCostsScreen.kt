@@ -98,7 +98,7 @@ fun ApplianceCostsList(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
-        items(costs, key = { it.offset }) { cost ->
+        items(costs) { cost ->
             val offset = cost.offset
             PriceRow(
                 startTime = cost.startTime.toLocalTime(),
