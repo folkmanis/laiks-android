@@ -6,6 +6,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.navigation.NavHostController
+import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.ui.screens.appliances.navigateToAppliances
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
 import com.folkmanis.laiks.ui.screens.clock.navigateToClock
@@ -17,10 +18,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
-@Stable
-class LaiksAppState(
+//@Stable
+data class LaiksAppState(
     val windowSize: WindowSizeClass,
     val navController: NavHostController,
+    val user: LaiksUser?,
     coroutineScope: CoroutineScope,
     val snackbarHostState: SnackbarHostState,
     private val snackbarManager: SnackbarManager,
