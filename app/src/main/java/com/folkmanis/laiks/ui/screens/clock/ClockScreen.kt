@@ -17,15 +17,17 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.ui.theme.LaiksTheme
+import java.time.LocalTime
 
 @Composable
 internal fun ClockScreen(
-    uiState: ClockUiState,
+    time: LocalTime,
+    offset: Int,
     pricesAllowed: Boolean,
+    appliances: List<PowerAppliance>,
     updateOffset: (Int) -> Unit,
     onShowPrices: () -> Unit,
     onShowAppliance: (PowerAppliance) -> Unit,
-    appliances: List<PowerAppliance>,
     modifier: Modifier = Modifier,
     windowHeight: WindowHeightSizeClass,
     actions: @Composable RowScope.() -> Unit,
@@ -69,8 +71,8 @@ internal fun ClockScreen(
                         }
 
                         ClockSelector(
-                            offset = uiState.offset,
-                            time = uiState.time,
+                            offset = offset,
+                            time = time,
                             onOffsetChange = updateOffset,
                         )
 
@@ -95,8 +97,8 @@ internal fun ClockScreen(
                         }
 
                         ClockSelector(
-                            offset = uiState.offset,
-                            time = uiState.time,
+                            offset = offset,
+                            time = time,
                             onOffsetChange = updateOffset
                         )
 
@@ -127,18 +129,20 @@ internal fun ClockScreen(
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun ClockScreenPreview() {
     LaiksTheme {
         ClockScreen(
-            onShowPrices = {},
+            time = LocalTime.now(),
+            offset = 2,
             pricesAllowed = true,
-            uiState = ClockUiState(),
+            appliances = FakeAppliancesService.testAppliances,
+            onShowPrices = {},
             updateOffset = {},
             actions = {},
             onShowAppliance = {},
-            appliances = FakeAppliancesService.testAppliances,
             windowHeight = WindowHeightSizeClass.Medium,
         )
     }
@@ -153,14 +157,15 @@ fun ClockScreenPreview() {
 fun ClockScreenPreviewLandscape() {
     LaiksTheme {
         ClockScreen(
-            onShowPrices = {},
+            time = LocalTime.now(),
+            offset = 2,
             pricesAllowed = true,
-            uiState = ClockUiState(),
+            appliances = FakeAppliancesService.testAppliances,
+            onShowPrices = {},
             updateOffset = {},
             actions = {},
             onShowAppliance = {},
             windowHeight = WindowHeightSizeClass.Compact,
-            appliances = FakeAppliancesService.testAppliances
         )
     }
 }

@@ -42,7 +42,7 @@ fun rememberAppState(
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
 ) =
-    remember(navController, coroutineScope, snackbarHostState, snackbarManager, resources) {
+    remember(windowSize, navController, coroutineScope, snackbarHostState, snackbarManager, resources) {
         LaiksAppState(
             windowSize,
             navController,

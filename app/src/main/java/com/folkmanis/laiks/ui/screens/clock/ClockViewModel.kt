@@ -7,7 +7,11 @@ import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,37 +25,36 @@ class ClockViewModel @Inject constructor(
     val isPricesAllowed = accountService.laiksUserFlow
         .map { laiksUser -> laiksUser?.npAllowed ?: false }
 
-    val uiState: StateFlow<ClockUiState> = combine(
-        minuteTicks(),
-        userPreferencesRepository.savedTimeOffset
-    ) { time, offset ->
-        ClockUiState(
-            time.toLocalTime().plusHours(offset.toLong()),
-            offset
-        )
-    }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = ClockUiState(),
-        )
-
     val appliances = isPricesAllowed
-        .map { allowed ->
-            if (allowed)
+        .map { pricesAllowed ->
+           if (pricesAllowed)
                 appliancesService.activeAppliances()
             else
                 emptyList()
         }
-        .catch { emit(emptyList()) }
+
+    val offsetState: StateFlow<Int> =
+        userPreferencesRepository.savedTimeOffset
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000L),
+                0
+            )
+
+    val timeState = combine( offsetState, minuteTicks()) { offset, minute ->
+        minute.toLocalTime().plusHours(offset.toLong())
+    }
 
     fun updateOffset(value: Int) {
-        val oldOffset = uiState.value.offset
         viewModelScope.launch {
             userPreferencesRepository
-                .saveTimeOffset(oldOffset + value)
+                .saveTimeOffset(offsetState.value + value)
         }
     }
 
+    companion object {
+        @Suppress("unused")
+        private const val TAG = "ClockViewModel"
+    }
 
 }

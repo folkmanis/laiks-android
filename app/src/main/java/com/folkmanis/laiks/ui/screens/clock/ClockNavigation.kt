@@ -9,32 +9,37 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.LaiksAppState
 import com.folkmanis.laiks.model.PowerAppliance
+import java.time.LocalTime
 
 const val CLOCK_ROUTE = "Clock"
 
 fun NavGraphBuilder.clockScreen(
     appState: LaiksAppState,
     onNavigateToPrices: () -> Unit,
-    onNavigateToAppliance: (PowerAppliance)->Unit,
+    onNavigateToAppliance: (PowerAppliance) -> Unit,
 ) {
 
     composable(CLOCK_ROUTE) {
 
         val viewModel: ClockViewModel = hiltViewModel()
-        val uiState by viewModel
-            .uiState
+        val isPricesAllowed by viewModel.isPricesAllowed
+            .collectAsStateWithLifecycle(initialValue = false)
+        val appliances by viewModel.appliances
+            .collectAsStateWithLifecycle(initialValue = emptyList())
+        val time by viewModel.timeState
+            .collectAsStateWithLifecycle(initialValue = LocalTime.now())
+        val offset by viewModel.offsetState
             .collectAsStateWithLifecycle()
-        val pricesAllowed by viewModel.isPricesAllowed.collectAsStateWithLifecycle(initialValue = false)
-        val appliances by viewModel.appliances.collectAsStateWithLifecycle(initialValue = emptyList())
 
         ClockScreen(
-            uiState = uiState,
-            pricesAllowed = pricesAllowed,
+            time = time,
+            offset = offset,
+            pricesAllowed = isPricesAllowed,
+            appliances = appliances,
             onShowPrices = onNavigateToPrices,
             updateOffset = viewModel::updateOffset,
             actions = { appState.AppUserMenu() },
             onShowAppliance = onNavigateToAppliance,
-            appliances = appliances,
             windowHeight = appState.windowSize.heightSizeClass,
         )
 
