@@ -8,6 +8,7 @@ import com.folkmanis.laiks.data.domain.StatisticsUseCase
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PricesStatistics
+import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.utilities.PricesUpdateViewModel
 import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
@@ -28,7 +29,8 @@ class PricesViewModel @Inject constructor(
     hourlyPrices: HourlyPricesUseCase,
     npUpdate: NpUpdateUseCase,
     delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
-) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate) {
+    snackbarManager: SnackbarManager,
+) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager) {
 
 
     val pricesStatistics: Flow<PricesStatistics> = statistics()

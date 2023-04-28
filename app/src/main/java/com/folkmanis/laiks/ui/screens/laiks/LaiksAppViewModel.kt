@@ -18,12 +18,12 @@ import javax.inject.Inject
 @HiltViewModel
 class LaiksAppViewModel @Inject constructor(
     private val accountService: AccountService,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
     private val _appState = MutableStateFlow(LaiksAppState())
     val appState = _appState.asStateFlow()
 
-    private val snackbarManager = SnackbarManager
     val snackbarHostState = SnackbarHostState()
 
     fun setTitle(title: String) {

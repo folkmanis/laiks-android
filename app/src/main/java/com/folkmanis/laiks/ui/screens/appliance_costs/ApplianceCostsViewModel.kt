@@ -30,9 +30,10 @@ class ApplianceCostsViewModel @Inject constructor(
     private val appliancesService: AppliancesService,
     private val applianceHourlyCosts: ApplianceHourlyCostsUseCase,
     applianceStatistics: ApplianceStatisticsUseCase,
+    private val snackbarManager: SnackbarManager,
     npUpdate: NpUpdateUseCase,
     delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
-) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate) {
+) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager) {
 
     private val idFlow = MutableStateFlow<String?>(null)
 
@@ -58,7 +59,7 @@ class ApplianceCostsViewModel @Inject constructor(
         }
         .catch { err ->
             Log.e(TAG, "Statistics error", err)
-            SnackbarManager.showMessage(err.toSnackbarMessage())
+            snackbarManager.showMessage(err.toSnackbarMessage())
         }
 
     val uiState = applianceFlow

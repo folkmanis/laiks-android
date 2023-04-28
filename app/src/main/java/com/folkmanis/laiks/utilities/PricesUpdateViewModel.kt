@@ -18,6 +18,7 @@ import kotlin.random.Random
 open class PricesUpdateViewModel(
     private val npUpdate: NpUpdateUseCase,
     private val delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel(), DefaultLifecycleObserver {
 
     private var updateCheckJob: Job? = null
@@ -48,17 +49,17 @@ open class PricesUpdateViewModel(
 
         try {
             if (delayToNextNpUpdate() == 0L) {
-                SnackbarManager.showMessage(R.string.retrieving_prices)
+                snackbarManager.showMessage(R.string.retrieving_prices)
                 val newRecords = npUpdate()
                 Log.d(TAG, "$newRecords retrieved")
-                SnackbarManager.showMessage(
+                snackbarManager.showMessage(
                     R.plurals.prices_retrieved,
                     newRecords,
                     newRecords
                 )
             }
         } catch (err: Throwable) {
-            SnackbarManager.showMessage(
+            snackbarManager.showMessage(
                 err.toSnackbarMessage()
             )
             Log.e(TAG, "Error: $err")

@@ -23,6 +23,7 @@ class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
     private val settingsService: UserPreferencesRepository,
     private val npUpdate: NpUpdateUseCase,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
     val isVat = settingsService.includeVat
@@ -82,13 +83,13 @@ class UserMenuViewModel @Inject constructor(
             try {
                 val newRecords = npUpdate()
                 Log.d(TAG, "$newRecords retrieved")
-                SnackbarManager.showMessage(
+                snackbarManager.showMessage(
                     R.plurals.prices_retrieved,
                     newRecords,
                     newRecords
                 )
             } catch (err: Throwable) {
-                SnackbarManager.showMessage(
+                snackbarManager.showMessage(
                     err.toSnackbarMessage()
                 )
                 Log.e(TAG, "Error: $err")
