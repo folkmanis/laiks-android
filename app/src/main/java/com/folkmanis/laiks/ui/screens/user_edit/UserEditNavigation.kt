@@ -2,15 +2,18 @@ package com.folkmanis.laiks.ui.screens.user_edit
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.*
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import com.folkmanis.laiks.LaiksAppState
+import androidx.navigation.navArgument
 
 private const val ROUTE = "UserEditor"
 private const val USER_ID = "userId"
 
 fun NavGraphBuilder.userEditScreen(
-    appState: LaiksAppState.Loaded
+    setTitle: (String) -> Unit,
 ) {
 
     composable(
@@ -32,8 +35,8 @@ fun NavGraphBuilder.userEditScreen(
         }
 
         UserEditScreen(
-            onNavigateBack = appState::popUp,
             viewModel = viewModel,
+            setTitle = setTitle,
         )
     }
 

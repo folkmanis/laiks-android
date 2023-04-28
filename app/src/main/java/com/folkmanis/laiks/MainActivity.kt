@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import com.folkmanis.laiks.ui.screens.laiks.LaiksAppScreen
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import dagger.hilt.android.AndroidEntryPoint
 

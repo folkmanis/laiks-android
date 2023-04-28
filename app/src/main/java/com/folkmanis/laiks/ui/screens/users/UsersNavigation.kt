@@ -1,33 +1,31 @@
 package com.folkmanis.laiks.ui.screens.users
 
-import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
-import com.folkmanis.laiks.LaiksAppState
+import com.folkmanis.laiks.R
 
 private const val ROUTE = "Users"
 
 fun NavGraphBuilder.usersScreen(
-    appState: LaiksAppState.Loaded,
     onEditUser: (String) -> Unit,
+    setTitle: (String) -> Unit,
 ) {
     composable(ROUTE) {
-        val viewModel: UsersViewModel = hiltViewModel()
-        val state by
-        viewModel.uiState.collectAsStateWithLifecycle(initialValue = UsersUiState.Loading)
-        UsersScreen(
-            onEdit = onEditUser,
-            state = state,
-            popUp = appState::popUp,
-            actions = { appState.AppUserMenu() },
-        )
+
+        val title = stringResource(id = R.string.users_screen)
+        LaunchedEffect(Unit) {
+            setTitle(title)
+        }
+
+        UsersScreen(onEdit = onEditUser)
+
     }
 }
 
-fun NavController.navigateToUsers(builder: (NavOptionsBuilder.()->Unit) = {}) {
+fun NavController.navigateToUsers(builder: (NavOptionsBuilder.() -> Unit) = {}) {
     navigate(ROUTE, builder)
 }

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.compose.foundation.layout.*
@@ -10,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
@@ -30,29 +27,10 @@ internal fun ClockScreen(
     onShowAppliance: (PowerAppliance) -> Unit,
     modifier: Modifier = Modifier,
     windowHeight: WindowHeightSizeClass,
-    actions: @Composable RowScope.() -> Unit,
 ) {
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(id = R.string.app_name),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                actions = actions,
-            )
-        },
-        modifier = modifier
-
-    ) { innerPadding ->
 
         Box(
             modifier = modifier
-                .padding(innerPadding)
                 .fillMaxSize()
         ) {
 
@@ -127,7 +105,6 @@ internal fun ClockScreen(
 
         }
     }
-}
 
 
 @Preview(showBackground = true)
@@ -141,7 +118,6 @@ fun ClockScreenPreview() {
             appliances = FakeAppliancesService.testAppliances,
             onShowPrices = {},
             updateOffset = {},
-            actions = {},
             onShowAppliance = {},
             windowHeight = WindowHeightSizeClass.Medium,
         )
@@ -163,7 +139,6 @@ fun ClockScreenPreviewLandscape() {
             appliances = FakeAppliancesService.testAppliances,
             onShowPrices = {},
             updateOffset = {},
-            actions = {},
             onShowAppliance = {},
             windowHeight = WindowHeightSizeClass.Compact,
         )

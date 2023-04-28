@@ -2,8 +2,10 @@ package com.folkmanis.laiks.ui.screens.prices
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -12,15 +14,20 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.folkmanis.laiks.LaiksAppState
+import com.folkmanis.laiks.R
 
 const val ROUTE = "Prices"
 
 fun NavGraphBuilder.pricesScreen(
-    state: LaiksAppState.Loaded
+    setTitle: (String) -> Unit,
 ) {
 
     composable(ROUTE) {
+
+        val title = stringResource(id = R.string.prices_screen)
+        LaunchedEffect(Unit) {
+            setTitle(title)
+        }
 
         val viewModel: PricesViewModel = hiltViewModel()
 
@@ -35,10 +42,7 @@ fun NavGraphBuilder.pricesScreen(
 
         PricesScreen(
             state = uiState,
-            actions = { state.AppUserMenu() },
-            popUp = state::popUp,
             statistics = statistics,
-            snackbarHostState = state.snackbarHostState,
             appliances = appliances
         )
 
