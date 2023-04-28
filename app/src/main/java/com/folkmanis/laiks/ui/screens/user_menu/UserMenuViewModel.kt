@@ -9,8 +9,8 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
-import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
-import com.folkmanis.laiks.utilities.snackbar.SnackbarMessage.Companion.toSnackbarMessage
+import com.folkmanis.laiks.ui.snackbar.SnackbarManager
+import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*

@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.domain.DelayToNextNpUpdateUseCase
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
-import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
-import com.folkmanis.laiks.utilities.snackbar.SnackbarMessage.Companion.toSnackbarMessage
+import com.folkmanis.laiks.ui.snackbar.SnackbarManager
+import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

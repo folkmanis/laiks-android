@@ -5,8 +5,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.AccountService
-import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
-import com.folkmanis.laiks.utilities.snackbar.SnackbarMessage.Companion.toMessage
+import com.folkmanis.laiks.ui.snackbar.SnackbarManager
+import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

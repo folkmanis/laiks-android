@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.utilities.snackbar
+package com.folkmanis.laiks.ui.snackbar
 
 import android.util.Log
 import androidx.annotation.PluralsRes
