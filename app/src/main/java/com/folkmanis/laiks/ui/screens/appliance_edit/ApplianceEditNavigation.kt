@@ -12,7 +12,7 @@ private const val COPY = "copy"
 
 fun NavGraphBuilder.applianceEditScreen(
     onCopy: (String, NavOptionsBuilder.() -> Unit) -> Unit,
-    appState: LaiksAppState,
+    appState: LaiksAppState.Loaded,
 ) {
 
     composable(
@@ -42,7 +42,7 @@ fun NavGraphBuilder.applianceEditScreen(
 }
 
 fun NavGraphBuilder.applianceCopyRoute(
-    appState: LaiksAppState,
+    appState: LaiksAppState.Loaded,
 ) {
     composable(
         route = "$ROUTE/{$APPLIANCE_ID}/$COPY",
@@ -63,7 +63,7 @@ fun NavGraphBuilder.applianceCopyRoute(
 }
 
 fun NavGraphBuilder.applianceNewRoute(
-    appState: LaiksAppState,
+    appState: LaiksAppState.Loaded,
 ) {
     composable(
         route = "$ROUTE/$NEW_APPLIANCE"

@@ -19,7 +19,7 @@ private const val APPLIANCE_ID = "applianceId"
 private const val APPLIANCE_NAME = "name"
 
 fun NavGraphBuilder.applianceCostsScreen(
-    appState: LaiksAppState
+    appState: LaiksAppState.Loaded
 ) {
 
     composable(

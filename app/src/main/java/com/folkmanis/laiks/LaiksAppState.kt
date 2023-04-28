@@ -19,57 +19,46 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 //@Stable
-data class LaiksAppState(
-    val windowSize: WindowSizeClass,
-    val navController: NavHostController,
-    val user: LaiksUser?,
-    coroutineScope: CoroutineScope,
-    val snackbarHostState: SnackbarHostState,
-    private val snackbarManager: SnackbarManager,
-    private val resources: Resources,
-) {
-
-    init {
-        coroutineScope.launch {
-            snackbarManager
-                .snackbarMessages
-                .filterNotNull()
-                .collect { snackbarMessage ->
-                    val text = snackbarMessage.toMessage(resources)
-                    snackbarHostState.showSnackbar(text)
-                }
+sealed interface LaiksAppState {
+    object Loading : LaiksAppState
+    data class Loaded(
+        val windowSize: WindowSizeClass,
+        val navController: NavHostController,
+        val user: LaiksUser?,
+        val snackbarHostState: SnackbarHostState,
+        private val resources: Resources,
+    ) : LaiksAppState {
+        @Composable
+        fun AppUserMenu() {
+            UserMenu(
+                onUsersAdmin = ::navigateToUsersAdmin,
+                onAppliancesAdmin = ::navigateToAppliancesAdmin,
+                onLogout = ::navigateToDefault
+            )
         }
-    }
 
-    @Composable
-    fun AppUserMenu() {
-        UserMenu(
-            onUsersAdmin = ::navigateToUsersAdmin,
-            onAppliancesAdmin = ::navigateToAppliancesAdmin,
-            onLogout = ::navigateToDefault
-        )
-    }
-
-    fun popUp() {
-        navController.popBackStack()
-    }
-
-    private fun navigateToUsersAdmin() {
-        navController.navigateToUsers {
-            popUpTo(CLOCK_ROUTE)
+        fun popUp() {
+            navController.popBackStack()
         }
-    }
 
-    private fun navigateToAppliancesAdmin() {
-        navController.navigateToAppliances {
-            popUpTo(CLOCK_ROUTE)
+        private fun navigateToUsersAdmin() {
+            navController.navigateToUsers {
+                popUpTo(CLOCK_ROUTE)
+            }
         }
-    }
 
-    private fun navigateToDefault() {
-        navController.navigateToClock {
-            launchSingleTop = true
-            popUpTo(0) { inclusive = true }
+        private fun navigateToAppliancesAdmin() {
+            navController.navigateToAppliances {
+                popUpTo(CLOCK_ROUTE)
+            }
+        }
+
+        private fun navigateToDefault() {
+            navController.navigateToClock {
+                launchSingleTop = true
+                popUpTo(0) { inclusive = true }
+            }
         }
     }
 }
+

@@ -17,7 +17,7 @@ import com.folkmanis.laiks.LaiksAppState
 const val ROUTE = "Prices"
 
 fun NavGraphBuilder.pricesScreen(
-    state: LaiksAppState
+    state: LaiksAppState.Loaded
 ) {
 
     composable(ROUTE) {

@@ -14,7 +14,7 @@ import java.time.LocalTime
 const val CLOCK_ROUTE = "Clock"
 
 fun NavGraphBuilder.clockScreen(
-    appState: LaiksAppState,
+    appState: LaiksAppState.Loaded,
     onNavigateToPrices: () -> Unit,
     onNavigateToAppliance: (PowerAppliance) -> Unit,
 ) {

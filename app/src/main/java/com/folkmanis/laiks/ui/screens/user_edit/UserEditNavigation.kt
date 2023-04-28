@@ -10,7 +10,7 @@ private const val ROUTE = "UserEditor"
 private const val USER_ID = "userId"
 
 fun NavGraphBuilder.userEditScreen(
-    appState: LaiksAppState
+    appState: LaiksAppState.Loaded
 ) {
 
     composable(

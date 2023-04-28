@@ -4,12 +4,15 @@ import android.content.res.Resources
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -29,29 +32,10 @@ import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.editUser
 import com.folkmanis.laiks.ui.screens.user_edit.userEditScreen
 import com.folkmanis.laiks.ui.screens.users.usersScreen
+import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.folkmanis.laiks.utilities.snackbar.SnackbarManager
 import kotlinx.coroutines.CoroutineScope
 
-
-@Composable
-fun rememberAppState(
-    windowSize: WindowSizeClass,
-    navController: NavHostController = rememberNavController(),
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
-    snackbarManager: SnackbarManager = SnackbarManager,
-    resources: Resources = resources(),
-) =
-    remember(windowSize, navController, coroutineScope, snackbarHostState, snackbarManager, resources) {
-        LaiksAppState(
-            windowSize,
-            navController,
-            coroutineScope,
-            snackbarHostState,
-            snackbarManager,
-            resources,
-        )
-    }
 
 @Composable
 @ReadOnlyComposable
@@ -66,45 +50,62 @@ fun LaiksAppScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    val appState = rememberAppState(windowSize)
+    val viewModel: LaiksAppViewModel = hiltViewModel()
+    val appState = viewModel.appState.collectAsStateWithLifecycle().value
 
-    val navController = appState.navController
+    val navController = rememberNavController()
+    val resources = resources()
 
-    NavHost(
-        navController = navController,
-        startDestination = CLOCK_ROUTE,
-        modifier = modifier
-    ) {
-
-        clockScreen(
-            appState = appState,
-            onNavigateToPrices = navController::navigateToPrices,
-            onNavigateToAppliance = navController::navigateToApplianceCosts,
+    LaunchedEffect(windowSize) {
+        viewModel.setState(
+            windowSize = windowSize,
+            navController = navController,
+            resources = resources,
         )
-
-        pricesScreen(appState)
-
-        usersScreen(appState, navController::editUser)
-
-        userEditScreen(appState)
-
-        appliancesScreen(
-            appState = appState,
-            onEditAppliance = navController::editAppliance,
-            onAddAppliance = navController::newAppliance
-        )
-
-        applianceEditScreen(
-            appState = appState,
-            onCopy = navController::copyAppliance,
-        )
-
-        applianceNewRoute(appState)
-
-        applianceCopyRoute(appState)
-
-        applianceCostsScreen(appState)
-
     }
+
+    when(appState) {
+        is LaiksAppState.Loading -> LoadingScreen()
+        is LaiksAppState.Loaded -> {
+            NavHost(
+                navController = navController,
+                startDestination = CLOCK_ROUTE,
+                modifier = modifier
+            ) {
+
+                clockScreen(
+                    appState = appState,
+                    onNavigateToPrices = navController::navigateToPrices,
+                    onNavigateToAppliance = navController::navigateToApplianceCosts,
+                )
+
+                pricesScreen(appState)
+
+                usersScreen(appState, navController::editUser)
+
+                userEditScreen(appState)
+
+                appliancesScreen(
+                    appState = appState,
+                    onEditAppliance = navController::editAppliance,
+                    onAddAppliance = navController::newAppliance
+                )
+
+                applianceEditScreen(
+                    appState = appState,
+                    onCopy = navController::copyAppliance,
+                )
+
+                applianceNewRoute(appState)
+
+                applianceCopyRoute(appState)
+
+                applianceCostsScreen(appState)
+
+            }
+
+        }
+    }
+
 }
 

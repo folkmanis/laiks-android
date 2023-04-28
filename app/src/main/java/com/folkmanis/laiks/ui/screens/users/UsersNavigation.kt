@@ -12,7 +12,7 @@ import com.folkmanis.laiks.LaiksAppState
 private const val ROUTE = "Users"
 
 fun NavGraphBuilder.usersScreen(
-    appState: LaiksAppState,
+    appState: LaiksAppState.Loaded,
     onEditUser: (String) -> Unit,
 ) {
     composable(ROUTE) {

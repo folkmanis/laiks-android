@@ -12,7 +12,7 @@ import com.folkmanis.laiks.LaiksAppState
 private const val ROUTE = "Appliances"
 
 fun NavGraphBuilder.appliancesScreen(
-    appState: LaiksAppState,
+    appState: LaiksAppState.Loaded,
     onEditAppliance: (id: String) -> Unit = {},
     onAddAppliance: () -> Unit = {},
 ) {
