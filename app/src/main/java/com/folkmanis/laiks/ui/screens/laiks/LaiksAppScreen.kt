@@ -11,7 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCostsScreen
-import com.folkmanis.laiks.ui.screens.appliance_costs.navigateToApplianceCosts
+import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCosts
 import com.folkmanis.laiks.ui.screens.appliance_edit.applianceCopyRoute
 import com.folkmanis.laiks.ui.screens.appliance_edit.applianceEditScreen
 import com.folkmanis.laiks.ui.screens.appliance_edit.applianceNewRoute
@@ -81,7 +81,7 @@ fun LaiksAppScreen(
 
             clockScreen(
                 onNavigateToPrices = navController::navigateToPrices,
-                onNavigateToAppliance = navController::navigateToApplianceCosts,
+                onNavigateToAppliance = navController::applianceCosts,
                 setTitle = viewModel::setTitle,
                 windowHeight = windowSize.heightSizeClass,
             )
@@ -103,6 +103,8 @@ fun LaiksAppScreen(
                 onEditAppliance = navController::editAppliance,
                 onAddAppliance = navController::newAppliance,
                 setTitle = viewModel::setTitle,
+                onSelectAppliance = navController::applianceCosts,
+                user = appState.user,
             )
 
             applianceEditScreen(

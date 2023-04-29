@@ -92,6 +92,23 @@ fun LoggedInUserMenu(
                         }
                     }
                 )
+                // Appliances
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(id = R.string.appliances_menu_item))
+                    },
+                    onClick = {
+                        menuExpanded = false
+                        onAppliancesAdmin()
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.dishwasher_gen),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                )
             }
             // Admin
             if (state.isAdmin) {
@@ -109,23 +126,6 @@ fun LoggedInUserMenu(
                             painter = painterResource(id = R.drawable.manage_accounts),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
-                        )
-                    }
-                )
-                // Appliances
-                DropdownMenuItem(
-                    text = {
-                        Text(text = stringResource(id = R.string.appliances_menu_item))
-                    },
-                    onClick = {
-                        menuExpanded = false
-                        onAppliancesAdmin()
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.dishwasher_gen),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
                         )
                     }
                 )

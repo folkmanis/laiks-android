@@ -23,6 +23,7 @@ import com.folkmanis.laiks.model.PowerAppliance
 @Composable
 fun ApplianceRow(
     appliance: PowerAppliance,
+    isAdmin: Boolean,
     modifier: Modifier = Modifier,
     onEdit: (String) -> Unit = {},
     onDelete: (String) -> Unit = {},
@@ -52,25 +53,27 @@ fun ApplianceRow(
         },
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { onEdit(id) }) {
-                    Icon(
-                        imageVector = Icons.Filled.Settings,
-                        contentDescription = stringResource(id = R.string.settings)
-                    )
-                }
-                IconButton(onClick = {
-                    deleteConfirmation = true
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = stringResource(id = R.string.delete_button)
-                    )
+                if (isAdmin) {
+                    IconButton(onClick = { onEdit(id) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = stringResource(id = R.string.settings)
+                        )
+                    }
+                    IconButton(onClick = {
+                        deleteConfirmation = true
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = stringResource(id = R.string.delete_button)
+                        )
+                    }
                 }
             }
         }
     )
 
-    if (deleteConfirmation) {
+    if (deleteConfirmation && isAdmin) {
         DeleteConfirmation(
             onAccept = {
                 deleteConfirmation = false
@@ -114,6 +117,9 @@ fun DeleteConfirmation(
 @Composable
 fun ApplianceRowPreview() {
     MaterialTheme {
-        ApplianceRow(appliance = PowerAppliance(name = "Dishwasher"))
+        ApplianceRow(
+            appliance = PowerAppliance(name = "Dishwasher"),
+            isAdmin = true
+        )
     }
 }

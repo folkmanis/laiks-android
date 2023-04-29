@@ -63,7 +63,7 @@ fun NavGraphBuilder.applianceCostsScreen(
 
 }
 
-fun NavController.navigateToApplianceCosts(
+fun NavController.applianceCosts(
     appliance: PowerAppliance,
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
