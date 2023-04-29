@@ -1,7 +1,10 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -9,6 +12,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NumberInput(
@@ -69,4 +73,22 @@ fun NumberInput(
         enabled = enabled,
     )
 
+}
+
+@Preview
+@Composable
+fun NumberInputPreview() {
+    var value by remember {
+        mutableStateOf(5L)
+    }
+
+    MaterialTheme {
+        Box {
+            NumberInput(
+                value = value,
+                onValueChange = { value = it },
+                label = { Text("Test") }
+            )
+        }
+    }
 }
