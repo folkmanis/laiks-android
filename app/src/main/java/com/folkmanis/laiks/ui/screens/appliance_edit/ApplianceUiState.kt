@@ -1,8 +1,39 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
+import com.folkmanis.laiks.model.MSW_TO_KWH
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import com.folkmanis.laiks.model.PowerApplianceDelay
+
+data class NullablePowerApplianceCycle(
+    val consumption: Long? = 0,
+    val length: Long? = 0, // milliseconds
+) {
+    fun toPowerApplianceCycle() =
+        PowerApplianceCycle(
+            consumption = consumption ?: 0,
+            length = length ?: 0,
+        )
+
+    val isValid: Boolean
+        get() = consumption != null && length != null
+
+    val kWh: Double
+        get() = (consumption?.toDouble() ?: 0.0) * (length?.toDouble() ?: 0.0) * MSW_TO_KWH
+
+}
+
+val List<NullablePowerApplianceCycle>.isValid: Boolean
+    get() = this.all { it.isValid }
+
+fun List<NullablePowerApplianceCycle>.toPowerApplianceCycles() =
+    map { it.toPowerApplianceCycle() }
+
+fun PowerApplianceCycle.toNullablePowerApplianceCycle() =
+    NullablePowerApplianceCycle(consumption, length)
+
+fun List<PowerApplianceCycle>.toNullablePowerApplianceCycles() =
+    map { it.toNullablePowerApplianceCycle() }
 
 data class ApplianceUiState(
 
@@ -14,8 +45,8 @@ data class ApplianceUiState(
     val color: String = "#CCCCCC",
     val delay: String = "start",
     val enabled: Boolean = true,
-    val minimumDelay: Long = 0,
-    val cycles: List<PowerApplianceCycle> = emptyList(),
+    val minimumDelay: Long? = 0,
+    val cycles: List<NullablePowerApplianceCycle> = emptyList(),
 
     ) {
 
@@ -29,7 +60,7 @@ data class ApplianceUiState(
         get() = name.isNotBlank()
 
     val isMinimumDelayValid: Boolean
-        get() = minimumDelay >= 0
+        get() = minimumDelay != null && minimumDelay >= 0
 
     private val isDelayValid: Boolean
         get() = PowerApplianceDelay.values().map { it.name }.contains(delay)
@@ -48,7 +79,7 @@ data class ApplianceUiState(
             delay = appliance.delay,
             enabled = appliance.enabled,
             minimumDelay = appliance.minimumDelay,
-            cycles = appliance.cycles,
+            cycles = appliance.cycles.toNullablePowerApplianceCycles(),
         )
     }
 
@@ -59,8 +90,8 @@ data class ApplianceUiState(
             color = color,
             delay = delay,
             enabled = enabled,
-            minimumDelay = minimumDelay,
-            cycles = cycles,
+            minimumDelay = minimumDelay ?: 0,
+            cycles = cycles.toPowerApplianceCycles(),
         )
     }
 

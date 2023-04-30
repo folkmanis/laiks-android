@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -14,10 +15,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 
+private const val TAG = "NumberInput"
+
 @Composable
 fun NumberInput(
-    value: Long,
-    onValueChange: (Long) -> Unit,
+    value: Long?,
+    onValueChange: (Long?) -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
@@ -30,7 +33,9 @@ fun NumberInput(
         mutableStateOf(TextFieldValue(""))
     }
 
-    val valueStr = value.toString()
+    Log.d(TAG, "Composition: $value")
+
+    val valueStr = value?.toString() ?: ""
 
     if (valueStr != inputState.text) {
         inputState = TextFieldValue(
@@ -44,12 +49,11 @@ fun NumberInput(
         onValueChange = {
             inputState = it
             val valueLong = inputState.text.toLongOrNull()
-            if (valueLong != null) {
-                onValueChange(valueLong)
-            }
+            onValueChange(valueLong)
         },
         modifier = modifier
             .onFocusChanged { focusState ->
+                Log.d(TAG, "isFocused: ${focusState.isFocused}")
                 if (focusState.isFocused) {
                     inputState = inputState.copy(
                         selection = TextRange(0, inputState.text.length)
@@ -79,7 +83,7 @@ fun NumberInput(
 @Composable
 fun NumberInputPreview() {
     var value by remember {
-        mutableStateOf(5L)
+        mutableStateOf<Long?>(5L)
     }
 
     MaterialTheme {

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.model.PowerAppliance
-import com.folkmanis.laiks.model.PowerApplianceCycle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +29,7 @@ class ApplianceEditViewModel @Inject constructor(
         _uiState.update { it.copy(name = name) }
     }
 
-    fun setMinimumDelay(time: Long) {
+    fun setMinimumDelay(time: Long?) {
         _uiState.update { it.copy(minimumDelay = time) }
     }
 
@@ -48,7 +47,7 @@ class ApplianceEditViewModel @Inject constructor(
         _uiState.update { it.copy(color = color) }
     }
 
-    fun setCycles(cycles: List<PowerApplianceCycle>) {
+    fun setCycles(cycles: List<NullablePowerApplianceCycle>) {
         _uiState.update { it.copy(cycles = cycles) }
     }
 
