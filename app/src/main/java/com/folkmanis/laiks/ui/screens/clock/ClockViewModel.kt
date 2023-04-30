@@ -3,10 +3,17 @@ package com.folkmanis.laiks.ui.screens.clock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,33 +21,38 @@ import javax.inject.Inject
 class ClockViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     accountService: AccountService,
-    ) : ViewModel() {
+    appliancesService: AppliancesService,
+) : ViewModel() {
 
     val isPricesAllowed = accountService.laiksUserFlow
         .map { laiksUser -> laiksUser?.npAllowed ?: false }
 
-    val uiState: StateFlow<ClockUiState> = combine(
-        minuteTicks(),
+    val appliances = accountService.laiksUserFlow
+        .filter { it?.npAllowed ?: false }
+        .map { appliancesService.activeAppliances() }
+
+    val offsetState: StateFlow<Int> =
         userPreferencesRepository.savedTimeOffset
-    ) { time, offset ->
-        ClockUiState(
-            time.toLocalTime().plusHours(offset.toLong()),
-            offset
-        )
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000L),
+                0
+            )
+
+    val timeState = combine(offsetState, minuteTicks()) { offset, minute ->
+        minute.toLocalTime().plusHours(offset.toLong())
     }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = ClockUiState(),
-        )
 
     fun updateOffset(value: Int) {
-        val oldOffset = uiState.value.offset
         viewModelScope.launch {
             userPreferencesRepository
-                .saveTimeOffset(oldOffset + value)
+                .saveTimeOffset(offsetState.value + value)
         }
     }
 
+    companion object {
+        @Suppress("unused")
+        private const val TAG = "ClockViewModel"
+    }
 
 }

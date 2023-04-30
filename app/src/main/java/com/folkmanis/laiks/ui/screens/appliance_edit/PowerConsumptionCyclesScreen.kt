@@ -16,44 +16,43 @@ import com.folkmanis.laiks.model.PowerApplianceCycle
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
 import java.time.Duration
 
-fun List<PowerApplianceCycle>.updateAt(
+fun List<NullablePowerApplianceCycle>.updateAt(
     idx: Int,
-    cycle: PowerApplianceCycle
-): List<PowerApplianceCycle> = toMutableList().apply {
+    cycle: NullablePowerApplianceCycle
+): List<NullablePowerApplianceCycle> = toMutableList().apply {
     this[idx] = cycle
 }
 
-fun List<PowerApplianceCycle>.add(cycle: PowerApplianceCycle): List<PowerApplianceCycle> =
+fun List<NullablePowerApplianceCycle>.add(
+    cycle: NullablePowerApplianceCycle
+): List<NullablePowerApplianceCycle> =
     toMutableList().apply {
         add(cycle)
     }
 
-fun List<PowerApplianceCycle>.add(
+fun List<NullablePowerApplianceCycle>.add(
     index: Int,
-    cycle: PowerApplianceCycle
-): List<PowerApplianceCycle> =
+    cycle: NullablePowerApplianceCycle
+): List<NullablePowerApplianceCycle> =
     toMutableList().apply {
         add(index, cycle)
     }
 
-fun List<PowerApplianceCycle>.removeAt(index: Int): List<PowerApplianceCycle> =
+fun List<NullablePowerApplianceCycle>.removeAt(index: Int): List<NullablePowerApplianceCycle> =
     toMutableList().apply {
         removeAt(index)
     }
 
-fun List<PowerApplianceCycle>.toDuration(): Duration =
-    sumOf { it.length }.let(Duration::ofMillis)
+fun List<NullablePowerApplianceCycle>.toDuration(): Duration =
+    sumOf { it.length ?: 0 }.let(Duration::ofMillis)
 
-fun List<PowerApplianceCycle>.kWh(): Double =
+fun List<NullablePowerApplianceCycle>.kWh(): Double =
     sumOf { it.kWh }
-
-val List<PowerApplianceCycle>.isValid: Boolean
-    get() = isNotEmpty()
 
 @Composable
 fun PowerConsumptionCyclesScreen(
-    cycles: List<PowerApplianceCycle>,
-    onCyclesChange: (List<PowerApplianceCycle>) -> Unit,
+    cycles: List<NullablePowerApplianceCycle>,
+    onCyclesChange: (List<NullablePowerApplianceCycle>) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
@@ -67,14 +66,19 @@ fun PowerConsumptionCyclesScreen(
                     onCyclesChange(cycles.updateAt(idx = index, cycle = it))
                 },
                 onAdd = {
-                    onCyclesChange(cycles.add(index, PowerApplianceCycle.zeroCycle))
+                    onCyclesChange(
+                        cycles.add(
+                            index,
+                            PowerApplianceCycle.zeroCycle.toNullablePowerApplianceCycle()
+                        )
+                    )
                 },
                 ondRemove = {
                     onCyclesChange(cycles.removeAt(index))
                 },
                 modifier = Modifier
                     .height(72.dp),
-                enabled=enabled,
+                enabled = enabled,
             )
         }
 
@@ -104,7 +108,11 @@ fun PowerConsumptionCyclesScreen(
 
             IconButton(
                 onClick = {
-                    onCyclesChange(cycles.add(PowerApplianceCycle.zeroCycle))
+                    onCyclesChange(
+                        cycles.add(
+                            PowerApplianceCycle.zeroCycle.toNullablePowerApplianceCycle()
+                        )
+                    )
                 }
             ) {
                 Icon(

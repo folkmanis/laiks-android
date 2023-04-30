@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
-import com.folkmanis.laiks.utilities.ext.eurToCents
 import com.folkmanis.laiks.utilities.ext.isDark
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
 
@@ -51,7 +50,6 @@ fun ApplianceCost(
     ) {
 
         val costStr = appliance.cost
-            .eurToCents()
             .toFormattedDecimals()
         val text = "${appliance.name}: $costStr"
 

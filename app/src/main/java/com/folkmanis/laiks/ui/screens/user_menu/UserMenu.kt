@@ -16,7 +16,7 @@ import com.folkmanis.laiks.utilities.oauth.getSignInIntent
 fun UserMenu(
     onUsersAdmin: () -> Unit,
     onAppliancesAdmin: () -> Unit,
-    onLogout: () -> Unit,
+    onPopToStart: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UserMenuViewModel = hiltViewModel(),
 ) {
@@ -40,7 +40,7 @@ fun UserMenu(
         LoggedInUserMenu(
             onLogout = {
                 viewModel.logout(context)
-                onLogout()
+                onPopToStart()
             },
             isVat = isVat,
             onSetVat = {

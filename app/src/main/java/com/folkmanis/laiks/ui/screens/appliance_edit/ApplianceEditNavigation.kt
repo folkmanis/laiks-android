@@ -1,8 +1,14 @@
 package com.folkmanis.laiks.ui.screens.appliance_edit
 
-import androidx.navigation.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import com.folkmanis.laiks.LaiksAppState
+import androidx.navigation.navArgument
+import com.folkmanis.laiks.R
 
 private const val ROUTE = "ApplianceEditor"
 private const val APPLIANCE_ID = "applianceId"
@@ -12,7 +18,8 @@ private const val COPY = "copy"
 
 fun NavGraphBuilder.applianceEditScreen(
     onCopy: (String, NavOptionsBuilder.() -> Unit) -> Unit,
-    appState: LaiksAppState,
+    setTitle: (String) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
 
     composable(
@@ -27,8 +34,13 @@ fun NavGraphBuilder.applianceEditScreen(
         val applianceId =
             backStackEntry.arguments?.getString(APPLIANCE_ID) ?: ""
 
+        val title = stringResource(id = R.string.appliance_screen)
+        LaunchedEffect(Unit) {
+            setTitle(title)
+        }
+
         ApplianceEdit(
-            onNavigateBack = appState::popUp,
+            onNavigateBack = onNavigateBack,
             onCopy = {
                 onCopy(it) {
                     launchSingleTop = true
@@ -42,7 +54,8 @@ fun NavGraphBuilder.applianceEditScreen(
 }
 
 fun NavGraphBuilder.applianceCopyRoute(
-    appState: LaiksAppState,
+    onNavigateBack: () -> Unit,
+    setTitle: (String) -> Unit,
 ) {
     composable(
         route = "$ROUTE/{$APPLIANCE_ID}/$COPY",
@@ -50,11 +63,17 @@ fun NavGraphBuilder.applianceCopyRoute(
             navArgument(APPLIANCE_ID) { type = NavType.StringType },
         ),
     ) { backStackEntry ->
+
+        val title = stringResource(id = R.string.appliance_screen)
+        LaunchedEffect(Unit) {
+            setTitle(title)
+        }
+
         val applianceId =
             backStackEntry.arguments?.getString(APPLIANCE_ID) ?: ""
 
         ApplianceEdit(
-            onNavigateBack = appState::popUp,
+            onNavigateBack = onNavigateBack,
             editAction = EditActions.Copy(applianceId),
             onCopy = {},
         )
@@ -63,13 +82,20 @@ fun NavGraphBuilder.applianceCopyRoute(
 }
 
 fun NavGraphBuilder.applianceNewRoute(
-    appState: LaiksAppState,
+    onNavigateBack: () -> Unit,
+    setTitle: (String) -> Unit,
 ) {
     composable(
         route = "$ROUTE/$NEW_APPLIANCE"
     ) {
+
+        val title = stringResource(id = R.string.appliance_screen)
+        LaunchedEffect(Unit) {
+            setTitle(title)
+        }
+
         ApplianceEdit(
-            onNavigateBack = appState::popUp,
+            onNavigateBack = onNavigateBack,
             editAction = EditActions.CreateNew,
             onCopy = {},
         )

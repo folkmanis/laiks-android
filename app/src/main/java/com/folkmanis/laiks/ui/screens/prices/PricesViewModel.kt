@@ -5,13 +5,20 @@ import com.folkmanis.laiks.data.domain.DelayToNextNpUpdateUseCase
 import com.folkmanis.laiks.data.domain.HourlyPricesUseCase
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.data.domain.StatisticsUseCase
+import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
+import com.folkmanis.laiks.model.PricesStatistics
+import com.folkmanis.laiks.ui.snackbar.SnackbarManager
+import com.folkmanis.laiks.utilities.PricesUpdateViewModel
 import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -22,23 +29,30 @@ class PricesViewModel @Inject constructor(
     hourlyPrices: HourlyPricesUseCase,
     npUpdate: NpUpdateUseCase,
     delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
-) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate) {
+    snackbarManager: SnackbarManager,
+) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager) {
 
 
     val pricesStatistics: Flow<PricesStatistics> = statistics()
 
     val uiState: Flow<PricesUiState> = hourTicks()
         .flatMapLatest { hour ->
-            hourlyPrices(hour)
+           hourlyPrices(
+                hour
+                    .truncatedTo(ChronoUnit.DAYS)
+            )
                 .map { prices ->
-                    if (prices.isEmpty())
+                    if (prices.isEmpty()) {
                         PricesUiState.Loading
-                    else
+                    } else {
+                        val groupedPrices = prices
+                            .groupBy { it.startTime.toLocalDateTime().toLocalDate() }
                         PricesUiState.Success(
-                            prices.groupBy { it.startTime.toLocalDateTime().toLocalDate() },
-                            hour
+                            groupedPrices = groupedPrices,
+                            hour = hour,
+                            currentOffsetIndex = currentOffsetIndex(groupedPrices, hour)
                         )
-
+                    }
                 }
         }
 
@@ -53,5 +67,24 @@ class PricesViewModel @Inject constructor(
     companion object {
         @Suppress("unused")
         private const val TAG = "PricesViewModel"
+
+        fun currentOffsetIndex(
+            groupedPrices: Map<LocalDate, List<NpPrice>>,
+            hour: LocalDateTime,
+        ): Int {
+            var zeroIdx = 0
+            groupedPrices.forEach { (_, prices) ->
+                zeroIdx++
+                val idx = prices.indexOfFirst { it.startTime.hoursFrom(hour) == 0 }
+                if (idx != -1) {
+                    zeroIdx += idx
+                    return zeroIdx
+                } else {
+                    zeroIdx += prices.size
+                }
+            }
+            return 0
+        }
+
     }
 }

@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.clock
 
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -24,16 +23,15 @@ import com.folkmanis.laiks.utilities.ext.toSignedString
 import java.time.LocalTime
 
 @Composable
-fun BoxScope.ClockSelector(
-    modifier: Modifier = Modifier,
+fun ClockSelector(
     offset: Int,
     time: LocalTime,
     onOffsetChange: (Int)->Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     Column(
-        modifier = modifier
-            .align(Alignment.Center),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 

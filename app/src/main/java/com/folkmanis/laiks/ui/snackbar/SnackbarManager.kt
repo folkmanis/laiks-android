@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.utilities.snackbar
+package com.folkmanis.laiks.ui.snackbar
 
 import android.util.Log
 import androidx.annotation.PluralsRes
@@ -6,8 +6,15 @@ import androidx.annotation.StringRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object SnackbarManager {
+@Singleton
+class SnackbarManager @Inject constructor() {
+
+    init {
+        Log.d(TAG, "SnackbarManager created")
+    }
 
     private val messages: MutableStateFlow<SnackbarMessage?> = MutableStateFlow(null)
     val snackbarMessages: StateFlow<SnackbarMessage?>
@@ -18,18 +25,16 @@ object SnackbarManager {
     }
 
     fun showMessage(@PluralsRes message: Int, count: Int, vararg formatArgs: Any) {
-        Log.d(TAG, "count: $count; $*formatArgs")
+        Log.d(TAG, "count: $count; $formatArgs")
         messages.value =
             SnackbarMessage.PluralsSnackbar(message, count, *formatArgs)
-    }
-
-    fun showMessage(message: String) {
-        messages.value = SnackbarMessage.StringSnackbar(message)
     }
 
     fun showMessage(message: SnackbarMessage) {
         messages.value = message
     }
 
-    private const val TAG = "SnackbarManager"
+    companion object {
+        private const val TAG = "SnackbarManager"
+    }
 }
