@@ -24,6 +24,7 @@ import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+private const val TAG="PricesScreen"
 @Composable
 fun PricesScreen(
     state: PricesUiState,

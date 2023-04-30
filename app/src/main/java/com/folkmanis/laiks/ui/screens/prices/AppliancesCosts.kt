@@ -80,7 +80,7 @@ fun ApplianceCost(
 @Composable
 fun AppliancesCostsPreview() {
     val costs = listOf(
-        PowerApplianceHour(isBest = true, cost = 0.185, name = "Veļasmašīna", color = "#473592"),
+        PowerApplianceHour(isBest = true, cost = 18.5, name = "Veļasmašīna", color = "#473592"),
         PowerApplianceHour(),
     )
     LaiksTheme(darkTheme = false) {

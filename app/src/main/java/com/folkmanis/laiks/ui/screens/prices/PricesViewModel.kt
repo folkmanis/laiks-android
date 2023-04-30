@@ -46,6 +46,7 @@ class PricesViewModel @Inject constructor(
                         PricesUiState.Loading
                     } else {
                         val groupedPrices = prices
+                            .eurMWhToCentsKWh()
                             .groupBy { it.startTime.toLocalDateTime().toLocalDate() }
                         PricesUiState.Success(
                             groupedPrices = groupedPrices,

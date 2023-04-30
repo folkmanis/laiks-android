@@ -5,7 +5,6 @@ import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.utilities.ext.addVat
-import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -29,7 +28,7 @@ class HourlyPricesUseCase @Inject constructor(
 
         return pricesRepository.pricesFromDateTimeFlow(instant)
             .combine(vatAmount) { prices, vat ->
-                prices.eurMWhToCentsKWh().addVat(vat)
+                prices.addVat(vat)
             }
     }
 }
