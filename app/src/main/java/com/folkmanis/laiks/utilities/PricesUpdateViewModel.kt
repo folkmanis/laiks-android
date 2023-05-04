@@ -13,7 +13,6 @@ import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessa
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 open class PricesUpdateViewModel(
     private val npUpdate: NpUpdateUseCase,
@@ -34,7 +33,7 @@ open class PricesUpdateViewModel(
 
     private fun createUpdateCheckJob(): Job = viewModelScope.launch {
 
-        val toNext = delayToNextNpUpdate() + Random.nextLong(10000)
+        val toNext = delayToNextNpUpdate()
 
         Log.d(TAG, "Delayed for $toNext ms")
 
