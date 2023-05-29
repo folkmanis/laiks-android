@@ -15,4 +15,12 @@ And possibly this app as my first learning project is not robust and fully teste
 
 Just presss "+" and "-"
 
-![Main screen](/assets/)
+![Main screen](/assets/Screenshot-1_20230527_092826.png)
+
+## Little extra
+
+Possibly your have grid connection with hourly rates and you have access to electricity prices for the next day. Then you can calculate the best time for power hungry appliances to run. This app can do that too. A syou can see, the cost of one dishwasher run can differ by more than hundred times depending on hour!
+
+![Hourly prices](assets/Screenshot-2_20230527_092948.png)
+
+![Costs to run the power applyance at certain time](assets/Screenshot-3_20230527_093025.png)
