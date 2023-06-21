@@ -1,7 +1,9 @@
 package com.folkmanis.laiks.ui.screens.appliances
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -24,9 +26,11 @@ import com.folkmanis.laiks.model.PowerAppliance
 @Composable
 internal fun AppliancesScreen(
     appliances: List<PowerAppliance>,
+    isAdmin: Boolean,
     modifier: Modifier = Modifier,
     onEdit: (id: String) -> Unit = {},
     onAdd: () -> Unit = {},
+    onSelectAppliance: (PowerAppliance)->Unit ={},
     onDelete: (String) -> Unit = {},
 ) {
 
@@ -39,6 +43,9 @@ internal fun AppliancesScreen(
                     appliance = appliance,
                     onEdit = onEdit,
                     onDelete = onDelete,
+                    isAdmin = isAdmin,
+                    modifier = Modifier
+                        .clickable { onSelectAppliance(appliance) }
                 )
                 Divider(thickness = 2.dp)
 
@@ -48,7 +55,9 @@ internal fun AppliancesScreen(
 
         FloatingActionButton(
             onClick = onAdd,
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
@@ -65,7 +74,8 @@ internal fun AppliancesScreen(
 fun AppliancesScreenPreview() {
     MaterialTheme {
         AppliancesScreen(
-            appliances = FakeAppliancesService.testAppliances
+            appliances = FakeAppliancesService.testAppliances,
+            isAdmin = true
         )
     }
 }

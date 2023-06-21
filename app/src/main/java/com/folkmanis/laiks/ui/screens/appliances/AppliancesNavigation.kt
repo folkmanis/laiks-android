@@ -10,12 +10,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
+import com.folkmanis.laiks.model.LaiksUser
+import com.folkmanis.laiks.model.PowerAppliance
 
 private const val ROUTE = "Appliances"
 
 fun NavGraphBuilder.appliancesScreen(
     onEditAppliance: (id: String) -> Unit = {},
     onAddAppliance: () -> Unit = {},
+    onSelectAppliance: (PowerAppliance)->Unit ={},
+    user:LaiksUser?,
     setTitle: (String) -> Unit,
 ) {
 
@@ -35,6 +39,8 @@ fun NavGraphBuilder.appliancesScreen(
             onEdit = onEditAppliance,
             onAdd = onAddAppliance,
             onDelete = viewModel::delete,
+            onSelectAppliance = onSelectAppliance,
+            isAdmin = user?.isAdmin ?: false,
         )
     }
 }
