@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "548695761681",
+    "project_id": "laiks-e2d86",
+    "storage_bucket": "laiks-e2d86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:548695761681:android:066ca057aaa925256762b0",
+        "android_client_info": {
+          "package_name": "com.folkmanis.laiks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "548695761681-n65td1m0amaobard77mn5aafha1lgmfl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF4UbQonizQbZC_rtXXA3WlR3RQ8xKjt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "548695761681-n65td1m0amaobard77mn5aafha1lgmfl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
