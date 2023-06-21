@@ -19,7 +19,7 @@ import java.time.ZoneId
 
 
 private val pricesStart = LocalDateTime.of(2023, 3, 24, 23, 0)
-val prices: List<NpPrice> = testPrices(pricesStart)
+val prices: List<NpPrice> = testPrices(pricesStart.atZone(ZoneId.systemDefault()).toInstant())
 
 private val dishWasherCosts = mapOf(
     0L to 0.0195,
