@@ -1,9 +1,9 @@
 package com.folkmanis.laiks.data.implementations
 
 import android.util.Log
-import com.folkmanis.laiks.BuildConfig
 import com.folkmanis.laiks.NP_DATA
 import com.folkmanis.laiks.NP_PRICES_COLLECTION
+import com.folkmanis.laiks.LAIKS_COLLECTION
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.*
 import com.folkmanis.laiks.utilities.ext.instant.toTimestamp
@@ -29,7 +29,7 @@ class PricesServiceFirebase @Inject constructor(
 ) : PricesService {
 
     private val npPricesDocumentRef = firestore
-        .collection(BuildConfig.LAIKS_COLLECTION)
+        .collection(LAIKS_COLLECTION)
         .document(NP_DATA)
 
     private val npPricesCollection = npPricesDocumentRef

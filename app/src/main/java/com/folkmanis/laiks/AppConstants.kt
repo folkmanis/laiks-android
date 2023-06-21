@@ -10,7 +10,7 @@ const val INCLUDE_AVERAGE_DAYS = 5L
 const val USER_COLLECTION = "users"
 const val NP_DATA = "np-data"
 const val NP_PRICES_COLLECTION = "prices"
-
+const val LAIKS_COLLECTION = "laiks"
 
 const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/"
 const val DAY_AHEAD_LV = "page/59"
