@@ -4,7 +4,8 @@ import android.content.res.Resources
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.data.domain.IsPermissionUseCase
+import com.folkmanis.laiks.data.domain.LaiksUserUseCase
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LaiksAppViewModel @Inject constructor(
-    private val accountService: AccountService,
     private val snackbarManager: SnackbarManager,
+    private val isPermission: IsPermissionUseCase,
+    private val laiksUser: LaiksUserUseCase,
 ) : ViewModel() {
 
     private val _appState = MutableStateFlow(LaiksAppState())
@@ -44,9 +46,17 @@ class LaiksAppViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            accountService.laiksUserFlow.collect { user ->
+            laiksUser().collect { user ->
                 _appState.update { state ->
                     state.copy(user = user)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            isPermission("admin").collect { isAdmin ->
+                _appState.update { state ->
+                    state.copy(isAdmin = isAdmin)
                 }
             }
         }

@@ -2,9 +2,9 @@ package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
+import com.folkmanis.laiks.data.domain.IsPermissionUseCase
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,15 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class ClockViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
-    accountService: AccountService,
     appliancesService: AppliancesService,
+    isPermission: IsPermissionUseCase,
 ) : ViewModel() {
 
-    val isPricesAllowed = accountService.laiksUserFlow
-        .map { laiksUser -> laiksUser?.npAllowed ?: false }
+    val isPricesAllowed = isPermission("npUser")
 
-    val appliances = accountService.laiksUserFlow
-        .filter { it?.npAllowed ?: false }
+    val appliances = isPermission("npUser")
+        .filter { it }
         .map { appliancesService.activeAppliances() }
 
     val offsetState: StateFlow<Int> =

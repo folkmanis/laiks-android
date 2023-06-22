@@ -17,11 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.LaiksUser
+import com.folkmanis.laiks.model.Permissions
 
 @Composable
 internal fun UserEditScreen(
     viewModel: UserEditViewModel,
-    setTitle: (String)->Unit,
+    setTitle: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -32,28 +33,30 @@ internal fun UserEditScreen(
         setTitle(title)
     }
 
-        UserFormScreen(
-            laiksUser = userState.laiksUser,
-            modifier = modifier,
-            enabled = userState.enabled,
-            onIsAdminChange = viewModel::setIsAdmin,
-            adminChangeEnabled = !userState.isCurrentUser,
-            onNpAllowedChange = viewModel::setNpAllowed,
-            onNpUploadAllowedChange = viewModel::setNpUploadAllowed,
-        )
+    UserFormScreen(
+        laiksUser = userState.laiksUser,
+        permissions = userState.permissions,
+        modifier = modifier,
+        enabled = userState.enabled,
+        onIsAdminChange = viewModel::setIsAdmin,
+        adminChangeEnabled = !userState.isCurrentUser,
+        onNpAllowedChange = viewModel::setNpAllowed,
+        onNpUploadAllowedChange = viewModel::setNpUploadAllowed,
+    )
 
-    }
+}
 
 
 @Composable
 fun UserFormScreen(
     laiksUser: LaiksUser,
+    permissions: Permissions,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     adminChangeEnabled: Boolean = false,
     onNpAllowedChange: (Boolean) -> Unit = {},
     onIsAdminChange: (Boolean) -> Unit = {},
-    onNpUploadAllowedChange: (Boolean)->Unit={},
+    onNpUploadAllowedChange: (Boolean) -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -68,7 +71,7 @@ fun UserFormScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = laiksUser.npAllowed,
+                checked = permissions.npUser,
                 onCheckedChange = onNpAllowedChange,
                 enabled = enabled,
             )
@@ -88,7 +91,7 @@ fun UserFormScreen(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
-                checked = laiksUser.isAdmin,
+                checked = permissions.admin,
                 onCheckedChange = onIsAdminChange,
                 enabled = enabled && adminChangeEnabled
             )
@@ -104,11 +107,10 @@ fun UserFormScreenPreview() {
     val user = LaiksUser(
         id = "123",
         email = "user@example.com",
-        isAdmin = false,
-        npAllowed = true,
-        name = "Example User"
+        name = "Example User",
     )
+    val permissions = Permissions(npUser = true)
     MaterialTheme {
-        UserFormScreen(laiksUser = user)
+        UserFormScreen(laiksUser = user, permissions = permissions)
     }
 }

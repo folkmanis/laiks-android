@@ -3,7 +3,10 @@ package com.folkmanis.laiks.ui.screens.user_edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.data.LaiksUserService
+import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
+import com.folkmanis.laiks.model.Permissions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +16,7 @@ import javax.inject.Inject
 
 data class LaiksUserState(
     val laiksUser: LaiksUser = LaiksUser(),
+    val permissions: Permissions = Permissions(),
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val isCurrentUser: Boolean = false,
@@ -24,6 +28,8 @@ data class LaiksUserState(
 @HiltViewModel
 class UserEditViewModel @Inject constructor(
     private val accountService: AccountService,
+    private val permissionsService: PermissionsService,
+    private val laiksUserService: LaiksUserService,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LaiksUserState())
@@ -31,17 +37,17 @@ class UserEditViewModel @Inject constructor(
 
     fun setNpAllowed(value: Boolean) {
         _uiState.update {
-            val user = with(it.laiksUser) {
-                copy(npAllowed = value)
+            val permissions = with(it.permissions) {
+                copy(npUser = value)
             }
-            it.copy(laiksUser = user)
+            updatePermission("npUser", value)
+            it.copy(permissions = permissions)
         }
-        saveUser()
     }
 
     fun setNpUploadAllowed(value: Boolean) {
         _uiState.update {
-            val user= with(it.laiksUser) {
+            val user = with(it.laiksUser) {
                 copy(npUploadAllowed = value)
             }
             it.copy(laiksUser = user)
@@ -51,12 +57,22 @@ class UserEditViewModel @Inject constructor(
 
     fun setIsAdmin(value: Boolean) {
         _uiState.update {
-            val user = with(it.laiksUser) {
-                copy(isAdmin = value)
+            val permissions = with(it.permissions) {
+                copy(admin = value)
             }
-            it.copy(laiksUser = user)
+            updatePermission("admin", value)
+            it.copy(permissions = permissions)
         }
-        saveUser()
+    }
+
+    private fun updatePermission(field: String, value: Boolean) {
+        _uiState.update { it.copy(isSaving = true) }
+        viewModelScope.launch {
+            _uiState.update { state ->
+                permissionsService.updatePermission(state.laiksUser.id, field, value)
+                state.copy(isSaving = false)
+            }
+        }
     }
 
     private fun saveUser() {
@@ -64,7 +80,7 @@ class UserEditViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { state ->
-                accountService.updateLaiksUser(state.laiksUser)
+                laiksUserService.updateLaiksUser(state.laiksUser)
                 state.copy(isSaving = false)
             }
         }
@@ -75,10 +91,8 @@ class UserEditViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            accountService.laiksUser(id).let { user ->
-                if (user == null) {
-                    _uiState.update { it.copy(isLoading = false) }
-                } else {
+            laiksUserService.laiksUser(id).let { user ->
+                if (user != null) {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -87,6 +101,14 @@ class UserEditViewModel @Inject constructor(
                         )
                     }
                 }
+                user?.id
+            }.let { id ->
+                if (id != null) {
+                    permissionsService.getPermissions(id).let { permissions ->
+                        _uiState.update { it.copy(permissions = permissions) }
+                    }
+                }
+                _uiState.update { it.copy(isLoading = false) }
             }
 
         }

@@ -50,7 +50,7 @@ fun NavGraphBuilder.applianceCostsScreen(
             setTitle(title)
         }
 
-        viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
+//        viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
 
         viewModel.setApplianceId(applianceId)
 

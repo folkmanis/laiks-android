@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.AuthUI
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.UserPreferencesRepository
+import com.folkmanis.laiks.data.domain.IsPermissionUseCase
+import com.folkmanis.laiks.data.domain.LaiksUserUseCase
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
@@ -24,6 +27,9 @@ class UserMenuViewModel @Inject constructor(
     private val settingsService: UserPreferencesRepository,
     private val npUpdate: NpUpdateUseCase,
     private val snackbarManager: SnackbarManager,
+    private val isPermission: IsPermissionUseCase,
+    private val laiksUser: LaiksUserUseCase,
+    private val laiksUserService: LaiksUserService,
 ) : ViewModel() {
 
     val isVat = settingsService.includeVat
@@ -40,21 +46,25 @@ class UserMenuViewModel @Inject constructor(
             if (user == null) {
                 flowOf(UserMenuUiState.NotLoggedIn)
             } else {
-                accountService.laiksUserFlow(user.uid)
-                    .map { laiksUser ->
-                        if (laiksUser != null) {
-                            Log.d(TAG, "User Id ${user.uid} logged in")
-                            UserMenuUiState.LoggedIn(
-                                isAdmin = laiksUser.isAdmin,
-                                isPricesAllowed = laiksUser.npAllowed,
-                                isNpUploadAllowed = laiksUser.npUploadAllowed,
-                                displayName = user.displayName ?: "",
-                                photoUrl = user.photoUrl
-                            )
-                        } else {
-                            UserMenuUiState.NotLoggedIn
-                        }
+                combine(
+                    laiksUser(),
+                    isPermission("npUser"),
+                    isPermission("admin"),
+                ) { laiksUser, npAllowed, isAdmin ->
+                    if (laiksUser != null) {
+                        Log.d(TAG, "User Id ${user.uid} logged in")
+                        UserMenuUiState.LoggedIn(
+                            isAdmin = isAdmin,
+                            isPricesAllowed = npAllowed,
+                            isNpUploadAllowed = laiksUser.npUploadAllowed,
+                            displayName = user.displayName ?: "",
+                            photoUrl = user.photoUrl
+                        )
+                    } else {
+                        UserMenuUiState.NotLoggedIn
                     }
+
+                }
             }
         }
         .stateIn(
@@ -66,8 +76,8 @@ class UserMenuViewModel @Inject constructor(
     fun login() {
         viewModelScope.launch {
             val user = accountService.authUser
-            if (user != null && !accountService.userExists(user.uid)) {
-                accountService.createLaiksUser(user)
+            if (user != null && !laiksUserService.userExists(user.uid)) {
+                laiksUserService.createLaiksUser(user)
             }
         }
     }

@@ -104,7 +104,7 @@ fun LaiksAppScreen(
                 onAddAppliance = navController::newAppliance,
                 setTitle = viewModel::setTitle,
                 onSelectAppliance = navController::applianceCosts,
-                user = appState.user,
+                isAdmin = appState.isAdmin,
             )
 
             applianceEditScreen(

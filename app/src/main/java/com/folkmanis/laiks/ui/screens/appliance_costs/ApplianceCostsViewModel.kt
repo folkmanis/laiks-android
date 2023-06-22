@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.appliance_costs
 
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.domain.ApplianceHourlyCostsUseCase
@@ -31,9 +32,9 @@ class ApplianceCostsViewModel @Inject constructor(
     private val applianceHourlyCosts: ApplianceHourlyCostsUseCase,
     applianceStatistics: ApplianceStatisticsUseCase,
     private val snackbarManager: SnackbarManager,
-    npUpdate: NpUpdateUseCase,
-    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
-) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager) {
+//    npUpdate: NpUpdateUseCase,
+//    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
+) : ViewModel() { // : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager)
 
     private val idFlow = MutableStateFlow<String?>(null)
 

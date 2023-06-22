@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import androidx.lifecycle.ViewModel
 import com.folkmanis.laiks.data.domain.AppliancesCostsUseCase
 import com.folkmanis.laiks.data.domain.DelayToNextNpUpdateUseCase
 import com.folkmanis.laiks.data.domain.HourlyPricesUseCase
@@ -27,10 +28,10 @@ class PricesViewModel @Inject constructor(
     appliancesCosts: AppliancesCostsUseCase,
     statistics: StatisticsUseCase,
     hourlyPrices: HourlyPricesUseCase,
-    npUpdate: NpUpdateUseCase,
-    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
-    snackbarManager: SnackbarManager,
-) : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager) {
+//    npUpdate: NpUpdateUseCase,
+//    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
+//    snackbarManager: SnackbarManager,
+) : ViewModel()  { // : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager)
 
 
     val pricesStatistics: Flow<PricesStatistics> = statistics()

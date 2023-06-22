@@ -31,7 +31,7 @@ fun NavGraphBuilder.pricesScreen(
 
         val viewModel: PricesViewModel = hiltViewModel()
 
-        viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
+//        viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
 
         val uiState by viewModel.uiState
             .collectAsStateWithLifecycle(PricesUiState.Loading)

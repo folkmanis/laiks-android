@@ -11,6 +11,8 @@ const val USER_COLLECTION = "users"
 const val NP_DATA = "np-data"
 const val NP_PRICES_COLLECTION = "prices"
 const val LAIKS_COLLECTION = "laiks"
+const val PERMISSIONS_COLLECTION = "permissions"
+const val USER_APPLIANCES_COLLECTION = "appliances"
 
 const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/"
 const val DAY_AHEAD_LV = "page/59"
