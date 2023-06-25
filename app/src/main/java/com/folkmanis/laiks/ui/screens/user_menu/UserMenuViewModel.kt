@@ -8,7 +8,6 @@ import com.firebase.ui.auth.AuthUI
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
-import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.data.domain.IsPermissionUseCase
 import com.folkmanis.laiks.data.domain.LaiksUserUseCase
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
@@ -24,7 +23,6 @@ import javax.inject.Inject
 @HiltViewModel
 class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
-    private val settingsService: UserPreferencesRepository,
     private val npUpdate: NpUpdateUseCase,
     private val snackbarManager: SnackbarManager,
     private val isPermission: IsPermissionUseCase,
@@ -32,11 +30,10 @@ class UserMenuViewModel @Inject constructor(
     private val laiksUserService: LaiksUserService,
 ) : ViewModel() {
 
-    val isVat = settingsService.includeVat
 
-    fun setVat(value: Boolean) {
+    fun setVat(userId: String, value: Boolean) {
         viewModelScope.launch {
-            settingsService.setIncludeVat(value)
+            laiksUserService.setVatEnabled(userId,value)
         }
     }
 
@@ -58,7 +55,9 @@ class UserMenuViewModel @Inject constructor(
                             isPricesAllowed = npAllowed,
                             isNpUploadAllowed = laiksUser.npUploadAllowed,
                             displayName = user.displayName ?: "",
-                            photoUrl = user.photoUrl
+                            photoUrl = user.photoUrl,
+                            includeVat = laiksUser.includeVat,
+                            userId = user.uid,
                         )
                     } else {
                         UserMenuUiState.NotLoggedIn

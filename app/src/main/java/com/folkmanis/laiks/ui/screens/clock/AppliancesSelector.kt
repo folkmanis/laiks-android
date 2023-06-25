@@ -13,14 +13,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
+import com.folkmanis.laiks.data.domain.PowerApplianceRecord
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
-import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.ui.screens.prices.contrasting
 
 @Composable
 fun AppliancesSelector(
-    appliances: List<PowerAppliance>,
-    onSelected: (PowerAppliance) -> Unit,
+    appliances: List<PowerApplianceRecord>,
+    onSelected: (PowerApplianceRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -29,14 +29,15 @@ fun AppliancesSelector(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        appliances.forEach { appliance ->
+        appliances.forEach { applianceRecord ->
+            val appliance = applianceRecord.appliance
             val containerColor = Color(appliance.color.toColorInt())
             val colors = ButtonDefaults.buttonColors(
                 containerColor = containerColor,
                 contentColor = containerColor.contrasting()
             )
             Button(
-                onClick = { onSelected(appliance) },
+                onClick = { onSelected(applianceRecord) },
                 colors = colors,
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
@@ -50,6 +51,6 @@ fun AppliancesSelector(
 @Preview
 @Composable
 fun AppliancesSelectorPreview() {
-    val appliances = FakeAppliancesService.testAppliances
+    val appliances = FakeAppliancesService.testApplianceRecords
     AppliancesSelector(appliances = appliances, onSelected = {})
 }

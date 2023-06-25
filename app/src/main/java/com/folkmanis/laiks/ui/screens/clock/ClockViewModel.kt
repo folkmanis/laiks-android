@@ -2,8 +2,8 @@ package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.UserPreferencesRepository
+import com.folkmanis.laiks.data.domain.ActiveAppliancesUseCase
 import com.folkmanis.laiks.data.domain.IsPermissionUseCase
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,15 +19,15 @@ import javax.inject.Inject
 @HiltViewModel
 class ClockViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
-    appliancesService: AppliancesService,
     isPermission: IsPermissionUseCase,
+    activeAppliances: ActiveAppliancesUseCase
 ) : ViewModel() {
 
     val isPricesAllowed = isPermission("npUser")
 
-    val appliances = isPermission("npUser")
+    val appliances = isPricesAllowed
         .filter { it }
-        .map { appliancesService.activeAppliances() }
+        .map { activeAppliances() }
 
     val offsetState: StateFlow<Int> =
         userPreferencesRepository.savedTimeOffset

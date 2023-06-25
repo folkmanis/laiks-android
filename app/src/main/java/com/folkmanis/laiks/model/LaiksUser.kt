@@ -8,8 +8,8 @@ enum class ApplianceType(val type: Int) {
 }
 
 data class ApplianceRecord(
-    val type: ApplianceType,
-    val applianceId: String,
+    val type: Int = ApplianceType.USER.type,
+    val applianceId: String = "",
 )
 
 data class LaiksUser(
@@ -20,5 +20,13 @@ data class LaiksUser(
     val name: String = "",
     val npUploadAllowed: Boolean = false,
     val verified: Boolean = false,
-    val appliances: List<ApplianceRecord> = emptyList()
-)
+    val appliances: List<ApplianceRecord> = emptyList(),
+    val marketZoneId: String? = null,
+    val includeVat: Boolean = true,
+    val vatAmount: Double = 0.21,
+    val locale: String = "lv",
+) {
+    val tax: Double
+        get() = if (includeVat) 1.0 + vatAmount else 1.0
+
+}

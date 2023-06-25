@@ -3,7 +3,6 @@ package com.folkmanis.laiks.ui.screens.user_menu
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,8 +19,6 @@ fun UserMenu(
     modifier: Modifier = Modifier,
     viewModel: UserMenuViewModel = hiltViewModel(),
 ) {
-
-    val isVat by viewModel.isVat.collectAsStateWithLifecycle(initialValue = true)
 
     val uiState = viewModel.uiState
         .collectAsStateWithLifecycle(initialValue = UserMenuUiState.NotLoggedIn)
@@ -42,9 +39,12 @@ fun UserMenu(
                 viewModel.logout(context)
                 onPopToStart()
             },
-            isVat = isVat,
+            isVat = uiState.includeVat,
             onSetVat = {
-                viewModel.setVat(!isVat)
+                viewModel.setVat(
+                    userId = uiState.userId,
+                    value = !uiState.includeVat,
+                )
             },
             onUsersAdmin = onUsersAdmin,
             onAppliancesAdmin = onAppliancesAdmin,

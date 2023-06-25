@@ -33,17 +33,28 @@ class FakeLaiksUserService : LaiksUserService {
         TODO("Not yet implemented")
     }
 
+    override suspend fun setVatEnabled(userId: String, value: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun userAppliance(uId: String, id: String): PowerAppliance? {
+        TODO("Not yet implemented")
+    }
     companion object {
         val laiksUser: LaiksUser = LaiksUser(
             verified = true,
             name = "Simple User",
-            id = "1234"
+            id = "1234",
+            vatAmount = 0.21,
+            includeVat = true,
         )
 
         private val laiksAdmin = LaiksUser(
             name = "Admin User",
             id = "4321",
             verified = true,
+            vatAmount = 0.25,
+            includeVat = true,
         )
 
         val laiksUsers = listOf(laiksUser, laiksAdmin)

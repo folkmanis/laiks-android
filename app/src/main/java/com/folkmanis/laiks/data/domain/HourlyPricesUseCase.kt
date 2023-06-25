@@ -1,8 +1,6 @@
 package com.folkmanis.laiks.data.domain
 
-import com.folkmanis.laiks.VAT
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.utilities.ext.addVat
 import kotlinx.coroutines.flow.Flow
@@ -15,11 +13,11 @@ import javax.inject.Inject
 
 class HourlyPricesUseCase @Inject constructor(
     private val pricesRepository: PricesService,
-    userPreferencesRepository: UserPreferencesRepository,
+    laiksUser: LaiksUserUseCase,
 ) {
 
-    private val vatAmount = userPreferencesRepository.includeVat
-        .map { if (it) VAT else 1.0 }
+    private val vatAmount = laiksUser()
+        .map { it?.tax ?: 1.0 }
 
     operator fun invoke(hour: LocalDateTime): Flow<List<NpPrice>> {
         val instant = hour.truncatedTo(ChronoUnit.HOURS)

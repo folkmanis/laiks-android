@@ -49,6 +49,13 @@ class LaiksUserServiceFirebase @Inject constructor(
             .await()
             .toObjects()
 
+    override suspend fun userAppliance(uId: String, id: String): PowerAppliance? =
+        collection.document(uId)
+            .collection(USER_APPLIANCES_COLLECTION)
+            .document(id)
+            .get()
+            .await()
+            .toObject()
 
     override suspend fun userExists(id: String): Boolean =
         collection.document(id)
@@ -74,6 +81,13 @@ class LaiksUserServiceFirebase @Inject constructor(
         collection
             .document(user.id)
             .set(user)
+            .await()
+    }
+
+    override suspend fun setVatEnabled(userId: String, value: Boolean) {
+        collection
+            .document(userId)
+            .update("includeVat", value)
             .await()
     }
 

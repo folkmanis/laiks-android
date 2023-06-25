@@ -11,9 +11,4 @@ class FakeUserPreferencesRepository : UserPreferencesRepository {
         savedTimeOffset.emit(offset)
     }
 
-    override val includeVat: MutableStateFlow<Boolean> = MutableStateFlow(true)
-
-    override suspend fun setIncludeVat(include: Boolean) {
-        includeVat.emit(include)
-    }
 }

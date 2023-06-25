@@ -2,7 +2,6 @@ package com.folkmanis.laiks.ui.screens.appliance_costs
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -13,29 +12,34 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.PowerAppliance
-import com.folkmanis.laiks.ui.screens.prices.ObserveLifecycle
+import com.folkmanis.laiks.data.domain.PowerApplianceRecord
 
 private const val ROUTE = "ApplianceCosts"
-private const val APPLIANCE_ID = "applianceId"
+private const val APPLIANCE_TYPE = "type"
+private const val APPLIANCE_ID = "id"
 private const val APPLIANCE_NAME = "name"
 
 fun NavGraphBuilder.applianceCostsScreen(
-    setTitle: (String)->Unit,
+    setTitle: (String) -> Unit,
 ) {
 
     composable(
-        route = "$ROUTE/{$APPLIANCE_ID}",
+        route = "$ROUTE/{$APPLIANCE_TYPE}/{$APPLIANCE_ID}",
         arguments = listOf(
+            navArgument(APPLIANCE_TYPE) {
+                type = NavType.IntType
+                defaultValue = 0
+            },
             navArgument(APPLIANCE_ID) {
                 type = NavType.StringType
             },
             navArgument(APPLIANCE_NAME) {
                 type = NavType.StringType
                 defaultValue = ""
-            }
+            },
         )
     ) { backStackEntry ->
+        val applianceType = backStackEntry.arguments?.getInt(APPLIANCE_TYPE)
         val applianceId = backStackEntry.arguments?.getString(APPLIANCE_ID)
 
         val viewModel: ApplianceCostsViewModel = hiltViewModel()
@@ -52,7 +56,7 @@ fun NavGraphBuilder.applianceCostsScreen(
 
 //        viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
 
-        viewModel.setApplianceId(applianceId)
+        viewModel.setAppliance(applianceType, applianceId)
 
         ApplianceCostsScreen(
             state = state,
@@ -64,8 +68,11 @@ fun NavGraphBuilder.applianceCostsScreen(
 }
 
 fun NavController.applianceCosts(
-    appliance: PowerAppliance,
+    appliance: PowerApplianceRecord,
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    navigate("$ROUTE/${appliance.id}?$APPLIANCE_NAME=${appliance.name}", builder)
+    navigate(
+        "$ROUTE/${appliance.type}/${appliance.id}?$APPLIANCE_NAME=${appliance.name}",
+        builder
+    )
 }

@@ -2,7 +2,6 @@ package com.folkmanis.laiks
 
 const val STEP_UP_VALUE = 1
 const val STEP_DOWN_VALUE = -1
-const val VAT = 1.21
 const val CURRENCY_DECIMALS = 2
 const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
 const val INCLUDE_AVERAGE_DAYS = 5L
@@ -13,6 +12,8 @@ const val NP_PRICES_COLLECTION = "prices"
 const val LAIKS_COLLECTION = "laiks"
 const val PERMISSIONS_COLLECTION = "permissions"
 const val USER_APPLIANCES_COLLECTION = "appliances"
+const val MARKET_ZONES_COLLECTION = "zones"
+const val LOCALES_COLLECTION = "locales"
 
 const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/"
 const val DAY_AHEAD_LV = "page/59"

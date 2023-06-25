@@ -5,6 +5,8 @@ import com.folkmanis.laiks.data.implementations.AccountServiceFirebase
 import com.folkmanis.laiks.data.implementations.AppliancesServiceFirebase
 import com.folkmanis.laiks.data.implementations.LaiksUserServiceFirebase
 import com.folkmanis.laiks.data.implementations.LocalUserPreferencesRepository
+import com.folkmanis.laiks.data.implementations.LocalesServiceFirebase
+import com.folkmanis.laiks.data.implementations.MarketZonesServiceFirebase
 import com.folkmanis.laiks.data.implementations.NetworkNpRepository
 import com.folkmanis.laiks.data.implementations.PermissionsFirebase
 import com.folkmanis.laiks.data.implementations.PricesServiceFirebase
@@ -38,5 +40,10 @@ abstract class ServiceModule {
     @Binds
     abstract  fun provideLaiksUserService(impl: LaiksUserServiceFirebase): LaiksUserService
 
+    @Binds
+    abstract fun provideMarketZonesService(impl: MarketZonesServiceFirebase): MarketZonesService
+
+    @Binds
+    abstract fun provideLocalesService(impl: LocalesServiceFirebase): LocalesService
 
 }

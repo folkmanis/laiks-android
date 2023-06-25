@@ -41,8 +41,10 @@ private val largeNumberStyle = TextStyle(
     fontWeight = FontWeight.Bold
 )
 
-fun PricesStatistics.score(value: Double): Double =
-    ((average - value) / stDev).coerceIn(-1.0, 1.0)
+fun PricesStatistics.score(value: Double): Double {
+    val score = ((average - value) / stDev).coerceIn(-1.0, 1.0)
+    return if (score.isNaN()) 0.0 else score
+}
 
 
 fun scoreColor(score: Double, background: Color): Color {

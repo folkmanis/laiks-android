@@ -1,8 +1,6 @@
 package com.folkmanis.laiks.data.domain
 
-import com.folkmanis.laiks.VAT
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.model.ApplianceHourWithCosts
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.utilities.cycleLengthSeconds
@@ -37,17 +35,16 @@ private fun PowerAppliance.endTime(time: LocalDateTime): LocalDateTime =
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ApplianceHourlyCostsUseCase @Inject constructor(
-    userPreferencesRepository: UserPreferencesRepository,
     private val pricesService: PricesService,
+    laiksUser: LaiksUserUseCase,
 ) {
 
-    private val vatAmount = userPreferencesRepository.includeVat
-        .map { if (it) VAT else 1.0 }
+    private val vatAmount = laiksUser()
+        .map { it?.tax ?: 1.0 }
 
     operator fun invoke(
         appliance: PowerAppliance,
     ): Flow<List<ApplianceHourWithCosts>> {
-
 
         val pricesFlow = hourTicks()
             .map { it.atZone(ZoneId.systemDefault()).toInstant() }

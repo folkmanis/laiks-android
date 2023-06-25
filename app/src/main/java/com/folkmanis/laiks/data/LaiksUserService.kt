@@ -13,12 +13,16 @@ interface LaiksUserService {
 
     suspend fun laiksUser(uId: String): LaiksUser?
 
-    suspend fun userAppliances(uId: String):List< PowerAppliance>
+    suspend fun userAppliances(uId: String): List<PowerAppliance>
+
+    suspend fun userAppliance(uId: String, id: String): PowerAppliance?
 
     suspend fun createLaiksUser(user: FirebaseUser)
 
     suspend fun updateLaiksUser(user: LaiksUser)
 
     suspend fun userExists(id: String): Boolean
+
+    suspend fun setVatEnabled(userId: String, value: Boolean)
 
 }

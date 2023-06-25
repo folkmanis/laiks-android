@@ -10,6 +10,8 @@ sealed interface UserMenuUiState {
         val isNpUploadAllowed: Boolean = false,
         val displayName: String = "",
         val photoUrl: Uri? = null,
+        val includeVat: Boolean = false,
+        val userId: String = "",
     ) : UserMenuUiState
 
 }

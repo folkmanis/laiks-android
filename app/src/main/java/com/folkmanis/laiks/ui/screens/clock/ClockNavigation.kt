@@ -11,14 +11,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.data.domain.PowerApplianceRecord
 import java.time.LocalTime
 
 const val CLOCK_ROUTE = "Clock"
 
 fun NavGraphBuilder.clockScreen(
     onNavigateToPrices: () -> Unit,
-    onNavigateToAppliance: (PowerAppliance) -> Unit,
+    onNavigateToAppliance: (PowerApplianceRecord) -> Unit,
     windowHeight: WindowHeightSizeClass,
     setTitle: (String) -> Unit
 ) {
