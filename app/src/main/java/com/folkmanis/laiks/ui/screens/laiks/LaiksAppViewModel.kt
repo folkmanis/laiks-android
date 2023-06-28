@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.domain.IsPermissionUseCase
 import com.folkmanis.laiks.data.domain.LaiksUserUseCase
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toMessage

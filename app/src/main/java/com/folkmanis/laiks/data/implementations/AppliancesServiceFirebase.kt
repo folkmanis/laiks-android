@@ -40,7 +40,7 @@ class AppliancesServiceFirebase @Inject constructor(
             .document(id)
             .get()
             .await()
-            .toObject()
+            .toObject<PowerAppliance>()
     }
 
     override suspend fun deleteAppliance(id: String) {
@@ -57,5 +57,6 @@ class AppliancesServiceFirebase @Inject constructor(
 
     companion object {
         private const val POWER_APPLIANCES_COLLECTION = "powerAppliances"
+        private const val TAG = "AppliancesServiceFirebase"
     }
 }

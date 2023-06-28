@@ -13,7 +13,7 @@ data class PowerApplianceRecord(
     val type: Int,
 ) {
     val name: String
-        get() = appliance.name
+        get() = appliance.localName
     val id: String
         get() = appliance.id
 }

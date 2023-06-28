@@ -23,7 +23,7 @@ private fun List<PowerAppliance>.toPowerApplianceHour(
             if (applianceHourCost != null) {
                 add(
                     PowerApplianceHour(
-                        name = appliance.name,
+                        name = appliance.localName,
                         cost = applianceHourCost,
                         color = appliance.color,
                         isBest = bestOffsets[appliance] == offset,

@@ -9,8 +9,6 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PermissionsService
-import com.folkmanis.laiks.data.domain.IsPermissionUseCase
-import com.folkmanis.laiks.data.domain.LaiksUserUseCase
 import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager

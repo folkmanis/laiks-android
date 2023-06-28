@@ -41,7 +41,7 @@ fun AppliancesSelector(
                 colors = colors,
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
-                Text(text = appliance.name)
+                Text(text = appliance.localName)
             }
         }
     }

@@ -34,7 +34,7 @@ fun ApplianceRow(
     }
 
     val id = appliance.id
-    val name = appliance.name
+    val name = appliance.localName
 
     ListItem(
         headlineContent = {
