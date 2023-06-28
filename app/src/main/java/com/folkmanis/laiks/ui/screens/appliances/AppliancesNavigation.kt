@@ -20,7 +20,6 @@ fun NavGraphBuilder.appliancesScreen(
     onEditAppliance: (id: String) -> Unit = {},
     onAddAppliance: () -> Unit = {},
     onSelectAppliance: (PowerApplianceRecord) -> Unit = {},
-    isAdmin: Boolean,
     setTitle: (String) -> Unit,
 ) {
 
@@ -29,6 +28,7 @@ fun NavGraphBuilder.appliancesScreen(
 
         val viewModel: AppliancesViewModel = hiltViewModel()
         val appliances by viewModel.appliances.collectAsStateWithLifecycle(initialValue = emptyList())
+        val isAdmin by viewModel.isAdmin.collectAsStateWithLifecycle(initialValue = false)
 
         val title = stringResource(id = R.string.appliances_screen)
         LaunchedEffect(Unit) {

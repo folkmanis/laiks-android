@@ -67,7 +67,9 @@ fun LaiksAppScreen(
                         launchSingleTop = true
                         popUpTo(0) { inclusive = true }
                     }
-                })
+                },
+                user = appState.user,
+            )
         },
         onNavigateBack = navController::popBackStack,
         modifier = modifier
@@ -104,7 +106,6 @@ fun LaiksAppScreen(
                 onAddAppliance = navController::newAppliance,
                 setTitle = viewModel::setTitle,
                 onSelectAppliance = navController::applianceCosts,
-                isAdmin = appState.isAdmin,
             )
 
             applianceEditScreen(

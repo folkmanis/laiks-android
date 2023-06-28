@@ -19,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LaiksAppViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
-    private val isPermission: IsPermissionUseCase,
     private val laiksUser: LaiksUserUseCase,
 ) : ViewModel() {
 
@@ -52,15 +51,6 @@ class LaiksAppViewModel @Inject constructor(
                 }
             }
         }
-
-        viewModelScope.launch {
-            isPermission("admin").collect { isAdmin ->
-                _appState.update { state ->
-                    state.copy(isAdmin = isAdmin)
-                }
-            }
-        }
-
 
     }
 
