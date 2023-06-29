@@ -26,13 +26,13 @@ fun AppliancesSelector(
 
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Bottom
     ) {
         appliances.forEach { applianceRecord ->
             val appliance = applianceRecord.appliance
             val containerColor = Color(appliance.color.toColorInt())
-            val colors = ButtonDefaults.buttonColors(
+            val colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = containerColor,
                 contentColor = containerColor.contrasting()
             )

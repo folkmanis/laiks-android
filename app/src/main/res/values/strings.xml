@@ -5,7 +5,7 @@
     <string name="hour_minus_button">Hour Down</string>
     <string name="minutes_separator" translatable="false">:</string>
     <string name="login_button">Login</string>
-    <string name="show_prices_button">ShowPrices</string>
+    <string name="show_prices_button">Show Prices</string>
     <string name="prices_screen">Prices</string>
     <string name="loading">Loading&#8230;</string>
     <string name="loading_failed">Loading failed!</string>

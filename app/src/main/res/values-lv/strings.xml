@@ -5,7 +5,7 @@
     <string name="hour_plus_button">Stundu uz priekšu</string>
     <string name="hour_minus_button">Stundu atpakaļ</string>
     <string name="login_button">Pieslēgties</string>
-    <string name="show_prices_button">Rādīt elektrības cenas</string>
+    <string name="show_prices_button">Elektrības cenas</string>
     <string name="prices_screen">Elektrības cenas</string>
     <string name="loading">Notiek ielāde</string>
     <string name="loading_failed">Kaut kas nogāja greizi</string>
