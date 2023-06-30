@@ -28,6 +28,8 @@ import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_edit.editUser
 import com.folkmanis.laiks.ui.screens.user_edit.userEditScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
+import com.folkmanis.laiks.ui.screens.user_settings.userSettings
+import com.folkmanis.laiks.ui.screens.user_settings.userSettingsScreen
 import com.folkmanis.laiks.ui.screens.users.navigateToUsers
 import com.folkmanis.laiks.ui.screens.users.usersScreen
 
@@ -66,6 +68,14 @@ fun LaiksAppScreen(
                     navController.navigateToClock {
                         launchSingleTop = true
                         popUpTo(0) { inclusive = true }
+                    }
+                },
+                onUserSettings = {
+                    navController.userSettings(
+                        userId = requireNotNull(appState.user?.id),
+                        name = appState.user?.name
+                    ) {
+                        popUpTo(CLOCK_ROUTE)
                     }
                 },
                 user = appState.user,
@@ -126,6 +136,10 @@ fun LaiksAppScreen(
 
             applianceCostsScreen(
                 setTitle = viewModel::setTitle,
+            )
+
+            userSettingsScreen(
+                setTitle = viewModel::setTitle
             )
 
         }

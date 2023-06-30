@@ -4,8 +4,11 @@ import com.folkmanis.laiks.LOCALES_COLLECTION
 import com.folkmanis.laiks.data.LocalesService
 import com.folkmanis.laiks.model.Locale
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -14,6 +17,12 @@ class LocalesServiceFirebase @Inject constructor(
 ) : LocalesService {
 
     private val collection = firestore.collection(LOCALES_COLLECTION)
+
+    override val localesFlow: Flow<List<Locale>>
+        get() = collection
+            .orderBy("id")
+            .snapshots()
+            .map { it.toObjects() }
 
     override suspend fun getLocales(): List<Locale> {
         return collection

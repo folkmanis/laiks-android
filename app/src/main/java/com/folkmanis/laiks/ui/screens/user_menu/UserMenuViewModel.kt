@@ -14,12 +14,12 @@ import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
@@ -43,8 +43,8 @@ class UserMenuViewModel @Inject constructor(
         if (laiksUser == null) {
             _uiState.value = UserMenuUiState.NotLoggedIn
         } else {
-            val permissions = permissionsService.getPermissions(laiksUser.id)
             val user = accountService.authUser
+            val permissions = permissionsService.getPermissions(laiksUser.id)
             _uiState.value = UserMenuUiState.LoggedIn(
                 isAdmin = permissions.admin,
                 isPricesAllowed = permissions.npUser,

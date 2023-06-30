@@ -1,6 +1,6 @@
 package com.folkmanis.laiks.model
 
 data class Permissions(
-    val npUser:Boolean = true,
-    val admin: Boolean = true,
+    val npUser:Boolean = false,
+    val admin: Boolean = false,
 )

@@ -21,6 +21,8 @@ interface LaiksUserService {
 
     suspend fun updateLaiksUser(user: LaiksUser)
 
+    suspend fun updateLaiksUser(uId: String, key: String, value: Any)
+
     suspend fun userExists(id: String): Boolean
 
     suspend fun setVatEnabled(userId: String, value: Boolean)

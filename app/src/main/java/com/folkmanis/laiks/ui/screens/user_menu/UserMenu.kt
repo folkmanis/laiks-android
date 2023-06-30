@@ -18,6 +18,7 @@ fun UserMenu(
     onUsersAdmin: () -> Unit,
     onAppliancesAdmin: () -> Unit,
     onPopToStart: () -> Unit,
+    onUserSettings: () -> Unit,
     user: LaiksUser?,
     modifier: Modifier = Modifier,
     viewModel: UserMenuViewModel = hiltViewModel(),
@@ -58,6 +59,7 @@ fun UserMenu(
             onAppliancesAdmin = onAppliancesAdmin,
             state = uiState,
             onNpPricesReload = viewModel::updateNpPrices,
+            onUserSettings = onUserSettings,
             modifier = modifier,
         )
     } else {

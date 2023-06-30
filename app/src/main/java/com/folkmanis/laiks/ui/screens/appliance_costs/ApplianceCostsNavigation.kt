@@ -24,7 +24,7 @@ fun NavGraphBuilder.applianceCostsScreen(
 ) {
 
     composable(
-        route = "$ROUTE/{$APPLIANCE_TYPE}/{$APPLIANCE_ID}",
+        route = "$ROUTE/{$APPLIANCE_TYPE}/{$APPLIANCE_ID}?$APPLIANCE_NAME={$APPLIANCE_NAME}",
         arguments = listOf(
             navArgument(APPLIANCE_TYPE) {
                 type = NavType.IntType

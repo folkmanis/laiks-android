@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -32,6 +33,7 @@ fun LoggedInUserMenu(
     onUsersAdmin: () -> Unit,
     onAppliancesAdmin: () -> Unit,
     onNpPricesReload: () -> Unit,
+    onUserSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -73,6 +75,22 @@ fun LoggedInUserMenu(
                         painter = painterResource(id = R.drawable.logout),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp)
+                    )
+                }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(stringResource(R.string.settings))
+                },
+                onClick = {
+                    menuExpanded = false
+                    onUserSettings()
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             )

@@ -4,10 +4,13 @@ import com.folkmanis.laiks.MARKET_ZONES_COLLECTION
 import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.model.MarketZone
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import com.google.firebase.firestore.ktx.toObjects
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 
 class MarketZonesServiceFirebase @Inject constructor(
@@ -16,6 +19,11 @@ class MarketZonesServiceFirebase @Inject constructor(
 
     private val collection = firestore.collection(MARKET_ZONES_COLLECTION)
 
+    override val marketZonesFlow: Flow<List<MarketZone>>
+        get() = collection
+            .orderBy("id")
+            .snapshots()
+            .map { it.toObjects() }
     override suspend fun getMarketZones(): List<MarketZone> {
         return collection
             .orderBy("id")

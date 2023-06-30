@@ -15,6 +15,7 @@
     <string name="users_screen">Lietotāji</string>
     <string name="users_menu">Lietotāji</string>
     <string name="user_editor">Lietotāja iestatījumi</string>
+    <string name="user_not_found">Lietotājs \"%1$s\" nav atrasts</string>
     <string name="np_allowed_checkbox">Ir pieeja elektrības cenām</string>
     <string name="is_admin_checkbox">Administratora tiesības</string>
     <string name="alert_ok">Apstiprināt</string>
