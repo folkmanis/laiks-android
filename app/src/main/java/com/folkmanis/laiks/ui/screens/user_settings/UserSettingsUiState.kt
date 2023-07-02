@@ -1,5 +1,7 @@
 package com.folkmanis.laiks.ui.screens.user_settings
 
+import com.folkmanis.laiks.data.fake.FakeAppliancesService
+import com.folkmanis.laiks.data.fake.FakeLaiksUserService
 import com.folkmanis.laiks.model.ApplianceRecord
 
 sealed interface UserSettingsUiState {
@@ -17,12 +19,25 @@ sealed interface UserSettingsUiState {
         val name: String,
         val appliances: List<ApplianceRecord>,
         val marketZoneId: String,
-        val marketZoneName: String,
         val includeVat: Boolean,
         val vatAmount: Double,
-        val locale: String,
-        val localeName: String,
-        val npUser: Boolean
+        val npUser: Boolean,
+        val marketZoneName : String,
     ) : UserSettingsUiState
+
+    companion object {
+        private val user = FakeLaiksUserService.laiksUser
+        val testUiState = Success(
+            name = user.name,
+            email = user.email,
+            id = user.id,
+            marketZoneId = user.marketZoneId,
+            npUser = true,
+            includeVat = user.includeVat,
+            vatAmount = user.vatAmount,
+            appliances = FakeAppliancesService.testApplianceRecords,
+            marketZoneName = "LV, Latvija"
+        )
+    }
 
 }

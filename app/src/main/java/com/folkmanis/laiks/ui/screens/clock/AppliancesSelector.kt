@@ -51,6 +51,6 @@ fun AppliancesSelector(
 @Preview
 @Composable
 fun AppliancesSelectorPreview() {
-    val appliances = FakeAppliancesService.testApplianceRecords
+    val appliances = FakeAppliancesService.testPowerApplianceRecords
     AppliancesSelector(appliances = appliances, onSelected = {})
 }

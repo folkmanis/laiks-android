@@ -47,6 +47,9 @@
     <string name="generic_error">Error!</string>
     <string name="load_np_data">Update prices</string>
     <string name="retrieving_prices">Looking for new records on server</string>
+    <string name="market_zone_name">Market zone</string>
+    <string name="vat_amount">VAT amount</string>
+    <string name="market_zone_select">Choose region</string>
     <plurals name="prices_retrieved">
         <item quantity="one">%1$d price retrieved</item>
         <item quantity="other">%1$d prices retrieved</item>

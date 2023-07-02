@@ -139,7 +139,8 @@ fun LaiksAppScreen(
             )
 
             userSettingsScreen(
-                setTitle = viewModel::setTitle
+                setTitle = viewModel::setTitle,
+                onEditAppliances = navController::navigateToAppliances,
             )
 
         }

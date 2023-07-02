@@ -21,12 +21,10 @@ class MarketZonesServiceFirebase @Inject constructor(
 
     override val marketZonesFlow: Flow<List<MarketZone>>
         get() = collection
-            .orderBy("id")
             .snapshots()
             .map { it.toObjects() }
     override suspend fun getMarketZones(): List<MarketZone> {
         return collection
-            .orderBy("id")
             .get()
             .await()
             .toObjects()

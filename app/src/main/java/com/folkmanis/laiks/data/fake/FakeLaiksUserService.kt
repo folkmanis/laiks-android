@@ -33,6 +33,9 @@ class FakeLaiksUserService : LaiksUserService {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateLaiksUser(uId: String, update: HashMap<String, Any>) {
+        TODO("Not yet implemented")
+    }
     override suspend fun userAppliances(uId: String): List<PowerAppliance> {
         TODO("Not yet implemented")
     }

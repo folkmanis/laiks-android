@@ -1,7 +1,6 @@
 package com.folkmanis.laiks.ui.screens.user_settings
 
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,6 +20,7 @@ const val NAME = "name"
 
 fun NavGraphBuilder.userSettingsScreen(
     setTitle: (String) -> Unit,
+    onEditAppliances: () -> Unit,
 ) {
 
     composable(
@@ -46,11 +46,10 @@ fun NavGraphBuilder.userSettingsScreen(
             setTitle(title)
         }
 
-        val zones by viewModel.zonesFlow.collectAsStateWithLifecycle(emptyList())
-        val locales by viewModel.localesFlow.collectAsStateWithLifecycle(emptyList())
-
-        val uiState =
-            viewModel.uiState.collectAsStateWithLifecycle(initialValue = UserSettingsUiState.Loading).value
+        val uiState = viewModel
+            .uiState
+            .collectAsStateWithLifecycle(initialValue = UserSettingsUiState.Loading)
+            .value
 
         when (uiState) {
             is UserSettingsUiState.Loading -> LoadingScreen()
@@ -58,9 +57,10 @@ fun NavGraphBuilder.userSettingsScreen(
             is UserSettingsUiState.Success -> {
                 UserSettingsScreen(
                     uiState = uiState,
-                    zones = zones,
-                    locales = locales,
                     onIncludeVatChange = viewModel::setIncludeVat,
+                    onVatChange = viewModel::setVatAmount,
+                    onMarketZoneChange = viewModel::setMarketZoneId,
+                    onEditAppliances = onEditAppliances,
                 )
             }
         }

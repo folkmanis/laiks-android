@@ -50,4 +50,7 @@
         <item quantity="other">%d ieraksti pievienoti</item>
     </plurals>
     <string name="retrieving_prices">Tiek meklēti jauni dati serverī</string>
+    <string name="market_zone_name">Cenu reģions</string>
+    <string name="vat_amount">PVN likme</string>
+    <string name="market_zone_select">Izvēlieties reģionu</string>
 </resources>

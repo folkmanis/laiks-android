@@ -4,14 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.LaiksUserService
-import com.folkmanis.laiks.data.LocalesService
 import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
+import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -20,18 +19,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserSettingsViewModel @Inject constructor(
     private val zonesService: MarketZonesService,
-    private val localesService: LocalesService,
     private val laiksUserService: LaiksUserService,
     private val snackbarManager: SnackbarManager,
     private val permissionsService: PermissionsService,
 ) : ViewModel() {
-
-    val localesFlow = localesService.localesFlow
-    val zonesFlow = zonesService.marketZonesFlow
 
     private val _uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -43,7 +37,7 @@ class UserSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             laiksUserService.laiksUserFlow(id)
                 .map { user -> toUiState(user) }
-                .catch { err -> logMissingUser(err, id) }
+                .catch { err -> logMissingUser(err) }
                 .collect { _uiState.value = it }
         }
     }
@@ -53,7 +47,39 @@ class UserSettingsViewModel @Inject constructor(
         if (state is UserSettingsUiState.Success) {
             _uiState.value = state.copy(includeVat = value)
             viewModelScope.launch {
-                laiksUserService.updateLaiksUser(state.id,"includeVat", value)
+                laiksUserService.updateLaiksUser(state.id, "includeVat", value)
+            }
+        }
+    }
+
+    fun setVatAmount(value: Double) {
+        val state = uiState.value
+        if (state is UserSettingsUiState.Success) {
+            _uiState.value = state.copy(vatAmount = value)
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser(
+                    state.id, "vatAmount", value
+                )
+            }
+        }
+    }
+
+    fun setMarketZoneId(value: MarketZone) {
+        val state = uiState.value
+        if (state is UserSettingsUiState.Success) {
+            _uiState.value = state.copy(
+                marketZoneId = value.id,
+                marketZoneName = "${value.id}, ${value.description}",
+                vatAmount = value.tax,
+            )
+            val update = hashMapOf<String,Any>(
+                "marketZoneId" to value.id,
+                "vatAmount" to value.tax,
+            )
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser(
+                    state.id, update
+                )
             }
         }
     }
@@ -62,7 +88,6 @@ class UserSettingsViewModel @Inject constructor(
         if (user == null) {
             throw NoSuchElementException()
         }
-        val localeInfo = localesService.getLocale(id = user.locale)
         val zone = zonesService.getMarketZone(id = user.marketZoneId)
         val npUser = permissionsService.getPermissions(user.id).npUser
         return UserSettingsUiState.Success(
@@ -72,15 +97,13 @@ class UserSettingsViewModel @Inject constructor(
             includeVat = user.includeVat,
             name = user.name,
             marketZoneId = user.marketZoneId,
-            marketZoneName = zone?.description ?: "",
-            locale = user.locale,
-            localeName = localeInfo?.language ?: "",
             vatAmount = user.vatAmount,
             npUser = npUser,
+            marketZoneName = "${user.marketZoneId}, ${zone?.description ?: ""}",
         )
     }
 
-    private fun logMissingUser(err: Throwable, id: String): UserSettingsUiState.Error {
+    private fun logMissingUser(err: Throwable): UserSettingsUiState.Error {
         Log.e(TAG, err.message, err)
         snackbarManager.showMessage(err.toSnackbarMessage())
         return UserSettingsUiState.Error(err.message ?: "No user", err)

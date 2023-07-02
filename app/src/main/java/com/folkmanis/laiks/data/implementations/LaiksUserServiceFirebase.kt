@@ -84,11 +84,20 @@ class LaiksUserServiceFirebase @Inject constructor(
             .await()
     }
 
-    override suspend fun updateLaiksUser(uId: String, key: String, value: Any) {
+    override suspend fun updateLaiksUser(uId: String, update: HashMap<String, Any>) {
         collection
             .document(uId)
-            .update(key, value)
+            .update(update)
             .await()
+    }
+
+    override suspend fun updateLaiksUser(uId: String, key: String, value: Any) {
+        updateLaiksUser(
+            uId,
+            hashMapOf(
+                key to value
+            )
+        )
     }
 
     override suspend fun setVatEnabled(userId: String, value: Boolean) {

@@ -2,6 +2,7 @@ package com.folkmanis.laiks.data.fake
 
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.domain.PowerApplianceRecord
+import com.folkmanis.laiks.model.ApplianceRecord
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import kotlinx.coroutines.flow.Flow
@@ -68,8 +69,10 @@ class FakeAppliancesService : AppliancesService {
             washer
         )
 
-        val testApplianceRecords = testAppliances
+        val testPowerApplianceRecords = testAppliances
             .map { PowerApplianceRecord(it, 0) }
 
+        val testApplianceRecords = testAppliances
+            .map { ApplianceRecord(type = 0, applianceId = it.id) }
     }
 }

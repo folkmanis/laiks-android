@@ -23,6 +23,8 @@ interface LaiksUserService {
 
     suspend fun updateLaiksUser(uId: String, key: String, value: Any)
 
+    suspend fun updateLaiksUser(uId: String, update: HashMap<String, Any>)
+
     suspend fun userExists(id: String): Boolean
 
     suspend fun setVatEnabled(userId: String, value: Boolean)
