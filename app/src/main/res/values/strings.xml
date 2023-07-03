@@ -50,6 +50,7 @@
     <string name="market_zone_name">Market zone</string>
     <string name="vat_amount">VAT amount</string>
     <string name="market_zone_select">Choose region</string>
+    <string name="drag_handle">Drag</string>
     <plurals name="prices_retrieved">
         <item quantity="one">%1$d price retrieved</item>
         <item quantity="other">%1$d prices retrieved</item>
