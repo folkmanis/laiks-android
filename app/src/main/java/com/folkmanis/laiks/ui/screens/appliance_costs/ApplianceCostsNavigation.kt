@@ -12,7 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.data.domain.PowerApplianceRecord
+import com.folkmanis.laiks.model.PowerApplianceRecord
 
 private const val ROUTE = "ApplianceCosts"
 private const val APPLIANCE_TYPE = "type"

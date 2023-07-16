@@ -10,9 +10,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.data.domain.PowerApplianceRecord
 import com.folkmanis.laiks.model.ApplianceType
 import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.PowerApplianceRecord
 
 private const val ROUTE = "Appliances"
 

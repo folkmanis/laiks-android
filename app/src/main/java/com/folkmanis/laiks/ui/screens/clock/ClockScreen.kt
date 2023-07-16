@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.folkmanis.laiks.data.domain.PowerApplianceRecord
+import com.folkmanis.laiks.model.PowerApplianceRecord
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import java.time.LocalTime

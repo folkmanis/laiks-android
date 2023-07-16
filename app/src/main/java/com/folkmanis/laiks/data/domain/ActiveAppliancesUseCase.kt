@@ -6,17 +6,9 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.ApplianceRecord
 import com.folkmanis.laiks.model.ApplianceType
 import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.PowerApplianceRecord
 import javax.inject.Inject
 
-data class PowerApplianceRecord(
-    val appliance: PowerAppliance,
-    val type: Int,
-) {
-    val name: String
-        get() = appliance.localName
-    val id: String
-        get() = appliance.id
-}
 
 class ActiveAppliancesUseCase @Inject constructor(
     private val accountService: AccountService,
@@ -53,7 +45,7 @@ class ActiveAppliancesUseCase @Inject constructor(
     ): List<PowerApplianceRecord> =
         buildList {
             applianceRecords.forEach { record ->
-                val appliance = when (record.type) {
+                when (record.type) {
                     ApplianceType.SYSTEM.type ->
                         appliancesService.getAppliance(record.applianceId)
 
@@ -61,9 +53,9 @@ class ActiveAppliancesUseCase @Inject constructor(
                         laiksUserService.userAppliance(uId, record.applianceId)
 
                     else -> null
-                }
-                if (appliance != null)
+                }?.let { appliance ->
                     add(PowerApplianceRecord(appliance, record.type))
+                }
             }
         }
 

@@ -32,7 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.data.domain.PowerApplianceRecord
+import com.folkmanis.laiks.model.PowerApplianceRecord
 
 fun Modifier.clickActive(enabled: Boolean, onClick: () -> Unit) =
     if (enabled)

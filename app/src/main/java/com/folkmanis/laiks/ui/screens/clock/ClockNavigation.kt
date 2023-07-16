@@ -11,7 +11,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.data.domain.PowerApplianceRecord
+import com.folkmanis.laiks.model.PowerApplianceRecord
 import java.time.LocalTime
 
 const val CLOCK_ROUTE = "Clock"

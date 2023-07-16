@@ -1,10 +1,10 @@
 package com.folkmanis.laiks.data.fake
 
 import com.folkmanis.laiks.data.AppliancesService
-import com.folkmanis.laiks.data.domain.PowerApplianceRecord
 import com.folkmanis.laiks.model.ApplianceRecord
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
+import com.folkmanis.laiks.model.PowerApplianceRecord
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
