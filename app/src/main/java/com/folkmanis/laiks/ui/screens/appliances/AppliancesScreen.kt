@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Divider
@@ -21,38 +21,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
-import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.PowerApplianceRecord
 
 
 @Composable
 internal fun AppliancesScreen(
-    appliances: List<PowerAppliance>,
-    isAdmin: Boolean,
+    records: List<PowerApplianceRecord>,
     modifier: Modifier = Modifier,
-    onEdit: (id: String) -> Unit = {},
-    onAdd: () -> Unit = {},
-    onSelectAppliance: (PowerAppliance)->Unit ={},
-    onDelete: (String) -> Unit = {},
+    onEdit: (idx: Int) -> Unit,
+    onView: (idx: Int) -> Unit,
+    onAdd: () -> Unit,
+    onSelectAppliance: (idx:Int) -> Unit,
+    onDelete: (idx: Int) -> Unit,
 ) {
 
     Box(modifier = modifier.fillMaxSize()) {
 
         LazyColumn {
-            items(appliances, key = { it.id }) { appliance ->
+            itemsIndexed(
+                items = records,
+                key = { _, item -> item.id + item.type.toString() }
+            )
+            { idx, record ->
 
                 ApplianceRow(
-                    appliance = appliance,
-                    onEdit = onEdit,
-                    onDelete = onDelete,
-                    isAdmin = isAdmin,
+                    appliance = record.appliance,
+                    type = record.type,
+                    onEdit = { onEdit(idx) },
+                    onDelete = { onDelete(idx) },
+                    onView = { onView(idx) },
                     modifier = Modifier
-                        .clickable { onSelectAppliance(appliance) }
+                        .clickable { onSelectAppliance(idx) }
                 )
+
                 Divider(thickness = 2.dp)
 
             }
         }
-
 
         FloatingActionButton(
             onClick = onAdd,
@@ -75,8 +80,12 @@ internal fun AppliancesScreen(
 fun AppliancesScreenPreview() {
     MaterialTheme {
         AppliancesScreen(
-            appliances = FakeAppliancesService.testAppliances,
-            isAdmin = true
+            records = FakeAppliancesService.testPowerApplianceRecords,
+            onAdd = {},
+            onDelete = {},
+            onView = {},
+            onEdit = {},
+            onSelectAppliance = {},
         )
     }
 }

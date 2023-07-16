@@ -18,6 +18,7 @@ import com.folkmanis.laiks.ui.screens.appliance_edit.applianceNewRoute
 import com.folkmanis.laiks.ui.screens.appliance_edit.copyAppliance
 import com.folkmanis.laiks.ui.screens.appliance_edit.editAppliance
 import com.folkmanis.laiks.ui.screens.appliance_edit.newAppliance
+import com.folkmanis.laiks.ui.screens.appliance_edit.viewAppliance
 import com.folkmanis.laiks.ui.screens.appliances.appliancesScreen
 import com.folkmanis.laiks.ui.screens.appliances.navigateToAppliances
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
@@ -116,6 +117,7 @@ fun LaiksAppScreen(
                 onAddAppliance = navController::newAppliance,
                 setTitle = viewModel::setTitle,
                 onSelectAppliance = navController::applianceCosts,
+                onViewAppliance = navController::viewAppliance
             )
 
             applianceEditScreen(

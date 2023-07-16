@@ -54,4 +54,5 @@
     <string name="vat_amount">PVN likme</string>
     <string name="market_zone_select">Izvēlieties reģionu</string>
     <string name="drag_handle">Pārvietot</string>
+    <string name="view_appliance">Skatīt iekārtu</string>
 </resources>

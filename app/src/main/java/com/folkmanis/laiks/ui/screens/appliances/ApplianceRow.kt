@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,27 +20,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import com.folkmanis.laiks.R
+import com.folkmanis.laiks.data.fake.FakeAppliancesService
+import com.folkmanis.laiks.model.ApplianceType
 import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.PowerApplianceRecord
 
 @Composable
 fun ApplianceRow(
     appliance: PowerAppliance,
-    isAdmin: Boolean,
+    type: Int,
     modifier: Modifier = Modifier,
-    onEdit: (String) -> Unit = {},
-    onDelete: (String) -> Unit = {},
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onView: () -> Unit,
 ) {
-
-    var deleteConfirmation by remember {
-        mutableStateOf(false)
-    }
-
-    val id = appliance.id
-    val name = appliance.localName
 
     ListItem(
         headlineContent = {
-            Text(text = name)
+            Text(text = appliance.name)
         },
         modifier = modifier,
         leadingContent = {
@@ -54,22 +52,34 @@ fun ApplianceRow(
         },
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (isAdmin) {
-                    IconButton(onClick = { onEdit(id) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = stringResource(id = R.string.settings)
-                        )
+                when (type) {
+                    ApplianceType.USER.type -> {
+                        IconButton(onClick = onEdit) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = stringResource(id = R.string.settings)
+                            )
+                        }
+                    }
+
+                    ApplianceType.SYSTEM.type -> {
+                        IconButton(onClick = onView) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.expand_content),
+                                contentDescription = stringResource(id = R.string.view_appliance),
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
                     }
                 }
-                IconButton(onClick = {
-                    deleteConfirmation = true
-                }) {
+
+                IconButton(onClick = onDelete) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = stringResource(id = R.string.delete_button)
                     )
                 }
+
                 Icon(
                     painter = painterResource(R.drawable.drag_handle_48px),
                     contentDescription = stringResource(R.string.drag_handle),
@@ -79,53 +89,33 @@ fun ApplianceRow(
         }
     )
 
-    if (deleteConfirmation && isAdmin) {
-        DeleteConfirmation(
-            onAccept = {
-                deleteConfirmation = false
-                onDelete(id)
-            },
-            onDismiss = { deleteConfirmation = false },
-            name = name,
-        )
-    }
-
-}
-
-@Composable
-fun DeleteConfirmation(
-    onAccept: () -> Unit,
-    onDismiss: () -> Unit,
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        modifier = modifier,
-        confirmButton = {
-            TextButton(onClick = onAccept) {
-                Text(text = stringResource(id = R.string.alert_ok))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(id = R.string.alert_dismiss))
-            }
-        },
-        icon = { Icon(imageVector = Icons.Filled.Delete, contentDescription = null) },
-        text = {
-            Text(text = stringResource(id = R.string.appliance_delete_confirmation, name))
-        }
-    )
 }
 
 @Preview
 @Composable
-fun ApplianceRowPreview() {
+fun UserApplianceRowPreview() {
     MaterialTheme {
         ApplianceRow(
-            appliance = PowerAppliance(name = "Dishwasher"),
-            isAdmin = true
+            appliance = FakeAppliancesService.dishWasher,
+            onDelete = {},
+            onEdit = {},
+            onView = {},
+            type = ApplianceType.USER.type,
         )
     }
 }
+
+@Preview
+@Composable
+fun SystemApplianceRowPreview() {
+    MaterialTheme {
+        ApplianceRow(
+            appliance = FakeAppliancesService.washer,
+            onDelete = {},
+            onEdit = {},
+            onView = {},
+            type = ApplianceType.SYSTEM.type,
+        )
+    }
+}
+

@@ -122,3 +122,10 @@ fun NavController.newAppliance(builder: NavOptionsBuilder.() -> Unit = {}) {
         builder = builder,
     )
 }
+
+fun NavController.viewAppliance(applianceId: String, builder: NavOptionsBuilder.() -> Unit = {}) {
+    navigate(
+        route = "$ROUTE/$applianceId",
+        builder = builder,
+    )
+}
