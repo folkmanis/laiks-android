@@ -8,7 +8,6 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-
 @Suppress("RedundantNullableReturnType")
 class FakeAccountService : AccountService {
 

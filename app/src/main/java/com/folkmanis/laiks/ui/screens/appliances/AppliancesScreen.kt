@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,6 +13,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.model.PowerApplianceRecord
+import com.folkmanis.laiks.ui.screens.appliance_select.ApplianceSelectDialog
 
 
 @Composable
@@ -31,9 +35,13 @@ internal fun AppliancesScreen(
     onEdit: (idx: Int) -> Unit,
     onView: (idx: Int) -> Unit,
     onAdd: () -> Unit,
-    onSelectAppliance: (idx:Int) -> Unit,
+    onSelectAppliance: (idx: Int) -> Unit,
     onDelete: (idx: Int) -> Unit,
 ) {
+
+    var addDialogOpen by remember {
+        mutableStateOf(false)
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -60,7 +68,7 @@ internal fun AppliancesScreen(
         }
 
         FloatingActionButton(
-            onClick = onAdd,
+            onClick = { addDialogOpen = true },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
@@ -68,6 +76,21 @@ internal fun AppliancesScreen(
             Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = stringResource(id = R.string.add)
+            )
+        }
+
+        if (addDialogOpen) {
+            ApplianceSelectDialog(
+                onApplianceSelect = {
+                    addDialogOpen = false
+                },
+                onNewAppliance = {
+                    addDialogOpen = false
+                    onAdd()
+                },
+                onDismiss = {
+                    addDialogOpen = false
+                }
             )
         }
 

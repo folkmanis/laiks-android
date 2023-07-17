@@ -55,4 +55,6 @@
     <string name="market_zone_select">Izvēlieties reģionu</string>
     <string name="drag_handle">Pārvietot</string>
     <string name="view_appliance">Skatīt iekārtu</string>
+    <string name="create_new">Izveidot jaunu</string>
+    <string name="choose_appliance_title">Izvēlieties aparātu!</string>
 </resources>

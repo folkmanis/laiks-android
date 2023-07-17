@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeMarketZonesService
 import com.folkmanis.laiks.model.MarketZone
+import com.folkmanis.laiks.utilities.composables.ButtonRow
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,34 +142,6 @@ fun MarketZoneInput(
         }
     }
 
-}
-
-@Composable
-fun ButtonRow(
-    onDismiss: () -> Unit,
-    onAccept: () -> Unit,
-    saveEnabled: Boolean,
-) {
-    Row(
-        horizontalArrangement = Arrangement.End,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                end = 16.dp,
-                start = 16.dp,
-                bottom = 8.dp
-            )
-    ) {
-        TextButton(onClick = onDismiss) {
-            Text(text = stringResource(id = R.string.action_cancel))
-        }
-        TextButton(
-            onClick = onAccept,
-            enabled = saveEnabled,
-        ) {
-            Text(text = stringResource(id = R.string.action_save))
-        }
-    }
 }
 
 @Preview
