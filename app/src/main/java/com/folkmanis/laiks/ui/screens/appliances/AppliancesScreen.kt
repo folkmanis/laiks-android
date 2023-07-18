@@ -34,7 +34,8 @@ internal fun AppliancesScreen(
     modifier: Modifier = Modifier,
     onEdit: (idx: Int) -> Unit,
     onView: (idx: Int) -> Unit,
-    onAdd: () -> Unit,
+    onAddExisting: (PowerApplianceRecord) -> Unit,
+    onAddNew:()->Unit,
     onSelectAppliance: (idx: Int) -> Unit,
     onDelete: (idx: Int) -> Unit,
 ) {
@@ -81,12 +82,13 @@ internal fun AppliancesScreen(
 
         if (addDialogOpen) {
             ApplianceSelectDialog(
-                onApplianceSelect = {
+                onApplianceSelect = {record->
                     addDialogOpen = false
+                    onAddExisting(record)
                 },
                 onNewAppliance = {
                     addDialogOpen = false
-                    onAdd()
+                    onAddNew()
                 },
                 onDismiss = {
                     addDialogOpen = false
@@ -104,7 +106,8 @@ fun AppliancesScreenPreview() {
     MaterialTheme {
         AppliancesScreen(
             records = FakeAppliancesService.testPowerApplianceRecords,
-            onAdd = {},
+            onAddExisting = {},
+            onAddNew = {},
             onDelete = {},
             onView = {},
             onEdit = {},

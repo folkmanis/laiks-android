@@ -45,7 +45,8 @@ fun NavGraphBuilder.appliancesScreen(
                 AppliancesScreen(
                     records = records,
                     onEdit = { onEditAppliance(records[it].id) },
-                    onAdd = onAddAppliance,
+                    onAddExisting = viewModel::addAppliance,
+                    onAddNew = onAddAppliance,
                     onDelete = viewModel::delete,
                     onSelectAppliance = {
                         onSelectAppliance(records[it])

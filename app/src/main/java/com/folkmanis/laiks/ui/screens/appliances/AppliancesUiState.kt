@@ -11,5 +11,17 @@ sealed interface AppliancesUiState {
 
     data class Success(
         val records: List<PowerApplianceRecord>
-    ) : AppliancesUiState
+    ) : AppliancesUiState {
+        fun removeRecordAt(idx: Int): Success {
+            val updated = records.toMutableList()
+            updated.removeAt(idx)
+            return copy(records = updated)
+        }
+
+        fun addRecord(record:PowerApplianceRecord): Success {
+            val updated = records.toMutableList()
+            updated.add(record)
+            return copy(records = updated)
+        }
+    }
 }

@@ -11,6 +11,7 @@ import com.folkmanis.laiks.model.ApplianceType
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceRecord
 import com.folkmanis.laiks.utilities.NotLoggedInException
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,6 +22,7 @@ fun List<ApplianceRecord>.filterTypeIds(type: Int): List<String> =
     filter { it.type == type }
         .map { it.applianceId }
 
+@HiltViewModel
 class ApplianceSelectViewModel @Inject constructor(
     private val appliancesService: AppliancesService,
     private val laiksUserService: LaiksUserService,
@@ -30,11 +32,9 @@ class ApplianceSelectViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ApplianceSelectUiState>(ApplianceSelectUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    init {
+    suspend fun initialize() {
         try {
-            viewModelScope.launch {
-                getAppliances()
-            }
+            getAppliances()
         } catch (e: NotLoggedInException) {
             _uiState.value = ApplianceSelectUiState.Error(e)
         }

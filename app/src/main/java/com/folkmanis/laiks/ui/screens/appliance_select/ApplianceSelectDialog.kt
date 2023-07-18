@@ -1,8 +1,11 @@
 package com.folkmanis.laiks.ui.screens.appliance_select
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -18,6 +21,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.model.ApplianceType
@@ -47,11 +52,14 @@ fun ApplianceSelectDialog(
     onApplianceSelect: (PowerApplianceRecord) -> Unit,
     onNewAppliance: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ApplianceSelectViewModel = hiltViewModel(),
+    selectViewModel: ApplianceSelectViewModel = hiltViewModel(),
 ) {
 
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by selectViewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(true) {
+        selectViewModel.initialize()
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -59,10 +67,10 @@ fun ApplianceSelectDialog(
     ) {
         AppliancesSelectScreen(
             state = state,
-            onSelect = viewModel::selectAppliance,
+            onSelect = selectViewModel::selectAppliance,
             onDismiss = onDismiss,
             onAccept = {
-                val selected = viewModel.selectedValue
+                val selected = selectViewModel.selectedValue
                 if (selected == null) {
                     onNewAppliance()
                 } else {
@@ -110,8 +118,8 @@ fun AppliancesSelectScreen(
             ListDivider()
 
             when (state) {
-                is ApplianceSelectUiState.Loading -> LoadingScreen(modifier = modifier)
-                is ApplianceSelectUiState.Error -> ErrorScreen(modifier = modifier)
+                is ApplianceSelectUiState.Loading -> {}
+                is ApplianceSelectUiState.Error -> ErrorScreen()
                 is ApplianceSelectUiState.Success -> {
                     AppliancesList(
                         userAppliances = state.userAppliances,
@@ -160,25 +168,54 @@ fun AppliancesList(
             )
             ListDivider()
         }
-        items(userAppliances) { appliance ->
+        if (userAppliances.isNotEmpty()) {
+            item {
+                SectionHeader(text = R.string.user_defined)
+                ListDivider()
+            }
+            items(userAppliances) { appliance ->
 
-            ApplianceItem(
-                selected = selected,
-                record = PowerApplianceRecord(appliance, ApplianceType.USER.type),
-                onSelect = onSelect,
-            )
-            ListDivider()
+                ApplianceItem(
+                    selected = selected,
+                    record = PowerApplianceRecord(appliance, ApplianceType.USER.type),
+                    onSelect = onSelect,
+                )
+                ListDivider()
 
+            }
         }
-        items(systemAppliances) { appliance ->
-            ApplianceItem(
-                selected = selected,
-                record = PowerApplianceRecord(appliance, ApplianceType.SYSTEM.type),
-                onSelect = onSelect,
-            )
-            ListDivider()
+        if (systemAppliances.isNotEmpty()) {
+            item {
+                SectionHeader(text = R.string.predefined)
+                ListDivider()
+            }
+            items(systemAppliances) { appliance ->
+                ApplianceItem(
+                    selected = selected,
+                    record = PowerApplianceRecord(appliance, ApplianceType.SYSTEM.type),
+                    onSelect = onSelect,
+                )
+                ListDivider()
+            }
         }
     }
+}
+
+@Composable
+fun SectionHeader(@StringRes text: Int) {
+    Row(
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 24.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(id = text),
+            style = MaterialTheme.typography.titleMedium,
+        )
+    }
+
 }
 
 @Composable

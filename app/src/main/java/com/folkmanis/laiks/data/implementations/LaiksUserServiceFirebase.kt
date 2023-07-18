@@ -3,9 +3,11 @@ package com.folkmanis.laiks.data.implementations
 import android.util.Log
 import com.folkmanis.laiks.USER_APPLIANCES_COLLECTION
 import com.folkmanis.laiks.USER_COLLECTION
+import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.utilities.NotLoggedInException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.snapshots
@@ -17,10 +19,14 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class LaiksUserServiceFirebase @Inject constructor(
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
+    private val accountService: AccountService,
 ) : LaiksUserService {
 
     private val collection = firestore.collection(USER_COLLECTION)
+
+    private val uId
+        get() = accountService.authUser?.uid ?: throw NotLoggedInException()
 
     override fun laiksUsersFlow(): Flow<List<LaiksUser>> =
         collection.snapshots()
@@ -79,21 +85,20 @@ class LaiksUserServiceFirebase @Inject constructor(
 
     override suspend fun updateLaiksUser(user: LaiksUser) {
         collection
-            .document(user.id)
+            .document(uId)
             .set(user)
             .await()
     }
 
-    override suspend fun updateLaiksUser(uId: String, update: HashMap<String, Any>) {
+    override suspend fun updateLaiksUser(update: HashMap<String, Any>) {
         collection
             .document(uId)
             .update(update)
             .await()
     }
 
-    override suspend fun updateLaiksUser(uId: String, key: String, value: Any) {
+    override suspend fun updateLaiksUser(key: String, value: Any) {
         updateLaiksUser(
-            uId,
             hashMapOf(
                 key to value
             )

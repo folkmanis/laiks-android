@@ -47,7 +47,7 @@ class UserSettingsViewModel @Inject constructor(
         if (state is UserSettingsUiState.Success) {
             _uiState.value = state.copy(includeVat = value)
             viewModelScope.launch {
-                laiksUserService.updateLaiksUser(state.id, "includeVat", value)
+                laiksUserService.updateLaiksUser("includeVat", value)
             }
         }
     }
@@ -58,7 +58,7 @@ class UserSettingsViewModel @Inject constructor(
             _uiState.value = state.copy(vatAmount = value)
             viewModelScope.launch {
                 laiksUserService.updateLaiksUser(
-                    state.id, "vatAmount", value
+                    "vatAmount", value
                 )
             }
         }
@@ -78,7 +78,7 @@ class UserSettingsViewModel @Inject constructor(
             )
             viewModelScope.launch {
                 laiksUserService.updateLaiksUser(
-                    state.id, update
+                    update
                 )
             }
         }

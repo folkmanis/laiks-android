@@ -29,11 +29,11 @@ class FakeLaiksUserService : LaiksUserService {
 
     }
 
-    override suspend fun updateLaiksUser(uId: String, key: String, value: Any) {
+    override suspend fun updateLaiksUser(key: String, value: Any) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateLaiksUser(uId: String, update: HashMap<String, Any>) {
+    override suspend fun updateLaiksUser(update: HashMap<String, Any>) {
         TODO("Not yet implemented")
     }
     override suspend fun userAppliances(uId: String): List<PowerAppliance> {

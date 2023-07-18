@@ -21,9 +21,9 @@ interface LaiksUserService {
 
     suspend fun updateLaiksUser(user: LaiksUser)
 
-    suspend fun updateLaiksUser(uId: String, key: String, value: Any)
+    suspend fun updateLaiksUser(key: String, value: Any)
 
-    suspend fun updateLaiksUser(uId: String, update: HashMap<String, Any>)
+    suspend fun updateLaiksUser(update: HashMap<String, Any>)
 
     suspend fun userExists(id: String): Boolean
 

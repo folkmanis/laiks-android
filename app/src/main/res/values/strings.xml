@@ -54,6 +54,8 @@
     <string name="view_appliance">View Appliance</string>
     <string name="create_new">Create New</string>
     <string name="choose_appliance_title">Choose Appliance!</string>
+    <string name="user_defined">User defined</string>
+    <string name="predefined">Predefined</string>
     <plurals name="prices_retrieved">
         <item quantity="one">%1$d price retrieved</item>
         <item quantity="other">%1$d prices retrieved</item>
