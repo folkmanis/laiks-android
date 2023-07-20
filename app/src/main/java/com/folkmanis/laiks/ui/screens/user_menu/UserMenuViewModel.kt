@@ -30,9 +30,9 @@ class UserMenuViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    fun setVat(userId: String, value: Boolean) {
+    fun setVat(value: Boolean) {
         viewModelScope.launch {
-            laiksUserService.setVatEnabled(userId, value)
+            laiksUserService.setVatEnabled(value)
         }
     }
 

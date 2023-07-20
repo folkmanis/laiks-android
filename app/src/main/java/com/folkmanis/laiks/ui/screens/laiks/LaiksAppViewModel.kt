@@ -4,7 +4,7 @@ import android.content.res.Resources
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.domain.LaiksUserUseCase
+import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LaiksAppViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
-    private val laiksUser: LaiksUserUseCase,
+    private val laiksUserService: LaiksUserService,
 ) : ViewModel() {
 
     private val _appState = MutableStateFlow(LaiksAppState())
@@ -44,7 +44,7 @@ class LaiksAppViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            laiksUser().collect { user ->
+            laiksUserService.laiksUserFlow().collect() { user ->
                 _appState.update { state ->
                     state.copy(user = user)
                 }

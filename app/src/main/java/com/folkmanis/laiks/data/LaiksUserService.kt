@@ -1,23 +1,20 @@
 package com.folkmanis.laiks.data
 
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.model.PowerAppliance
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.flow.Flow
 
 interface LaiksUserService {
 
-    fun laiksUserFlow(uId: String): Flow<LaiksUser?>
+    val vatAmountFlow: Flow<Double>
+
+    fun laiksUserFlow(): Flow<LaiksUser?>
 
     fun laiksUsersFlow(): Flow<List<LaiksUser>>
 
-    suspend fun laiksUser(uId: String): LaiksUser?
+    suspend fun laiksUser(): LaiksUser
 
-    suspend fun userAppliances(uId: String): List<PowerAppliance>
-
-    suspend fun userAppliance(uId: String, id: String): PowerAppliance?
-
-    suspend fun createLaiksUser(user: FirebaseUser)
+    suspend fun createLaiksUser(user: UserInfo)
 
     suspend fun updateLaiksUser(user: LaiksUser)
 
@@ -27,6 +24,6 @@ interface LaiksUserService {
 
     suspend fun userExists(id: String): Boolean
 
-    suspend fun setVatEnabled(userId: String, value: Boolean)
+    suspend fun setVatEnabled(value: Boolean)
 
 }

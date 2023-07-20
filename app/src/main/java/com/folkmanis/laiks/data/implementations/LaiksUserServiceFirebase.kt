@@ -1,26 +1,32 @@
 package com.folkmanis.laiks.data.implementations
 
 import android.util.Log
-import com.folkmanis.laiks.USER_APPLIANCES_COLLECTION
 import com.folkmanis.laiks.USER_COLLECTION
 import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.utilities.NotLoggedInException
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+private val DEFAULT_APPLIANCES_IDS = listOf("washer", "dishwasher")
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class LaiksUserServiceFirebase @Inject constructor(
-    private val firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,
     private val accountService: AccountService,
+    private val appliancesService: AppliancesService,
 ) : LaiksUserService {
 
     private val collection = firestore.collection(USER_COLLECTION)
@@ -28,40 +34,33 @@ class LaiksUserServiceFirebase @Inject constructor(
     private val uId
         get() = accountService.authUser?.uid ?: throw NotLoggedInException()
 
+    override val vatAmountFlow: Flow<Double>
+        get() = laiksUserFlow()
+            .map { it?.tax ?: 1.0 }
+
     override fun laiksUsersFlow(): Flow<List<LaiksUser>> =
         collection.snapshots()
             .map { snapshot ->
                 snapshot.toObjects()
             }
 
-    override fun laiksUserFlow(uId: String): Flow<LaiksUser?> =
-        collection.document(uId)
-            .snapshots()
-            .map { document ->
-                Log.d(TAG, "Laiks user ${document.data}")
-                document.toObject<LaiksUser>()
+    override fun laiksUserFlow(): Flow<LaiksUser?> =
+        accountService.firebaseUserFlow
+            .flatMapLatest { user ->
+                if (user == null) {
+                    flowOf(null)
+                } else {
+                    laiksUserFlow(user.uid)
+                }
             }
 
-    override suspend fun laiksUser(uId: String): LaiksUser? =
-        collection.document(uId)
-            .get()
-            .await()
-            .toObject()
-
-    override suspend fun userAppliances(uId: String): List<PowerAppliance> =
-        collection.document(uId)
-            .collection(USER_APPLIANCES_COLLECTION)
-            .get()
-            .await()
-            .toObjects()
-
-    override suspend fun userAppliance(uId: String, id: String): PowerAppliance? =
-        collection.document(uId)
-            .collection(USER_APPLIANCES_COLLECTION)
-            .document(id)
-            .get()
-            .await()
-            .toObject()
+    override suspend fun laiksUser(): LaiksUser =
+        accountService.authUser?.let {
+            collection.document(it.uid)
+                .get()
+                .await()
+                .toObject()
+        } ?: throw NotLoggedInException()
 
     override suspend fun userExists(id: String): Boolean =
         collection.document(id)
@@ -69,12 +68,22 @@ class LaiksUserServiceFirebase @Inject constructor(
             .await()
             .exists()
 
-    override suspend fun createLaiksUser(user: FirebaseUser) {
+    override suspend fun createLaiksUser(user: UserInfo) {
+
+        val appliances = buildList {
+            DEFAULT_APPLIANCES_IDS.forEach { id ->
+                appliancesService.getAppliance(id)?.also {
+                    add(it.copy(name = it.localName))
+                }
+            }
+        }
+
         val laiksUser = LaiksUser(
             id = user.uid,
             name = user.displayName ?: "",
             email = user.email ?: "",
-            verified = false
+            verified = false,
+            appliances = appliances,
         )
         Log.d(TAG, "new user: $user")
         collection
@@ -105,12 +114,20 @@ class LaiksUserServiceFirebase @Inject constructor(
         )
     }
 
-    override suspend fun setVatEnabled(userId: String, value: Boolean) {
+    override suspend fun setVatEnabled(value: Boolean) {
         collection
-            .document(userId)
+            .document(uId)
             .update("includeVat", value)
             .await()
     }
+
+    private fun laiksUserFlow(uId: String): Flow<LaiksUser?> =
+        collection.document(uId)
+            .snapshots()
+            .map { document ->
+                Log.d(TAG, "Laiks user ${document.data}")
+                document.toObject<LaiksUser>()
+            }
 
     companion object {
         private const val TAG = "LaiksUserService"

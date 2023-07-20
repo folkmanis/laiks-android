@@ -30,8 +30,6 @@ fun LoggedInUserMenu(
     onLogout: () -> Unit,
     isVat: Boolean,
     onSetVat: (Boolean) -> Unit,
-    onUsersAdmin: () -> Unit,
-    onAppliancesAdmin: () -> Unit,
     onNpPricesReload: () -> Unit,
     onUserSettings: () -> Unit,
     modifier: Modifier = Modifier,
@@ -108,43 +106,6 @@ fun LoggedInUserMenu(
                         if (isVat) {
                             Icon(Icons.Filled.Check, contentDescription = null)
                         }
-                    }
-                )
-                // Appliances
-                DropdownMenuItem(
-                    text = {
-                        Text(text = stringResource(id = R.string.appliances_menu_item))
-                    },
-                    onClick = {
-                        menuExpanded = false
-                        onAppliancesAdmin()
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.dishwasher_gen),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                        )
-                    }
-                )
-            }
-            // Admin
-            if (state.isAdmin) {
-                // Users
-                DropdownMenuItem(
-                    text = {
-                        Text(text = stringResource(id = R.string.users_menu))
-                    },
-                    onClick = {
-                        menuExpanded = false
-                        onUsersAdmin()
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.manage_accounts),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
                     }
                 )
             }

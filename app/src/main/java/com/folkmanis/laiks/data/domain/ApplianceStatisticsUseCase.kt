@@ -2,6 +2,7 @@ package com.folkmanis.laiks.data.domain
 
 import android.util.Log
 import com.folkmanis.laiks.INCLUDE_AVERAGE_DAYS
+import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PricesStatistics
@@ -19,15 +20,12 @@ import javax.inject.Inject
 
 class ApplianceStatisticsUseCase @Inject constructor(
     private val pricesService: PricesService,
-    laiksUser: LaiksUserUseCase,
+    private val laiksUserService: LaiksUserService,
 ) {
-
-    private val vatAmount = laiksUser()
-        .map { it?.tax ?: 1.0 }
 
     operator fun invoke(appliance: PowerAppliance): Flow<PricesStatistics> = combine(
         pricesService.lastDaysPricesFlow(INCLUDE_AVERAGE_DAYS),
-        vatAmount,
+        laiksUserService.vatAmountFlow,
     ) { prices, vat ->
         val startTime = prices.first().startTime.toInstant()
         offsetCosts(prices.addVat(vat), startTime, appliance).values

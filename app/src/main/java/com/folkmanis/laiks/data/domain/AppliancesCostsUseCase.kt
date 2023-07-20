@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.data.domain
 
+import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceHour
@@ -35,7 +36,7 @@ private fun List<PowerAppliance>.toPowerApplianceHour(
 }
 
 class AppliancesCostsUseCase @Inject constructor(
-    private val activeAppliances: ActiveAppliancesUseCase,
+    private val laiksUserService: LaiksUserService,
 ) {
 
     suspend operator fun invoke(
@@ -43,7 +44,7 @@ class AppliancesCostsUseCase @Inject constructor(
         minute: LocalDateTime,
     ): Map<Int, List<PowerApplianceHour>> {
 
-        val appliances = activeAppliances().map { it.appliance }
+        val appliances = laiksUserService.laiksUser().appliances
 
         val startTime = minute.atZone(ZoneId.systemDefault()).toInstant()
         val appliancesAllCosts: Map<PowerAppliance, Map<Long, Double>> =

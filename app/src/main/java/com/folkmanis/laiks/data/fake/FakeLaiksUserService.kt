@@ -2,22 +2,23 @@ package com.folkmanis.laiks.data.fake
 
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.model.PowerAppliance
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 @Suppress("RedundantNullableReturnType")
 class FakeLaiksUserService : LaiksUserService {
 
-    override fun laiksUserFlow(uId: String): Flow<LaiksUser?> =
+    override val vatAmountFlow: Flow<Double>
+        get() = flowOf(1.21)
+    override fun laiksUserFlow(): Flow<LaiksUser?> =
         flowOf(laiksUser)
 
-    override suspend fun createLaiksUser(user: FirebaseUser) {
+    override suspend fun createLaiksUser(user: UserInfo) {
 
     }
 
-    override suspend fun laiksUser(uId: String): LaiksUser? =
+    override suspend fun laiksUser(): LaiksUser =
         laiksUser
 
     override fun laiksUsersFlow(): Flow<List<LaiksUser>> =
@@ -36,17 +37,10 @@ class FakeLaiksUserService : LaiksUserService {
     override suspend fun updateLaiksUser(update: HashMap<String, Any>) {
         TODO("Not yet implemented")
     }
-    override suspend fun userAppliances(uId: String): List<PowerAppliance> {
+    override suspend fun setVatEnabled(value: Boolean) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun setVatEnabled(userId: String, value: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun userAppliance(uId: String, id: String): PowerAppliance? {
-        TODO("Not yet implemented")
-    }
     companion object {
         val laiksUser: LaiksUser = LaiksUser(
             verified = true,

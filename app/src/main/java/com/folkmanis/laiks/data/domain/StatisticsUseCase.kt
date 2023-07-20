@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.data.domain
 
+import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.PricesStatistics
 import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
@@ -12,16 +13,13 @@ import javax.inject.Inject
 
 class StatisticsUseCase @Inject constructor(
     private val pricesService: PricesService,
-    laiksUser: LaiksUserUseCase,
+    private val laiksUserService: LaiksUserService,
 ) {
-
-    private val vatAmount: Flow<Double> = laiksUser()
-        .map { it?.tax ?: 1.0 }
 
     operator fun invoke(): Flow<PricesStatistics> = pricesService
         .npPricesDocumentFlow()
         .filterNotNull()
-        .combine(vatAmount) { doc, vat ->
+        .combine(laiksUserService.vatAmountFlow) { doc, vat ->
             if (doc.average != null && doc.stDev != null) {
                 PricesStatistics(
                     average = doc.average.withVat(vat).eurMWhToCentsKWh(),

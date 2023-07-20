@@ -1,79 +1,78 @@
 package com.folkmanis.laiks.ui.screens.user_settings
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.NavType
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.folkmanis.laiks.R
-import com.folkmanis.laiks.utilities.composables.ErrorScreen
-import com.folkmanis.laiks.utilities.composables.LoadingScreen
+import androidx.navigation.navigation
+import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCosts
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceCopyRoute
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceEditScreen
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceNewRoute
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.copyAppliance
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.editAppliance
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.newAppliance
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.viewAppliance
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_select.applianceSelectScreen
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_select.navigateToAddAppliance
+import com.folkmanis.laiks.ui.screens.user_settings.appliances.appliancesScreen
+import com.folkmanis.laiks.ui.screens.user_settings.appliances.navigateToAppliances
+import com.folkmanis.laiks.ui.screens.user_settings.main_settings.mainSettingsScreen
+import com.folkmanis.laiks.ui.screens.user_settings.main_settings.ROUTE as MAIN_SETTINGS_ROUTE
 
 const val ROUTE = "UserSettings"
-const val USER_ID = "id"
-const val NAME = "name"
 
-fun NavGraphBuilder.userSettingsScreen(
+fun NavGraphBuilder.userSettingsGraph(
+    navController: NavController,
     setTitle: (String) -> Unit,
-    onEditAppliances: () -> Unit,
 ) {
 
-    composable(
-        route = "$ROUTE/{$USER_ID}?$NAME={$NAME}",
-        arguments = listOf(
-            navArgument(USER_ID) {
-                type = NavType.StringType
-            },
-            navArgument(NAME) {
-                type = NavType.StringType
-                defaultValue = ""
-            }
+    navigation(
+        startDestination = MAIN_SETTINGS_ROUTE,
+        route = ROUTE,
+    ) {
+
+        mainSettingsScreen(
+            setTitle = setTitle,
+            onEditAppliances = navController::navigateToAppliances,
         )
-    ) { backStackEntry ->
 
-        val viewModel: UserSettingsViewModel = hiltViewModel()
-        viewModel.initialize(backStackEntry.arguments?.getString(USER_ID))
+        appliancesScreen(
+            onEditAppliance = navController::editAppliance,
+            onAddAppliance = navController::navigateToAddAppliance,
+            setTitle = setTitle,
+            onSelectAppliance = navController::applianceCosts,
+        )
 
-        val name = backStackEntry.arguments?.getString(NAME)
+        applianceSelectScreen(
+            setTitle = setTitle,
+            onApplianceAdded = {navController.popBackStack()},
+            onCopyAppliance = { TODO() },
+            onNewAppliance = { TODO() },
+        )
 
-        val title = name ?: stringResource(R.string.user_editor)
-        LaunchedEffect(title) {
-            setTitle(title)
-        }
+        applianceEditScreen(
+            onCopy = navController::copyAppliance,
+            setTitle = setTitle,
+            onNavigateBack = navController::popBackStack,
+        )
 
-        val uiState = viewModel
-            .uiState
-            .collectAsStateWithLifecycle(initialValue = UserSettingsUiState.Loading)
-            .value
+        applianceNewRoute(
+            onNavigateBack = navController::popBackStack,
+            setTitle = setTitle,
+        )
 
-        when (uiState) {
-            is UserSettingsUiState.Loading -> LoadingScreen()
-            is UserSettingsUiState.Error -> ErrorScreen(reason = uiState.reason)
-            is UserSettingsUiState.Success -> {
-                UserSettingsScreen(
-                    uiState = uiState,
-                    onIncludeVatChange = viewModel::setIncludeVat,
-                    onVatChange = viewModel::setVatAmount,
-                    onMarketZoneChange = viewModel::setMarketZoneId,
-                    onEditAppliances = onEditAppliances,
-                )
-            }
-        }
+        applianceCopyRoute(
+            onNavigateBack = navController::popBackStack,
+            setTitle = setTitle,
+        )
+
 
 
     }
 }
 
 fun NavController.userSettings(
-    userId: String,
-    name: String?,
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    val route = "$ROUTE/$userId?$NAME=$name"
-    navigate(route, builder)
+    navigate(ROUTE, builder)
 }

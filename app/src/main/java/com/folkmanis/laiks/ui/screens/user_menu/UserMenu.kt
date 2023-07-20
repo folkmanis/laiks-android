@@ -15,8 +15,6 @@ import com.folkmanis.laiks.utilities.oauth.getSignInIntent
 
 @Composable
 fun UserMenu(
-    onUsersAdmin: () -> Unit,
-    onAppliancesAdmin: () -> Unit,
     onPopToStart: () -> Unit,
     onUserSettings: () -> Unit,
     user: LaiksUser?,
@@ -51,12 +49,9 @@ fun UserMenu(
             isVat = uiState.includeVat,
             onSetVat = {
                 viewModel.setVat(
-                    userId = uiState.userId,
                     value = !uiState.includeVat,
                 )
             },
-            onUsersAdmin = onUsersAdmin,
-            onAppliancesAdmin = onAppliancesAdmin,
             state = uiState,
             onNpPricesReload = viewModel::updateNpPrices,
             onUserSettings = onUserSettings,

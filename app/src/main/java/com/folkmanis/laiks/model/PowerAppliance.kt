@@ -3,6 +3,7 @@ package com.folkmanis.laiks.model
 import androidx.annotation.StringRes
 import com.folkmanis.laiks.R
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.Exclude
 import java.util.Locale
 
 @Suppress("EnumEntryName")
@@ -21,6 +22,8 @@ data class PowerAppliance(
     val name: String = "",
     val localizedNames: Map<String, String> = emptyMap(),
 ) {
+
+    @get:Exclude
     val localName: String
         get() {
             val locale = Locale.getDefault().language
