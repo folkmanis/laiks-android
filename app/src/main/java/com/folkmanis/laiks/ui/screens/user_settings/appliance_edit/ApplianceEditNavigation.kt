@@ -37,7 +37,7 @@ fun NavGraphBuilder.applianceEditScreen(
             setTitle(title)
         }
 
-        ApplianceEdit(
+        ApplianceEditScreen(
             onNavigateBack = onNavigateBack,
             idx = applianceId,
         )
@@ -58,7 +58,7 @@ fun NavGraphBuilder.applianceNewRoute(
             setTitle(title)
         }
 
-        ApplianceEdit(
+        ApplianceEditScreen(
             onNavigateBack = onNavigateBack,
             idx = null,
         )

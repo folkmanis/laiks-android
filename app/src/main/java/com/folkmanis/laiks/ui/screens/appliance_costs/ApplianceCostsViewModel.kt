@@ -3,7 +3,7 @@ package com.folkmanis.laiks.ui.screens.appliance_costs
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.domain.ActiveAppliancesUseCase
+import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.domain.ApplianceHourlyCostsUseCase
 import com.folkmanis.laiks.data.domain.ApplianceStatisticsUseCase
 import com.folkmanis.laiks.model.PricesStatistics
@@ -33,23 +33,23 @@ class ApplianceCostsViewModel @Inject constructor(
     private val applianceHourlyCosts: ApplianceHourlyCostsUseCase,
     applianceStatistics: ApplianceStatisticsUseCase,
     private val snackbarManager: SnackbarManager,
-    private val activeAppliances: ActiveAppliancesUseCase,
+    private val laiksUserService: LaiksUserService,
 //    npUpdate: NpUpdateUseCase,
 //    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
 ) : ViewModel() { // : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager)
 
-    private val idFlow = MutableStateFlow<ApplianceIdWithType?>(null)
+    private val idxFlow = MutableStateFlow<Int?>(null)
 
     private val _nameState = MutableStateFlow<String?>(null)
     val nameState = _nameState.asStateFlow()
 
-    private val applianceFlow = idFlow
+    private val applianceFlow = idxFlow
         .filterNotNull()
-        .map {
-            Log.d(TAG, "Appliance: $it")
-            activeAppliances(it.type, it.id)
+        .flatMapLatest {idx->
+            laiksUserService.laiksUserFlow()
+                .filterNotNull()
+                .map { laiksUser-> laiksUser.appliances[idx] }
         }
-        .filterNotNull()
         .shareIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
@@ -74,12 +74,8 @@ class ApplianceCostsViewModel @Inject constructor(
                 }
         }
 
-    fun setAppliance(type: Int?, id: String?) {
-        idFlow.value =
-            if (type != null && id != null)
-                ApplianceIdWithType(type, id)
-            else
-                null
+    fun setAppliance(idx: Int?) {
+        idxFlow.value = idx
     }
 
     companion object {

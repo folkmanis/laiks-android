@@ -32,7 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.PowerApplianceRecord
+import com.folkmanis.laiks.model.PowerAppliance
 
 fun Modifier.clickActive(enabled: Boolean, onClick: () -> Unit) =
     if (enabled)
@@ -42,8 +42,8 @@ fun Modifier.clickActive(enabled: Boolean, onClick: () -> Unit) =
 
 @Composable
 fun BoxScope.PricesSelector(
-    appliances: List<PowerApplianceRecord>,
-    onSelected: (PowerApplianceRecord) -> Unit,
+    appliances: List<PowerAppliance>,
+    onSelected: (idx: Int, name: String) -> Unit,
     onShowPrices: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

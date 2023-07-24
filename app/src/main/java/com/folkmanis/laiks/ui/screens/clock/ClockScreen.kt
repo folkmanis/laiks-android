@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.folkmanis.laiks.model.PowerApplianceRecord
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
+import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import java.time.LocalTime
 
@@ -17,10 +17,10 @@ internal fun ClockScreen(
     time: LocalTime,
     offset: Int,
     pricesAllowed: Boolean,
-    appliances: List<PowerApplianceRecord>,
+    appliances: List<PowerAppliance>,
     updateOffset: (Int) -> Unit,
     onShowPrices: () -> Unit,
-    onShowAppliance: (PowerApplianceRecord) -> Unit,
+    onShowAppliance: (idx: Int, name: String) -> Unit,
     modifier: Modifier = Modifier,
     windowHeight: WindowHeightSizeClass,
 ) {
@@ -59,10 +59,10 @@ fun ClockScreenPreview() {
             time = LocalTime.now(),
             offset = 2,
             pricesAllowed = true,
-            appliances = FakeAppliancesService.testPowerApplianceRecords,
+            appliances = FakeAppliancesService.testAppliances,
             onShowPrices = {},
             updateOffset = {},
-            onShowAppliance = {},
+            onShowAppliance = { _,_-> },
             windowHeight = WindowHeightSizeClass.Medium,
         )
     }
@@ -80,10 +80,10 @@ fun ClockScreenPreviewLandscape() {
             time = LocalTime.now(),
             offset = 2,
             pricesAllowed = true,
-            appliances = FakeAppliancesService.testPowerApplianceRecords,
+            appliances = FakeAppliancesService.testAppliances,
             onShowPrices = {},
             updateOffset = {},
-            onShowAppliance = {},
+            onShowAppliance = { _,_-> },
             windowHeight = WindowHeightSizeClass.Compact,
         )
     }

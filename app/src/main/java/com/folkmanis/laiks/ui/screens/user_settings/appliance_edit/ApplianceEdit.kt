@@ -1,9 +1,11 @@
 package com.folkmanis.laiks.ui.screens.user_settings.appliance_edit
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,30 +35,47 @@ import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.data.fake.FakeLaiksUserService
 
 @Composable
-internal fun ApplianceEdit(
+fun ApplianceEditScreen(
     idx: Int?,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ApplianceEditViewModel = hiltViewModel()
 ) {
 
-
     val state by viewModel.uiState
         .collectAsStateWithLifecycle(initialValue = ApplianceUiState())
 
-    val scroll = rememberScrollState()
 
     LaunchedEffect(idx) {
         viewModel.loadAppliance(idx)
     }
 
-    Column(modifier = modifier) {
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+
+        ApplianceEdit(
+            state = state,
+            setName = viewModel::setName,
+            setMinimumDelay = viewModel::setMinimumDelay,
+            setDelay = viewModel::setDelay,
+            setColor = viewModel::setColor,
+            setEnabled = viewModel::setEnabled,
+            setCycles = viewModel::setCycles,
+            modifier = Modifier
+                .matchParentSize()
+                .padding(bottom = 56.dp),
+        )
+
 
         Row(
             modifier = Modifier
                 .height(56.dp)
                 .fillMaxWidth()
-                .padding(end = 16.dp),
+                .padding(end = 16.dp)
+                .align(Alignment.BottomCenter),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         ) {
@@ -65,6 +84,25 @@ internal fun ApplianceEdit(
                 saveEnabled = state.isValid,
             )
         }
+    }
+
+}
+
+@Composable
+internal fun ApplianceEdit(
+    modifier: Modifier = Modifier,
+    state: ApplianceUiState,
+    setName: (String) -> Unit,
+    setMinimumDelay: (Long?) -> Unit,
+    setDelay: (String) -> Unit,
+    setColor: (String) -> Unit,
+    setEnabled: (Boolean) -> Unit,
+    setCycles: (List<NullablePowerApplianceCycle>) -> Unit,
+) {
+
+    val scroll = rememberScrollState()
+
+    Column(modifier = modifier) {
 
         Column(
             modifier = Modifier
@@ -74,7 +112,7 @@ internal fun ApplianceEdit(
 
             OutlinedTextField(
                 value = state.name,
-                onValueChange = viewModel::setName,
+                onValueChange = setName,
                 modifier = Modifier
                     .fillMaxWidth(),
                 enabled = state.isEnabled,
@@ -93,7 +131,7 @@ internal fun ApplianceEdit(
 
             NumberInput(
                 value = state.minimumDelay,
-                onValueChange = viewModel::setMinimumDelay,
+                onValueChange = setMinimumDelay,
                 modifier = Modifier
                     .padding(bottom = 8.dp),
                 label = {
@@ -112,7 +150,7 @@ internal fun ApplianceEdit(
             ) {
                 DelayInput(
                     value = state.delay,
-                    onValueChange = viewModel::setDelay,
+                    onValueChange = setDelay,
                     enabled = state.isEnabled,
                 )
             }
@@ -126,7 +164,7 @@ internal fun ApplianceEdit(
             ) {
                 ColorSelection(
                     color = state.color,
-                    onColorChange = viewModel::setColor,
+                    onColorChange = setColor,
                     modifier = Modifier
                         .padding(top = 16.dp, start = 24.dp)
                 )
@@ -148,7 +186,7 @@ internal fun ApplianceEdit(
                 ) {
                     Switch(
                         checked = state.enabled,
-                        onCheckedChange = viewModel::setEnabled,
+                        onCheckedChange = setEnabled,
                         enabled = state.isEnabled,
                     )
                     Text(
@@ -169,12 +207,13 @@ internal fun ApplianceEdit(
             ) {
                 PowerConsumptionCyclesScreen(
                     cycles = state.cycles,
-                    onCyclesChange = viewModel::setCycles,
+                    onCyclesChange = setCycles,
                     enabled = state.isEnabled,
                 )
             }
 
         }
+
 
     }
 
@@ -185,7 +224,8 @@ internal fun ApplianceEdit(
 fun EditorActions(
     onSave: () -> Unit,
     saveEnabled: Boolean,
-) {
+
+    ) {
 
     Button(
         enabled = saveEnabled,
@@ -214,7 +254,7 @@ fun ApplianceEditPreview() {
     )
 
     MaterialTheme {
-        ApplianceEdit(
+        ApplianceEditScreen(
             viewModel = viewModel,
             onNavigateBack = {},
             idx = null,

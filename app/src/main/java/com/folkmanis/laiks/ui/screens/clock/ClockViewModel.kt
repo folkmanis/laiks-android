@@ -28,8 +28,7 @@ class ClockViewModel @Inject constructor(
 
     val isPricesAllowed = isPermission("npUser")
 
-    val appliances = isPricesAllowed
-        .filterNotNull()
+    val appliances = isPermission("npUser")
         .flatMapLatest { laiksUserService.laiksUserFlow() }
         .filterNotNull()
         .map { user-> user.appliances }

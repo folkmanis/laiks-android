@@ -10,16 +10,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
-import kotlinx.coroutines.flow.MutableStateFlow
 
 private const val ROUTE = "Appliances"
 
 fun NavGraphBuilder.appliancesScreen(
-    onEditAppliance: (idx: Int) -> Unit = {},
-    onSelectAppliance: (idx: Int) -> Unit = {},
-    onAddAppliance: () -> Unit = {},
+    onSelectAppliance: (idx: Int, name: String) -> Unit,
+    onEditAppliance: (idx: Int) -> Unit,
+    onAddAppliance: () -> Unit,
     setTitle: (String) -> Unit,
 ) {
 
@@ -35,7 +33,7 @@ fun NavGraphBuilder.appliancesScreen(
             setTitle(title)
         }
 
-        if(state.loading) {
+        if (state.loading) {
             LoadingScreen()
         } else {
             AppliancesScreen(

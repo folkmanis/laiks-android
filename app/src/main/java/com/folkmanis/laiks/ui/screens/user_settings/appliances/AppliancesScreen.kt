@@ -30,7 +30,7 @@ internal fun AppliancesScreen(
     onEdit: (idx: Int) -> Unit,
     onDelete: (idx: Int) -> Unit,
     onAdd:()->Unit,
-    onSelectAppliance: (idx: Int) -> Unit,
+    onSelectAppliance: (idx: Int, name:String) -> Unit,
     busy: Boolean,
 ) {
 
@@ -48,7 +48,7 @@ internal fun AppliancesScreen(
                     onEdit = { onEdit(idx) },
                     onDelete = { onDelete(idx) },
                     modifier = Modifier
-                        .clickable { onSelectAppliance(idx) },
+                        .clickable { onSelectAppliance(idx, appliance.name) },
                     busy = busy,
                 )
 
@@ -81,7 +81,7 @@ fun AppliancesScreenPreview() {
         AppliancesScreen(
             onDelete = {},
             onEdit = {},
-            onSelectAppliance = {},
+            onSelectAppliance = {_,_->},
             onAdd = {},
             appliances = FakeAppliancesService.testAppliances,
             busy = false,

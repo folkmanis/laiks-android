@@ -13,7 +13,7 @@ const val ROUTE = "MainSettings"
 
 fun NavGraphBuilder.mainSettingsScreen(
     setTitle: (String) -> Unit,
-    onEditAppliances: () -> Unit,
+    onUserAppliances: () -> Unit,
 ) {
 
     composable(
@@ -37,7 +37,7 @@ fun NavGraphBuilder.mainSettingsScreen(
                     onIncludeVatChange = viewModel::setIncludeVat,
                     onVatChange = viewModel::setVatAmount,
                     onMarketZoneChange = viewModel::setMarketZoneId,
-                    onEditAppliances = onEditAppliances,
+                    onEditAppliances = onUserAppliances,
                 )
             }
         }

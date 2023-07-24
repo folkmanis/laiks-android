@@ -91,7 +91,7 @@ class UserSettingsViewModel @Inject constructor(
         return UserSettingsUiState.Success(
             id = user.id,
             email = user.email,
-            appliances = user.appliances,
+//            appliances = user.appliances,
             includeVat = user.includeVat,
             name = user.name,
             marketZoneId = user.marketZoneId,
