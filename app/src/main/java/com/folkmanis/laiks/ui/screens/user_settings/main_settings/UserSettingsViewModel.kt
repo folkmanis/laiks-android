@@ -12,7 +12,6 @@ import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -27,8 +26,8 @@ class UserSettingsViewModel @Inject constructor(
     private val permissionsService: PermissionsService,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    var uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
+        private set
 
     fun initialize() {
 
@@ -36,14 +35,14 @@ class UserSettingsViewModel @Inject constructor(
             laiksUserService.laiksUserFlow()
                 .map { user -> toUiState(user) }
                 .catch { err -> logMissingUser(err) }
-                .collect { _uiState.value = it }
+                .collect { uiState.value = it }
         }
     }
 
     fun setIncludeVat(value: Boolean) {
         val state = uiState.value
         if (state is UserSettingsUiState.Success) {
-            _uiState.value = state.copy(includeVat = value)
+            uiState.value = state.copy(includeVat = value)
             viewModelScope.launch {
                 laiksUserService.updateLaiksUser("includeVat", value)
             }
@@ -53,7 +52,7 @@ class UserSettingsViewModel @Inject constructor(
     fun setVatAmount(value: Double) {
         val state = uiState.value
         if (state is UserSettingsUiState.Success) {
-            _uiState.value = state.copy(vatAmount = value)
+            uiState.value = state.copy(vatAmount = value)
             viewModelScope.launch {
                 laiksUserService.updateLaiksUser(
                     "vatAmount", value
@@ -65,7 +64,7 @@ class UserSettingsViewModel @Inject constructor(
     fun setMarketZoneId(value: MarketZone) {
         val state = uiState.value
         if (state is UserSettingsUiState.Success) {
-            _uiState.value = state.copy(
+            uiState.value = state.copy(
                 marketZoneId = value.id,
                 marketZoneName = "${value.id}, ${value.description}",
                 vatAmount = value.tax,

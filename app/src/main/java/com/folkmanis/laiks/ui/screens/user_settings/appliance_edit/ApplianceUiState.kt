@@ -40,6 +40,7 @@ data class ApplianceUiState(
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
 
+    val idx: Int? = null,
     val id: String = "",
     val name: String = "",
     val color: String = "#CCCCCC",
@@ -71,7 +72,7 @@ data class ApplianceUiState(
     val isValid: Boolean
         get() = isNameValid && isMinimumDelayValid && isDelayValid && isCyclesValid
 
-    fun copy(appliance: PowerAppliance): ApplianceUiState {
+    fun setAppliance(appliance: PowerAppliance): ApplianceUiState {
         return copy(
             id = appliance.id,
             name = appliance.name,

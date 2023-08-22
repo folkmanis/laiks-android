@@ -1,14 +1,11 @@
 package com.folkmanis.laiks.ui.screens.user_settings.appliance_edit
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.folkmanis.laiks.R
 
 private const val ROUTE = "ApplianceEditor"
 private const val APPLIANCE_IDX = "applianceIdx"
@@ -32,14 +29,10 @@ fun NavGraphBuilder.applianceEditScreen(
         val applianceId =
             backStackEntry.arguments?.getInt(APPLIANCE_IDX)
 
-        val title = stringResource(id = R.string.appliance_screen)
-        LaunchedEffect(Unit) {
-            setTitle(title)
-        }
-
         ApplianceEditScreen(
             onNavigateBack = onNavigateBack,
             idx = applianceId,
+            setTitle = setTitle,
         )
 
     }
@@ -53,14 +46,10 @@ fun NavGraphBuilder.applianceNewRoute(
         route = "$ROUTE/$NEW_APPLIANCE"
     ) {
 
-        val title = stringResource(id = R.string.appliance_screen)
-        LaunchedEffect(Unit) {
-            setTitle(title)
-        }
-
         ApplianceEditScreen(
             onNavigateBack = onNavigateBack,
             idx = null,
+            setTitle = setTitle,
         )
     }
 }

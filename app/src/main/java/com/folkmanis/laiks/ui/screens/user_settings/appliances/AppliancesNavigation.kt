@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.user_settings.appliances
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,7 +30,7 @@ fun NavGraphBuilder.appliancesScreen(
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         val title = stringResource(id = R.string.appliances_screen)
-        LaunchedEffect(Unit) {
+        SideEffect {
             setTitle(title)
         }
 

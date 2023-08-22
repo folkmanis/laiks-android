@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +21,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,13 +37,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.data.fake.FakeLaiksUserService
+import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_select.ApplianceSelectDialog
 
 @Composable
 fun ApplianceEditScreen(
     idx: Int?,
     onNavigateBack: () -> Unit,
+    setTitle: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ApplianceEditViewModel = hiltViewModel()
 ) {
@@ -48,6 +56,11 @@ fun ApplianceEditScreen(
 
     LaunchedEffect(idx) {
         viewModel.loadAppliance(idx)
+    }
+
+    val title = composableTitle(state)
+    SideEffect {
+        setTitle(title)
     }
 
 
@@ -81,6 +94,7 @@ fun ApplianceEditScreen(
         ) {
             EditorActions(
                 onSave = { viewModel.save { onNavigateBack() } },
+                onSetAppliance = { viewModel.setAppliance(it) },
                 saveEnabled = state.isValid,
             )
         }
@@ -223,15 +237,35 @@ internal fun ApplianceEdit(
 @Composable
 fun EditorActions(
     onSave: () -> Unit,
+    onSetAppliance: (PowerAppliance) -> Unit,
     saveEnabled: Boolean,
+) {
 
-    ) {
+    var loadApplianceDialogOpened by remember {
+        mutableStateOf(false)
+    }
 
     Button(
         enabled = saveEnabled,
         onClick = onSave,
     ) {
         Text(text = stringResource(id = R.string.action_save))
+    }
+
+    Button(
+        onClick = { loadApplianceDialogOpened = true }
+    ) {
+        Text(text = stringResource(id = R.string.predefined))
+    }
+
+    if (loadApplianceDialogOpened) {
+        ApplianceSelectDialog(
+            onDismiss = { loadApplianceDialogOpened = false },
+            onSelect = {
+                loadApplianceDialogOpened = false
+                onSetAppliance(it)
+            },
+        )
     }
 }
 
@@ -244,17 +278,30 @@ fun OptionsDivider(modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+fun composableTitle(state: ApplianceUiState): String {
+    val defaultTitle = stringResource(id = R.string.appliance_screen)
+    val title by remember(state) {
+        derivedStateOf {
+            state.name.ifBlank {
+                defaultTitle
+            }
+        }
+    }
+    return title
+}
+
 @Preview(showBackground = true)
 @Composable
 fun ApplianceEditPreview() {
 
     val viewModel = ApplianceEditViewModel(
-        appliancesService = FakeAppliancesService(),
         laiksUserService = FakeLaiksUserService(),
     )
 
     MaterialTheme {
         ApplianceEditScreen(
+            setTitle = {},
             viewModel = viewModel,
             onNavigateBack = {},
             idx = null,

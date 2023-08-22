@@ -1,11 +1,16 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
+import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 
@@ -25,8 +30,13 @@ fun NavGraphBuilder.mainSettingsScreen(
 
         val uiState = viewModel
             .uiState
-            .collectAsStateWithLifecycle(initialValue = UserSettingsUiState.Loading)
+            .collectAsStateWithLifecycle()
             .value
+
+        val title =composableTitle(state = uiState)
+        SideEffect {
+            setTitle(title)
+        }
 
         when (uiState) {
             is UserSettingsUiState.Loading -> LoadingScreen()
@@ -46,8 +56,17 @@ fun NavGraphBuilder.mainSettingsScreen(
     }
 }
 
-fun NavController.mainSettings(
-    builder: NavOptionsBuilder.() -> Unit = {}
-) {
-    navigate(ROUTE, builder)
+@Composable
+fun composableTitle(state: UserSettingsUiState): String {
+    val defaultTitle = stringResource(id = R.string.user_editor)
+    val name by remember(state) {
+        derivedStateOf {
+            if (state is UserSettingsUiState.Success) {
+                state.name
+            } else {
+                defaultTitle
+            }
+        }
+    }
+    return name
 }
