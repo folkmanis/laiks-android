@@ -50,7 +50,7 @@ fun BoxScope.PricesSelector(
 
     var active by remember { mutableStateOf(false) }
 
-    val alpha by animateFloatAsState(if (active) 0.8f else 0f)
+    val alpha by animateFloatAsState(if (active) 0.8f else 0f, label = "")
     Box(
         modifier = Modifier
             .fillMaxSize()

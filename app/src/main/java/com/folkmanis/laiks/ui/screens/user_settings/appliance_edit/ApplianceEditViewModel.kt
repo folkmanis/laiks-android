@@ -2,7 +2,6 @@ package com.folkmanis.laiks.ui.screens.user_settings.appliance_edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.PowerAppliance
 import dagger.hilt.android.lifecycle.HiltViewModel

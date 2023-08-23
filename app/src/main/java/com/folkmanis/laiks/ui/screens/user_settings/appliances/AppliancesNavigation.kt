@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.user_settings.appliances
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource

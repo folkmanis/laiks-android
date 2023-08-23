@@ -6,7 +6,6 @@ import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.utilities.ext.addVat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit

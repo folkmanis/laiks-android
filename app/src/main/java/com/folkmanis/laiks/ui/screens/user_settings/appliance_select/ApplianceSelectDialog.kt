@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,7 +38,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.model.PowerAppliance
-import com.folkmanis.laiks.utilities.composables.ListDivider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

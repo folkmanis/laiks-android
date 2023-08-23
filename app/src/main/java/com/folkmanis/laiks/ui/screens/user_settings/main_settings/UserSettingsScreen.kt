@@ -11,8 +11,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Divider
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
@@ -87,7 +87,7 @@ fun UserSettingsScreen(
 
             }
 
-            Divider()
+            HorizontalDivider()
 
             Row(
                 modifier = Modifier.settingsRow(),
@@ -110,7 +110,7 @@ fun UserSettingsScreen(
 
             }
 
-            Divider()
+            HorizontalDivider()
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -124,7 +124,7 @@ fun UserSettingsScreen(
                 )
             }
 
-            Divider()
+            HorizontalDivider()
 
             Row(
                 modifier = Modifier.settingsRow(),

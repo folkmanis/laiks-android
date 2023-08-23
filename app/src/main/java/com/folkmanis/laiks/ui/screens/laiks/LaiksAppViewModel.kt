@@ -44,7 +44,7 @@ class LaiksAppViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            laiksUserService.laiksUserFlow().collect() { user ->
+            laiksUserService.laiksUserFlow().collect { user ->
                 _appState.update { state ->
                     state.copy(user = user)
                 }

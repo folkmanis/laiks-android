@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -78,10 +78,10 @@ fun PricesList(
         groupedPrices.forEach { (date, npPrices) ->
             item {
                 DateHeaderScreen(date = date)
-                Divider(
-                    thickness = 2.dp,
+                HorizontalDivider(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 16.dp),
+                    thickness = 2.dp
                 )
             }
             items(npPrices, key = { it.id }) { npPrice ->
@@ -99,10 +99,10 @@ fun PricesList(
                         AppliancesCosts(appliances = appliances.getOrDefault(offset, emptyList()))
                     }
                 )
-                Divider(
-                    thickness = 2.dp,
+                HorizontalDivider(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 16.dp),
+                    thickness = 2.dp
                 )
             }
         }

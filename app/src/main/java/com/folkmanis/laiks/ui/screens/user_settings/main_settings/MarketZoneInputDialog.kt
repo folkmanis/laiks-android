@@ -9,13 +9,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -97,7 +97,7 @@ fun MarketZoneInput(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(16.dp),
             )
-            Divider()
+            HorizontalDivider()
             when (uiState) {
                 is MarketZonesState.Loading ->
                     LoadingScreen()
@@ -123,7 +123,7 @@ fun MarketZoneInput(
                         }
                     }
 
-                    Divider()
+                    HorizontalDivider()
                     ButtonRow(
                         onDismiss = onDismiss,
                         onAccept = {

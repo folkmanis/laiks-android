@@ -11,7 +11,6 @@ const val NP_DATA = "np-data"
 const val NP_PRICES_COLLECTION = "prices"
 const val LAIKS_COLLECTION = "laiks"
 const val PERMISSIONS_COLLECTION = "permissions"
-const val USER_APPLIANCES_COLLECTION = "appliances"
 const val MARKET_ZONES_COLLECTION = "zones"
 const val LOCALES_COLLECTION = "locales"
 

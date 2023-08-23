@@ -22,11 +22,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
 
-data class ApplianceIdWithType(
-    val type: Int,
-    val id: String,
-)
-
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ApplianceCostsViewModel @Inject constructor(

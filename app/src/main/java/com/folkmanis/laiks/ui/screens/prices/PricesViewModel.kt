@@ -2,15 +2,11 @@ package com.folkmanis.laiks.ui.screens.prices
 
 import androidx.lifecycle.ViewModel
 import com.folkmanis.laiks.data.domain.AppliancesCostsUseCase
-import com.folkmanis.laiks.data.domain.DelayToNextNpUpdateUseCase
 import com.folkmanis.laiks.data.domain.HourlyPricesUseCase
-import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.data.domain.StatisticsUseCase
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PricesStatistics
-import com.folkmanis.laiks.ui.snackbar.SnackbarManager
-import com.folkmanis.laiks.utilities.PricesUpdateViewModel
 import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks

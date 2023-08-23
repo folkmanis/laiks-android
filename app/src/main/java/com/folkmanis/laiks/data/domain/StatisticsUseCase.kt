@@ -8,7 +8,6 @@ import com.folkmanis.laiks.utilities.ext.withVat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class StatisticsUseCase @Inject constructor(
