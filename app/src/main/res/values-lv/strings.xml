@@ -58,5 +58,5 @@
     <string name="create_new">Izveidot jaunu</string>
     <string name="choose_appliance_title">Izvēlieties aparātu!</string>
     <string name="user_defined">Lietotāja</string>
-    <string name="predefined">Sistēmas</string>
+    <string name="predefined">No gatavajiem</string>
 </resources>

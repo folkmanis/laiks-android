@@ -4,15 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -78,7 +81,7 @@ fun ApplianceEditScreen(
             setCycles = viewModel::setCycles,
             modifier = Modifier
                 .matchParentSize()
-                .padding(bottom = 56.dp),
+                .padding(top = 56.dp),
         )
 
 
@@ -87,7 +90,7 @@ fun ApplianceEditScreen(
                 .height(56.dp)
                 .fillMaxWidth()
                 .padding(end = 16.dp)
-                .align(Alignment.BottomCenter),
+                .align(Alignment.TopCenter),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         ) {
@@ -234,7 +237,7 @@ internal fun ApplianceEdit(
 }
 
 @Composable
-fun EditorActions(
+fun RowScope.EditorActions(
     onSave: () -> Unit,
     onSetAppliance: (PowerAppliance) -> Unit,
     saveEnabled: Boolean,
@@ -244,17 +247,20 @@ fun EditorActions(
         mutableStateOf(false)
     }
 
+
+    FilledTonalButton(
+        onClick = { loadApplianceDialogOpened = true }
+    ) {
+        Text(text = stringResource(id = R.string.predefined))
+    }
+
+    Spacer(modifier = Modifier.width(16.dp))
+
     Button(
         enabled = saveEnabled,
         onClick = onSave,
     ) {
         Text(text = stringResource(id = R.string.action_save))
-    }
-
-    Button(
-        onClick = { loadApplianceDialogOpened = true }
-    ) {
-        Text(text = stringResource(id = R.string.predefined))
     }
 
     if (loadApplianceDialogOpened) {
