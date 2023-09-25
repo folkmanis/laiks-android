@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.laiks
 
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable

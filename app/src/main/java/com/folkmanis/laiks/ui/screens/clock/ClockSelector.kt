@@ -1,7 +1,9 @@
 package com.folkmanis.laiks.ui.screens.clock
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
@@ -18,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.STEP_DOWN_VALUE
 import com.folkmanis.laiks.STEP_UP_VALUE
+import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.minutesString
 import com.folkmanis.laiks.utilities.ext.toSignedString
@@ -28,6 +31,8 @@ fun ClockSelector(
     offset: Int,
     time: LocalTime,
     onOffsetChange: (Int) -> Unit,
+    appliances: List<PowerAppliance>,
+    onSelected: (idx: Int, name: String) -> Unit,
     windowHeight: WindowHeightSizeClass,
     modifier: Modifier = Modifier,
 ) {
@@ -39,16 +44,30 @@ fun ClockSelector(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
 
-                TimeComponent(
-                    hours = time.hoursString,
-                    minutes = time.minutesString,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                )
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
 
-                UpDownButtons(
-                    offset = offset,
-                    onOffsetChange = onOffsetChange
+                    TimeComponent(
+                        hours = time.hoursString,
+                        minutes = time.minutesString,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                    )
+
+                    UpDownButtons(
+                        offset = offset,
+                        onOffsetChange = onOffsetChange
+                    )
+
+                }
+
+                AppliancesSelector(
+                    appliances = appliances,
+                    onSelected = onSelected,
+                    modifier = Modifier.weight(0.67f)
                 )
 
             }
@@ -59,6 +78,14 @@ fun ClockSelector(
                 modifier = modifier,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                AppliancesSelector(
+                    appliances = appliances,
+                    onSelected = onSelected,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                )
 
                 UpDownButtons(
                     offset = offset,
@@ -71,6 +98,8 @@ fun ClockSelector(
                     modifier = Modifier
                         .padding(vertical = 16.dp),
                 )
+
+                Spacer(modifier = Modifier.weight(1f))
 
             }
 

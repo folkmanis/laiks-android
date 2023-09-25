@@ -26,8 +26,8 @@ fun AppliancesSelector(
 
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Bottom
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         appliances.forEachIndexed { idx, appliance ->
             val containerColor = Color(appliance.color.toColorInt())

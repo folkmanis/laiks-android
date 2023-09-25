@@ -31,7 +31,7 @@ class ClockViewModel @Inject constructor(
     val appliances = isPermission("npUser")
         .flatMapLatest { laiksUserService.laiksUserFlow() }
         .filterNotNull()
-        .map { user-> user.appliances }
+        .map { user-> user.appliances.take(2) }
 
 
     val offsetState: StateFlow<Int> =
