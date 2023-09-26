@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,33 +44,34 @@ fun ApplianceCost(
     appliance: PowerApplianceHour,
     modifier: Modifier = Modifier,
 ) {
+
+    val costStr = appliance.cost
+        .toFormattedDecimals()
+    val text = "${appliance.name}: $costStr"
+
+    val backgroundColor = if (appliance.isBest) {
+        Color(appliance.color.toColorInt())
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+    val color = if (appliance.isBest) {
+        backgroundColor.contrasting()
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
     Box(
         modifier = modifier
             .padding(1.dp)
             .height(18.dp)
+            .background(backgroundColor, shape = RoundedCornerShape(9.dp))
     ) {
-
-        val costStr = appliance.cost
-            .toFormattedDecimals()
-        val text = "${appliance.name}: $costStr"
-
-        val backgroundColor = if (appliance.isBest) {
-            Color(appliance.color.toColorInt())
-        } else {
-            MaterialTheme.colorScheme.surface
-        }
-        val color = if (appliance.isBest) {
-            backgroundColor.contrasting()
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        }
 
         Text(
             text = text,
             fontSize = 10.sp,
             modifier = Modifier
-                .background(backgroundColor, shape = RoundedCornerShape(9.dp))
-                .padding(vertical = 1.dp, horizontal = 4.dp),
+                .padding( horizontal = 4.dp),
             color = color,
         )
 

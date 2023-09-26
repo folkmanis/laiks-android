@@ -7,7 +7,7 @@ interface MarketZonesService {
 
     val marketZonesFlow: Flow<List<MarketZone>>
 
-    suspend fun getMarketZones():List< MarketZone>
+    suspend fun getMarketZones():List<MarketZone>
 
     suspend fun getMarketZone(id: String): MarketZone?
 

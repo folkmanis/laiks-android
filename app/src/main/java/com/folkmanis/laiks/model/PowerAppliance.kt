@@ -12,21 +12,46 @@ enum class PowerApplianceDelay(@StringRes val label: Int) {
     end(R.string.appliance_delay_end_label)
 }
 
-data class PowerAppliance(
+data class PresetPowerAppliance(
     @DocumentId val id: String = "",
-    val color: String = "#CCCCCC",
-    val cycles: List<PowerApplianceCycle> = emptyList(),
-    val delay: String = "start",
+    override val color: String = "#CCCCCC",
+    override val cycles: List<PowerApplianceCycle> = emptyList(),
+    override val delay: String = "start",
+    override val minimumDelay: Long = 0,
+    override val name: String = "",
     val enabled: Boolean = true,
-    val minimumDelay: Long = 0,
-    val name: String = "",
     val localizedNames: Map<String, String> = emptyMap(),
-) {
-
+) : PowerAppliance {
     @get:Exclude
     val localName: String
         get() {
             val locale = Locale.getDefault().language
             return localizedNames[locale] ?: name
         }
+
+}
+
+data class UserPowerAppliance(
+    override val color: String = "#CCCCCC",
+    override val cycles: List<PowerApplianceCycle> = emptyList(),
+    override val delay: String = "start",
+    override val minimumDelay: Long = 0,
+    override val name: String = "",
+) : PowerAppliance {
+
+    constructor(preset: PresetPowerAppliance) : this(
+        color = preset.color,
+        cycles = preset.cycles,
+        delay = preset.delay,
+        minimumDelay = preset.minimumDelay,
+        name = preset.localName
+    )
+}
+
+interface PowerAppliance {
+    val color: String
+    val cycles: List<PowerApplianceCycle>
+    val delay: String
+    val minimumDelay: Long
+    val name: String
 }

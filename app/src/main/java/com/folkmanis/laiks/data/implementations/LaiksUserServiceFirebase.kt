@@ -6,6 +6,7 @@ import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.LaiksUser
+import com.folkmanis.laiks.model.UserPowerAppliance
 import com.folkmanis.laiks.utilities.NotLoggedInException
 import com.google.firebase.auth.UserInfo
 import com.google.firebase.firestore.FirebaseFirestore
@@ -73,7 +74,7 @@ class LaiksUserServiceFirebase @Inject constructor(
         val appliances = buildList {
             DEFAULT_APPLIANCES_IDS.forEach { id ->
                 appliancesService.getAppliance(id)?.also {
-                    add(it.copy(name = it.localName))
+                    add(UserPowerAppliance(it))
                 }
             }
         }

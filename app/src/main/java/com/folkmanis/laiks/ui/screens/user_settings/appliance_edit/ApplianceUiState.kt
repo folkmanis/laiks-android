@@ -4,6 +4,7 @@ import com.folkmanis.laiks.model.MSW_TO_KWH
 import com.folkmanis.laiks.model.PowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import com.folkmanis.laiks.model.PowerApplianceDelay
+import com.folkmanis.laiks.model.UserPowerAppliance
 
 data class NullablePowerApplianceCycle(
     val consumption: Long? = 0,
@@ -41,18 +42,16 @@ data class ApplianceUiState(
     val isSaving: Boolean = false,
 
     val idx: Int? = null,
-    val id: String = "",
     val name: String = "",
     val color: String = "#CCCCCC",
     val delay: String = "start",
-    val enabled: Boolean = true,
     val minimumDelay: Long? = 0,
     val cycles: List<NullablePowerApplianceCycle> = emptyList(),
 
     ) {
 
     val isNew: Boolean
-        get() = id.isBlank()
+        get() = idx === null
 
     val isEnabled: Boolean
         get() = !isSaving && !isLoading
@@ -74,23 +73,19 @@ data class ApplianceUiState(
 
     fun setAppliance(appliance: PowerAppliance): ApplianceUiState {
         return copy(
-            id = appliance.id,
             name = appliance.name,
             color = appliance.color,
             delay = appliance.delay,
-            enabled = appliance.enabled,
             minimumDelay = appliance.minimumDelay,
             cycles = appliance.cycles.toNullablePowerApplianceCycles(),
         )
     }
 
-    fun toPowerAppliance(): PowerAppliance {
-        return PowerAppliance(
-            id = id,
+    fun toPowerAppliance(): UserPowerAppliance {
+        return UserPowerAppliance(
             name = name,
             color = color,
             delay = delay,
-            enabled = enabled,
             minimumDelay = minimumDelay ?: 0,
             cycles = cycles.toPowerApplianceCycles(),
         )

@@ -77,7 +77,6 @@ fun ApplianceEditScreen(
             setMinimumDelay = viewModel::setMinimumDelay,
             setDelay = viewModel::setDelay,
             setColor = viewModel::setColor,
-            setEnabled = viewModel::setEnabled,
             setCycles = viewModel::setCycles,
             modifier = Modifier
                 .matchParentSize()
@@ -112,7 +111,6 @@ internal fun ApplianceEdit(
     setMinimumDelay: (Long?) -> Unit,
     setDelay: (String) -> Unit,
     setColor: (String) -> Unit,
-    setEnabled: (Boolean) -> Unit,
     setCycles: (List<NullablePowerApplianceCycle>) -> Unit,
 ) {
 
@@ -184,34 +182,6 @@ internal fun ApplianceEdit(
                     modifier = Modifier
                         .padding(top = 16.dp, start = 24.dp)
                 )
-            }
-
-            OptionsDivider()
-
-            OptionWithLabel(
-                label = stringResource(
-                    id = R.string.appliance_enabled_label
-                ),
-                modifier = Modifier
-                    .padding(8.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(top = 8.dp, start = 24.dp)
-                ) {
-                    Switch(
-                        checked = state.enabled,
-                        onCheckedChange = setEnabled,
-                        enabled = state.isEnabled,
-                    )
-                    Text(
-                        text = stringResource(id = R.string.appliance_enabled_check),
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                    )
-                }
             }
 
             OptionsDivider()

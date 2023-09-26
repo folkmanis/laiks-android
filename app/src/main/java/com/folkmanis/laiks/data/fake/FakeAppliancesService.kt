@@ -1,24 +1,24 @@
 package com.folkmanis.laiks.data.fake
 
 import com.folkmanis.laiks.data.AppliancesService
-import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.PresetPowerAppliance
 import com.folkmanis.laiks.model.PowerApplianceCycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeAppliancesService : AppliancesService {
-    override suspend fun addAppliance(appliance: PowerAppliance): String {
+    override suspend fun addAppliance(appliance: PresetPowerAppliance): String {
         return "12ABF34"
     }
 
-    override val allAppliancesFlow: Flow<List<PowerAppliance>>
+    override val allAppliancesFlow: Flow<List<PresetPowerAppliance>>
         get() = flowOf(testAppliances)
 
-    override suspend fun getAppliance(id: String): PowerAppliance? {
+    override suspend fun getAppliance(id: String): PresetPowerAppliance? {
         return testAppliances.find { it.id == id }
     }
 
-    override suspend fun updateAppliance(appliance: PowerAppliance) {
+    override suspend fun updateAppliance(appliance: PresetPowerAppliance) {
 
     }
 
@@ -26,12 +26,12 @@ class FakeAppliancesService : AppliancesService {
 
     }
 
-    override suspend fun activeAppliances(): List<PowerAppliance> {
+    override suspend fun activeAppliances(): List<PresetPowerAppliance> {
         return testAppliances
     }
 
     companion object {
-        val dishWasher = PowerAppliance(
+        val dishWasher = PresetPowerAppliance(
             cycles = listOf(
                 PowerApplianceCycle(
                     consumption = 100,

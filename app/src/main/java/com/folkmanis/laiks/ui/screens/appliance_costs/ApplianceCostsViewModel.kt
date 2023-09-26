@@ -64,7 +64,7 @@ class ApplianceCostsViewModel @Inject constructor(
         .flatMapLatest { appliance ->
             applianceHourlyCosts(appliance)
                 .map { costs ->
-                    _nameState.value = appliance.localName
+                    _nameState.value = appliance.name
                     ApplianceCostsUiState.Success(costs)
                 }
         }

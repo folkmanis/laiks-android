@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.UserPowerAppliance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,10 +31,6 @@ class ApplianceEditViewModel @Inject constructor(
         if (value == "start" || value == "end") {
             uiState.update { it.copy(delay = value) }
         }
-    }
-
-    fun setEnabled(enabled: Boolean) {
-        uiState.update { it.copy(enabled = enabled) }
     }
 
     fun setColor(color: String) {
@@ -78,7 +75,7 @@ class ApplianceEditViewModel @Inject constructor(
             val appliance = if (idx != null) {
                 laiksUserService.laiksUser().appliances[idx]
             } else {
-                PowerAppliance()
+                UserPowerAppliance()
             }
 
             setAppliance(appliance)

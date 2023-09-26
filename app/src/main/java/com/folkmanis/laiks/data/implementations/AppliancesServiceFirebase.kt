@@ -1,7 +1,7 @@
 package com.folkmanis.laiks.data.implementations
 
 import com.folkmanis.laiks.data.AppliancesService
-import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.PresetPowerAppliance
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObject
@@ -18,7 +18,7 @@ class AppliancesServiceFirebase @Inject constructor(
     private val appliances = firestore
         .collection(POWER_APPLIANCES_COLLECTION)
 
-    override val allAppliancesFlow: Flow<List<PowerAppliance>>
+    override val allAppliancesFlow: Flow<List<PresetPowerAppliance>>
         get() = appliances
             .orderBy("name")
             .snapshots()
@@ -26,7 +26,7 @@ class AppliancesServiceFirebase @Inject constructor(
                 snapshot.toObjects()
             }
 
-    override suspend fun activeAppliances(): List<PowerAppliance> {
+    override suspend fun activeAppliances(): List<PresetPowerAppliance> {
         return appliances
             .whereEqualTo("enabled", true)
             .orderBy("name")
@@ -35,28 +35,28 @@ class AppliancesServiceFirebase @Inject constructor(
             .toObjects()
     }
 
-    override suspend fun getAppliance(id: String): PowerAppliance? {
+    override suspend fun getAppliance(id: String): PresetPowerAppliance? {
         return appliances
             .document(id)
             .get()
             .await()
-            .toObject<PowerAppliance>()
+            .toObject<PresetPowerAppliance>()
     }
 
     override suspend fun deleteAppliance(id: String) {
         appliances.document(id).delete().await()
     }
 
-    override suspend fun updateAppliance(appliance: PowerAppliance) {
+    override suspend fun updateAppliance(appliance: PresetPowerAppliance) {
         appliances.document(appliance.id).set(appliance).await()
     }
 
-    override suspend fun addAppliance(appliance: PowerAppliance): String {
+    override suspend fun addAppliance(appliance: PresetPowerAppliance): String {
         return appliances.add(appliance).await().id
     }
 
     companion object {
-        private const val POWER_APPLIANCES_COLLECTION = "powerAppliances"
+        private const val POWER_APPLIANCES_COLLECTION = "PresetPowerAppliances"
         private const val TAG = "AppliancesServiceFirebase"
     }
 }

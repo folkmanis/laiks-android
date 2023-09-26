@@ -7,9 +7,9 @@ data class MarketZone(
     @DocumentId
     val id: String = "",
 
-    val dbName: String = "",
-    val description: String = "",
+    val dbName: String = "np-data",
+    val description: String = "Latvija",
     val locale: String = "lv",
-    val tax: Double = 0.0,
+    val tax: Double = 0.21,
     val url: String = "",
 )

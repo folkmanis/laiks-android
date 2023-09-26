@@ -15,7 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
-import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.data.fake.FakeLaiksUserService
+import com.folkmanis.laiks.model.UserPowerAppliance
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import java.time.LocalTime
 
@@ -24,7 +25,7 @@ internal fun ClockScreen(
     time: LocalTime,
     offset: Int,
     pricesAllowed: Boolean,
-    appliances: List<PowerAppliance>,
+    appliances: List<UserPowerAppliance>,
     updateOffset: (Int) -> Unit,
     onShowPrices: () -> Unit,
     onShowAppliance: (idx: Int, name: String) -> Unit,
@@ -75,7 +76,7 @@ fun ClockScreenPreview() {
             time = LocalTime.now(),
             offset = 2,
             pricesAllowed = true,
-            appliances = FakeAppliancesService.testAppliances,
+            appliances = FakeLaiksUserService.laiksUser.appliances,
             onShowPrices = {},
             updateOffset = {},
             onShowAppliance = { _, _ -> },
@@ -96,7 +97,7 @@ fun ClockScreenPreviewLandscape() {
             time = LocalTime.now(),
             offset = 2,
             pricesAllowed = true,
-            appliances = FakeAppliancesService.testAppliances,
+            appliances = FakeLaiksUserService.laiksUser.appliances,
             onShowPrices = {},
             updateOffset = {},
             onShowAppliance = { _, _ -> },

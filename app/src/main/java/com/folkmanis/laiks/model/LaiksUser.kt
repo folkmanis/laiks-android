@@ -12,7 +12,7 @@ data class LaiksUser(
     val name: String = "",
     val npUploadAllowed: Boolean = false,
     val verified: Boolean = false,
-    val appliances: List<PowerAppliance> = emptyList(),
+    val appliances: List<UserPowerAppliance> = emptyList(),
     val marketZoneId: String = "LV",
     val includeVat: Boolean = true,
     val vatAmount: Double = 0.21,

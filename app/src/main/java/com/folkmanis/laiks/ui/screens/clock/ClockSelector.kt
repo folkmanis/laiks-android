@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.STEP_DOWN_VALUE
 import com.folkmanis.laiks.STEP_UP_VALUE
-import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.UserPowerAppliance
 import com.folkmanis.laiks.utilities.ext.hoursString
 import com.folkmanis.laiks.utilities.ext.minutesString
 import com.folkmanis.laiks.utilities.ext.toSignedString
@@ -31,7 +31,7 @@ fun ClockSelector(
     offset: Int,
     time: LocalTime,
     onOffsetChange: (Int) -> Unit,
-    appliances: List<PowerAppliance>,
+    appliances: List<UserPowerAppliance>,
     onSelected: (idx: Int, name: String) -> Unit,
     windowHeight: WindowHeightSizeClass,
     modifier: Modifier = Modifier,
