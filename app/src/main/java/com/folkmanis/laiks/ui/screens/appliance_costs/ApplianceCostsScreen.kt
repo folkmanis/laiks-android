@@ -21,8 +21,8 @@ import kotlin.random.Random
 @Composable
 fun ApplianceCostsScreen(
     state: ApplianceCostsUiState,
-    statistics: PricesStatistics?,
     modifier: Modifier = Modifier,
+    setTitle: (String) -> Unit = {},
 ) {
 
 
@@ -32,9 +32,10 @@ fun ApplianceCostsScreen(
             is ApplianceCostsUiState.Loading -> LoadingScreen()
             is ApplianceCostsUiState.Error -> ErrorScreen()
             is ApplianceCostsUiState.Success -> {
+                setTitle(state.name)
                 ApplianceCostsList(
                     costs = state.hoursWithCosts,
-                    statistics = statistics
+                    statistics = state.statistics
                 )
             }
         }
@@ -85,11 +86,11 @@ fun ApplianceCostsScreenPreview() {
             offset = idx.toInt(),
         )
     }.sortedBy { it.value }
+    val statistics = PricesStatistics(10.5, 5.2)
 
     ApplianceCostsScreen(
         state = ApplianceCostsUiState.Success(
-            hours,
+            hoursWithCosts = hours, statistics = statistics, name = ""
         ),
-        statistics = PricesStatistics(10.5, 5.2),
     )
 }

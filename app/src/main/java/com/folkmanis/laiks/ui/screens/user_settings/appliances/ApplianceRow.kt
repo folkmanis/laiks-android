@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
-import com.folkmanis.laiks.model.PowerAppliance
 
 @Composable
 fun ApplianceRow(
-    appliance: PowerAppliance,
+    name:String,
+    color: String,
     modifier: Modifier = Modifier,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
@@ -47,7 +47,7 @@ fun ApplianceRow(
 
     ListItem(
         headlineContent = {
-            Text(text = appliance.name)
+            Text(text = name)
         },
         modifier = modifier,
         leadingContent = {
@@ -55,7 +55,7 @@ fun ApplianceRow(
                 modifier = Modifier
                     .size(40.dp)
                     .background(
-                        color = Color(appliance.color.toColorInt()),
+                        color = Color(color.toColorInt()),
                         shape = CircleShape
                     )
             )
@@ -94,7 +94,7 @@ fun ApplianceRow(
 
     if (deleteConfirmationActive) {
         ApplianceDeleteConfirmation(
-            name = appliance.name,
+            name = name,
             onDismiss = {
                 deleteConfirmationActive = false
             },
@@ -157,7 +157,8 @@ fun ApplianceDeleteConfirmationDialogPreview() {
 fun ApplianceRowPreview() {
     MaterialTheme {
         ApplianceRow(
-            appliance = FakeAppliancesService.dishWasher,
+            name = FakeAppliancesService.dishWasher.name,
+            color = FakeAppliancesService.dishWasher.color,
             onDelete = {},
             onEdit = {},
             busy = true,

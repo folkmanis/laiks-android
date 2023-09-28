@@ -25,7 +25,7 @@
     <string name="appliances_screen">Aparāti</string>
     <string name="appliance_screen">Aparāts</string>
     <string name="settings">Iestatījumi</string>
-    <string name="appliances_menu_item">Elektroiekārtas</string>
+    <string name="appliances_menu_item">Aparāti</string>
     <string name="appliance_name_label">Nosaukums</string>
     <string name="appliance_minimumDelay_label">Mazākais laiks</string>
     <string name="appliance_enabled_label">Rādīt izdevīgāko laiku</string>

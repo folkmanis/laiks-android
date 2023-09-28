@@ -14,8 +14,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -35,15 +35,12 @@ class ApplianceCostsViewModel @Inject constructor(
 
     private val idxFlow = MutableStateFlow<Int?>(null)
 
-    private val _nameState = MutableStateFlow<String?>(null)
-    val nameState = _nameState.asStateFlow()
-
     private val applianceFlow = idxFlow
         .filterNotNull()
-        .flatMapLatest {idx->
+        .flatMapLatest { idx ->
             laiksUserService.laiksUserFlow()
                 .filterNotNull()
-                .map { laiksUser-> laiksUser.appliances[idx] }
+                .map { laiksUser -> laiksUser.appliances[idx] }
         }
         .shareIn(
             viewModelScope,
@@ -51,7 +48,9 @@ class ApplianceCostsViewModel @Inject constructor(
             1
         )
 
-    val statistics: Flow<PricesStatistics> = applianceFlow
+    private val nameFlow = applianceFlow.map { it.name }
+
+    private val statisticsFlow: Flow<PricesStatistics> = applianceFlow
         .flatMapLatest { appliance ->
             applianceStatistics(appliance)
         }
@@ -60,16 +59,21 @@ class ApplianceCostsViewModel @Inject constructor(
             snackbarManager.showMessage(err.toSnackbarMessage())
         }
 
-    val uiState = applianceFlow
+    private val hourlyCostsFlow = applianceFlow
         .flatMapLatest { appliance ->
             applianceHourlyCosts(appliance)
-                .map { costs ->
-                    _nameState.value = appliance.name
-                    ApplianceCostsUiState.Success(costs)
-                }
         }
 
-    fun setAppliance(idx: Int?) {
+    val uiState =
+        combine(hourlyCostsFlow, statisticsFlow, nameFlow) { hourlyCosts, statistics, name ->
+            ApplianceCostsUiState.Success(
+                name = name,
+                hoursWithCosts = hourlyCosts,
+                statistics = statistics,
+            )
+        }
+
+    fun setIdx(idx: Int?) {
         idxFlow.value = idx
     }
 
@@ -78,3 +82,4 @@ class ApplianceCostsViewModel @Inject constructor(
     }
 
 }
+

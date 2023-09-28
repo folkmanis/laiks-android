@@ -1,18 +1,13 @@
 package com.folkmanis.laiks.ui.screens.user_menu
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.AuthUI
-import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PermissionsService
-import com.folkmanis.laiks.data.domain.NpUpdateUseCase
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.ui.snackbar.SnackbarManager
-import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,8 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
-    private val npUpdate: NpUpdateUseCase,
-    private val snackbarManager: SnackbarManager,
     private val laiksUserService: LaiksUserService,
     private val permissionsService: PermissionsService,
 ) : ViewModel() {
@@ -48,7 +41,6 @@ class UserMenuViewModel @Inject constructor(
             _uiState.value = UserMenuUiState.LoggedIn(
                 isAdmin = permissions.admin,
                 isPricesAllowed = permissions.npUser,
-                isNpUploadAllowed = laiksUser.npUploadAllowed,
                 displayName = laiksUser.name,
                 photoUrl = user?.photoUrl,
                 includeVat = laiksUser.includeVat,
@@ -71,27 +63,6 @@ class UserMenuViewModel @Inject constructor(
         AuthUI.getInstance()
             .signOut(context)
     }
-
-    fun updateNpPrices() {
-        Log.d(TAG, "NpUpdate requested")
-        viewModelScope.launch {
-            try {
-                val newRecords = npUpdate()
-                Log.d(TAG, "$newRecords retrieved")
-                snackbarManager.showMessage(
-                    R.plurals.prices_retrieved,
-                    newRecords,
-                    newRecords
-                )
-            } catch (err: Throwable) {
-                snackbarManager.showMessage(
-                    err.toSnackbarMessage()
-                )
-                Log.e(TAG, "Error: $err")
-            }
-        }
-    }
-
 
     companion object {
         const val TAG = "UserMenuViewModel"

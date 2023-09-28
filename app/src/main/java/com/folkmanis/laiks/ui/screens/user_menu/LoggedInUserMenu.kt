@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.DropdownMenu
@@ -30,8 +29,8 @@ fun LoggedInUserMenu(
     onLogout: () -> Unit,
     isVat: Boolean,
     onSetVat: (Boolean) -> Unit,
-    onNpPricesReload: () -> Unit,
     onUserSettings: () -> Unit,
+    onEditAppliances: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -92,8 +91,23 @@ fun LoggedInUserMenu(
                     )
                 }
             )
-            // PVN
             if (state.isPricesAllowed) {
+                DropdownMenuItem(text = {
+                    Text(text = stringResource(R.string.appliances_menu_item))
+                },
+                    onClick = {
+                        onEditAppliances()
+                        menuExpanded = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.dishwasher_gen),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                )
+                // PVN
                 DropdownMenuItem(
                     text = {
                         Text(text = stringResource(id = R.string.include_vat))
@@ -106,26 +120,6 @@ fun LoggedInUserMenu(
                         if (isVat) {
                             Icon(Icons.Filled.Check, contentDescription = null)
                         }
-                    }
-                )
-            }
-            // Reload
-            if (state.isNpUploadAllowed) {
-                DropdownMenuItem(
-                    text = {
-                        Text(text = stringResource(id = R.string.load_np_data))
-                    },
-                    onClick = {
-                        menuExpanded = false
-                        onNpPricesReload()
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                        )
-
                     }
                 )
             }

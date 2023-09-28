@@ -18,6 +18,7 @@ import com.folkmanis.laiks.ui.screens.clock.navigateToClock
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
+import com.folkmanis.laiks.ui.screens.user_settings.appliances.navigateToAppliances
 import com.folkmanis.laiks.ui.screens.user_settings.userSettings
 import com.folkmanis.laiks.ui.screens.user_settings.userSettingsGraph
 
@@ -57,6 +58,11 @@ fun LaiksAppScreen(
                         viewModel.setTitle(it.name)
                     }
                     navController.userSettings {
+                        popUpTo(CLOCK_ROUTE)
+                    }
+                },
+                onEditAppliances = {
+                    navController.navigateToAppliances {
                         popUpTo(CLOCK_ROUTE)
                     }
                 },

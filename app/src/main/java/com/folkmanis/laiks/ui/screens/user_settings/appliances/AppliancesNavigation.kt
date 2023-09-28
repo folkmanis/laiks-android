@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.user_settings.appliances
 
-import androidx.compose.runtime.SideEffect
+import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -13,6 +14,8 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 
 private const val ROUTE = "Appliances"
+
+private const val TAG = "AppliancesScreen"
 
 fun NavGraphBuilder.appliancesScreen(
     onSelectAppliance: (idx: Int, name: String) -> Unit,
@@ -29,7 +32,8 @@ fun NavGraphBuilder.appliancesScreen(
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         val title = stringResource(id = R.string.appliances_screen)
-        SideEffect {
+        LaunchedEffect(title, setTitle) {
+            Log.d(TAG, title)
             setTitle(title)
         }
 

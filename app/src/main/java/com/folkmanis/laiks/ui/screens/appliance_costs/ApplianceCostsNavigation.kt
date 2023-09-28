@@ -2,6 +2,7 @@ package com.folkmanis.laiks.ui.screens.appliance_costs
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -14,8 +15,8 @@ import androidx.navigation.navArgument
 import com.folkmanis.laiks.R
 
 private const val ROUTE = "ApplianceCosts"
-private const val APPLIANCE_IDX = "applianceIdx"
-private const val APPLIANCE_NAME = "name"
+internal const val APPLIANCE_IDX = "applianceIdx"
+internal const val APPLIANCE_NAME = "name"
 
 fun NavGraphBuilder.applianceCostsScreen(
     setTitle: (String) -> Unit,
@@ -34,27 +35,30 @@ fun NavGraphBuilder.applianceCostsScreen(
         )
     ) { backStackEntry ->
 
-        val applianceIdx = backStackEntry.arguments?.getInt(APPLIANCE_IDX)
+        val applianceIdx = remember(backStackEntry) {
+            backStackEntry.arguments?.getInt(APPLIANCE_IDX)
+        }
+        val initialName = remember(backStackEntry) {
+            backStackEntry.arguments?.getString(APPLIANCE_NAME)
+        }
 
         val viewModel: ApplianceCostsViewModel = hiltViewModel()
         val state by viewModel.uiState.collectAsStateWithLifecycle(ApplianceCostsUiState.Loading)
-        val statistics by viewModel.statistics.collectAsStateWithLifecycle(initialValue = null)
-        val name by viewModel.nameState.collectAsStateWithLifecycle(
-            initialValue = backStackEntry.arguments?.getString(APPLIANCE_NAME)
-        )
 
-        val title = name ?: stringResource(id = R.string.appliance_screen)
+        val title = initialName ?: stringResource(id = R.string.appliance_screen)
         LaunchedEffect(title) {
             setTitle(title)
         }
 
+        LaunchedEffect(applianceIdx) {
+            viewModel.setIdx(applianceIdx)
+        }
 //        viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
 
-        viewModel.setAppliance(applianceIdx)
 
         ApplianceCostsScreen(
             state = state,
-            statistics = statistics,
+            setTitle = setTitle,
         )
 
     }

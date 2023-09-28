@@ -17,6 +17,7 @@ import com.folkmanis.laiks.utilities.oauth.getSignInIntent
 fun UserMenu(
     onPopToStart: () -> Unit,
     onUserSettings: () -> Unit,
+    onEditAppliances: ()->Unit,
     user: LaiksUser?,
     modifier: Modifier = Modifier,
     viewModel: UserMenuViewModel = hiltViewModel(),
@@ -53,8 +54,8 @@ fun UserMenu(
                 )
             },
             state = uiState,
-            onNpPricesReload = viewModel::updateNpPrices,
             onUserSettings = onUserSettings,
+            onEditAppliances = onEditAppliances,
             modifier = modifier,
         )
     } else {

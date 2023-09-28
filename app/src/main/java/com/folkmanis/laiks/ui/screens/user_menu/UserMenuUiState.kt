@@ -7,7 +7,6 @@ sealed interface UserMenuUiState {
     data class LoggedIn(
         val isAdmin: Boolean = false,
         val isPricesAllowed: Boolean = false,
-        val isNpUploadAllowed: Boolean = false,
         val displayName: String = "",
         val photoUrl: Uri? = null,
         val includeVat: Boolean = false,

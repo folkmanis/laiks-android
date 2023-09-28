@@ -40,10 +40,6 @@ class PricesServiceFirebase @Inject constructor(
     private val collection = firestore
         .collection(LAIKS_COLLECTION)
 
-    //    private val npPricesDocumentRef = firestore
-//        .collection(LAIKS_COLLECTION)
-//        .document(NP_DATA) // localize!!!!
-//
     private suspend fun npPricesDocumentRef(): DocumentReference {
         val zoneId = laiksUser.laiksUser().marketZoneId
         val zone = zones.getMarketZone(zoneId) ?: MarketZone()

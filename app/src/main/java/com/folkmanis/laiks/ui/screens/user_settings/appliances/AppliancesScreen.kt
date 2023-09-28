@@ -44,7 +44,8 @@ internal fun AppliancesScreen(
             {idx, appliance ->
 
                 ApplianceRow(
-                    appliance = appliance,
+                    name = appliance.name,
+                    color = appliance.color,
                     onEdit = { onEdit(idx) },
                     onDelete = { onDelete(idx) },
                     modifier = Modifier
