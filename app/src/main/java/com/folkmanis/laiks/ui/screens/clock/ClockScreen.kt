@@ -2,7 +2,7 @@ package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -14,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.data.fake.FakeLaiksUserService
 import com.folkmanis.laiks.model.UserPowerAppliance
 import com.folkmanis.laiks.ui.theme.LaiksTheme
@@ -54,7 +53,7 @@ internal fun ClockScreen(
                 onClick = onShowPrices,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(16.dp)
+                    .offset(x = (-16).dp, y = (-16).dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.euro_symbol_48px),

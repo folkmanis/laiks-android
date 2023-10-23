@@ -64,15 +64,20 @@ fun ApplianceCost(
         modifier = modifier
             .padding(1.dp)
             .height(18.dp)
-            .background(backgroundColor, shape = RoundedCornerShape(9.dp))
+            .background(
+                color = backgroundColor,
+                shape = RoundedCornerShape(9.dp)
+            )
     ) {
 
         Text(
             text = text,
-            fontSize = 10.sp,
             modifier = Modifier
-                .padding( horizontal = 4.dp),
+                .padding(horizontal = 4.dp)
+                .align(Alignment.Center),
             color = color,
+            fontSize = 10.sp,
+            lineHeight = 10.sp
         )
 
     }
