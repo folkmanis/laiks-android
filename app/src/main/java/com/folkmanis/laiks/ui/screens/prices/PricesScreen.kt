@@ -24,7 +24,9 @@ import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@Suppress("unused")
 private const val TAG="PricesScreen"
+
 @Composable
 fun PricesScreen(
     state: PricesUiState,
@@ -66,7 +68,7 @@ fun PricesList(
 ) {
     val listState = rememberLazyListState()
 
-    LaunchedEffect(groupedPrices) {
+    LaunchedEffect(groupedPrices, currentOffsetIndex) {
         delay(500)
         listState.animateScrollToItem(currentOffsetIndex, -10)
     }

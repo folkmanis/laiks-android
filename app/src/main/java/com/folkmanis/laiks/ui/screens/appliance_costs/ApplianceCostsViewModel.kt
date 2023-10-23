@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.appliance_costs
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.LaiksUserService
@@ -12,7 +13,6 @@ import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessa
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -29,15 +30,19 @@ class ApplianceCostsViewModel @Inject constructor(
     applianceStatistics: ApplianceStatisticsUseCase,
     private val snackbarManager: SnackbarManager,
     private val laiksUserService: LaiksUserService,
+    savedStateHandle: SavedStateHandle,
 //    npUpdate: NpUpdateUseCase,
 //    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
 ) : ViewModel() { // : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager)
 
-    private val idxFlow = MutableStateFlow<Int?>(null)
+    private val initialName: String? = savedStateHandle[APPLIANCE_NAME]
 
-    private val applianceFlow = idxFlow
+    private val applianceFlow = savedStateHandle
+        .getStateFlow<String?>(APPLIANCE_IDX, null)
+        .map { it?.toInt() }
         .filterNotNull()
         .flatMapLatest { idx ->
+            Log.d(TAG, "Appliance idx $idx")
             laiksUserService.laiksUserFlow()
                 .filterNotNull()
                 .map { laiksUser -> laiksUser.appliances[idx] }
@@ -72,10 +77,11 @@ class ApplianceCostsViewModel @Inject constructor(
                 statistics = statistics,
             )
         }
-
-    fun setIdx(idx: Int?) {
-        idxFlow.value = idx
-    }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000L),
+                initialValue = ApplianceCostsUiState.Loading(initialName),
+            )
 
     companion object {
         const val TAG = "ApplianceCostsViewModel"

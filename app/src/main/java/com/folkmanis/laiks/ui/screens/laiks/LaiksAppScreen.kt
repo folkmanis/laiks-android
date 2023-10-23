@@ -35,7 +35,7 @@ fun LaiksAppScreen(
     val navController = rememberNavController()
     val resources = LocalContext.current.resources
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(resources) {
         viewModel.initialize(
             resources = resources,
         )

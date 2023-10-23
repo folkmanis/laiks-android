@@ -1,7 +1,7 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -34,7 +34,7 @@ fun NavGraphBuilder.mainSettingsScreen(
             .value
 
         val title =composableTitle(state = uiState)
-        SideEffect {
+        LaunchedEffect(title) {
             setTitle(title)
         }
 

@@ -38,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.model.PowerAppliance
+import com.folkmanis.laiks.model.PresetPowerAppliance
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,8 +68,8 @@ fun ApplianceSelectDialog(
 
 @Composable
 fun AppliancesSelectScreen(
-    systemAppliances: List<PowerAppliance>,
     userAppliances: List<PowerAppliance>,
+    systemAppliances: List<PresetPowerAppliance>,
     onSelect: (PowerAppliance) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -108,7 +109,7 @@ fun AppliancesSelectScreen(
 @Composable
 fun AppliancesList(
     userAppliances: List<PowerAppliance>,
-    systemAppliances: List<PowerAppliance>,
+    systemAppliances: List<PresetPowerAppliance>,
     onSelect: (PowerAppliance) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -121,7 +122,8 @@ fun AppliancesList(
             }
             items(userAppliances) { appliance ->
                 ApplianceItem(
-                    appliance = appliance,
+                    name = appliance.name,
+                    color = appliance.color,
                     modifier = Modifier.clickable { onSelect(appliance) },
                 )
             }
@@ -132,8 +134,9 @@ fun AppliancesList(
             }
             items(systemAppliances) { appliance ->
                 ApplianceItem(
-                    appliance = appliance,
-                    modifier = Modifier.clickable { onSelect(appliance) },
+                    color = appliance.color,
+                    name = appliance.localName,
+                    modifier = Modifier.clickable { onSelect(appliance.copy(name = appliance.localName)) },
                 )
             }
         }
@@ -160,19 +163,20 @@ fun SectionHeader(@StringRes text: Int) {
 
 @Composable
 fun ApplianceItem(
-    appliance: PowerAppliance,
+    name: String,
+    color: String,
     modifier: Modifier = Modifier,
 ) {
     ListItem(
         headlineContent = {
-            Text(text = appliance.name)
+            Text(text = name)
         },
         leadingContent = {
             Box(
                 modifier = Modifier
                     .size(40.dp)
                     .background(
-                        color = Color(appliance.color.toColorInt()),
+                        color = Color(color.toColorInt()),
                         shape = CircleShape
                     )
             )

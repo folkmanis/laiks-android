@@ -1,13 +1,9 @@
 package com.folkmanis.laiks.ui.screens.prices
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -24,7 +20,7 @@ fun NavGraphBuilder.pricesScreen(
     composable(ROUTE) {
 
         val title = stringResource(id = R.string.prices_screen)
-        LaunchedEffect(Unit) {
+        LaunchedEffect(title, setTitle) {
             setTitle(title)
         }
 
@@ -52,6 +48,7 @@ fun NavController.navigateToPrices(navOptions: NavOptions? = null) {
     navigate(ROUTE, navOptions)
 }
 
+/*
 @Composable
 fun <LO : LifecycleObserver> LO.ObserveLifecycle(lifecycle: Lifecycle) {
     DisposableEffect(lifecycle) {
@@ -61,3 +58,4 @@ fun <LO : LifecycleObserver> LO.ObserveLifecycle(lifecycle: Lifecycle) {
         }
     }
 }
+*/

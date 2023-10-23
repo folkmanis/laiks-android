@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,19 +69,6 @@ fun ApplianceEditScreen(
             .fillMaxSize()
     ) {
 
-        ApplianceEdit(
-            state = state,
-            setName = viewModel::setName,
-            setMinimumDelay = viewModel::setMinimumDelay,
-            setDelay = viewModel::setDelay,
-            setColor = viewModel::setColor,
-            setCycles = viewModel::setCycles,
-            modifier = Modifier
-                .matchParentSize()
-                .padding(top = 56.dp),
-        )
-
-
         Row(
             modifier = Modifier
                 .height(56.dp)
@@ -99,6 +84,19 @@ fun ApplianceEditScreen(
                 saveEnabled = state.isValid,
             )
         }
+
+        ApplianceEdit(
+            state = state,
+            setName = viewModel::setName,
+            setMinimumDelay = viewModel::setMinimumDelay,
+            setDelay = viewModel::setDelay,
+            setColor = viewModel::setColor,
+            setCycles = viewModel::setCycles,
+            modifier = Modifier
+                .matchParentSize()
+                .padding(top = 56.dp),
+        )
+
     }
 
 }
@@ -207,7 +205,7 @@ internal fun ApplianceEdit(
 }
 
 @Composable
-fun RowScope.EditorActions(
+fun EditorActions(
     onSave: () -> Unit,
     onSetAppliance: (PowerAppliance) -> Unit,
     saveEnabled: Boolean,
