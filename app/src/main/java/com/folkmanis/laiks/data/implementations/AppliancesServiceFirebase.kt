@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.data.implementations
 
+import com.folkmanis.laiks.POWER_APPLIANCES_COLLECTION
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.model.PresetPowerAppliance
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 class AppliancesServiceFirebase @Inject constructor(
     firestore: FirebaseFirestore
-)  : AppliancesService {
+) : AppliancesService {
 
     private val appliances = firestore
         .collection(POWER_APPLIANCES_COLLECTION)
@@ -56,7 +57,6 @@ class AppliancesServiceFirebase @Inject constructor(
     }
 
     companion object {
-        private const val POWER_APPLIANCES_COLLECTION = "powerAppliances"
         @Suppress("unused")
         private const val TAG = "AppliancesServiceFirebase"
     }
