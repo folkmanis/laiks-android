@@ -4,9 +4,9 @@ import com.folkmanis.laiks.LOCALES_COLLECTION
 import com.folkmanis.laiks.data.LocalesService
 import com.folkmanis.laiks.model.Locale
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.snapshots
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.firestore.ktx.toObjects
+import com.google.firebase.firestore.snapshots
+import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
