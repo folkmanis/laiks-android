@@ -24,12 +24,8 @@ class AccountServiceFirebase @Inject constructor(
     override val authUser: FirebaseUser?
         get() = auth.currentUser
 
-
-    override suspend fun signWithEmailAndPassword(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-    }
-
     companion object {
+        @Suppress("unused")
         private const val TAG = "Account Service"
     }
 

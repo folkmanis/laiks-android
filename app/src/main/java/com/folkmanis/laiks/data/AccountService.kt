@@ -9,6 +9,4 @@ interface AccountService {
 
     val authUser: FirebaseUser?
 
-    suspend fun signWithEmailAndPassword(email: String, password: String)
-
 }

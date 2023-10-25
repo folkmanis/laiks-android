@@ -16,8 +16,4 @@ class FakeAccountService : AccountService {
     override val firebaseUserFlow: Flow<FirebaseUser?>
         get() = flowOf(null)
 
-    override suspend fun signWithEmailAndPassword(email: String, password: String) {
-
-    }
-
 }
