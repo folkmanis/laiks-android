@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.clock
 
+import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,6 +16,8 @@ import java.time.LocalTime
 
 const val CLOCK_ROUTE = "Clock"
 
+const val TAG = "ClockScreen"
+
 fun NavGraphBuilder.clockScreen(
     onNavigateToPrices: () -> Unit,
     onNavigateToAppliance: (Int, String) -> Unit,
@@ -25,7 +28,8 @@ fun NavGraphBuilder.clockScreen(
     composable(CLOCK_ROUTE) {
 
         val title = stringResource(id = R.string.app_name)
-        LaunchedEffect(Unit) {
+        LaunchedEffect(title, setTitle) {
+            Log.d(TAG, "Title $title")
             setTitle(title)
         }
 

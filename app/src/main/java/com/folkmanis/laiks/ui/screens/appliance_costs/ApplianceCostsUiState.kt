@@ -5,7 +5,9 @@ import com.folkmanis.laiks.model.PricesStatistics
 
 
 sealed interface ApplianceCostsUiState {
-    object Loading : ApplianceCostsUiState
+    data class Loading(
+        val name: String?,
+    ) : ApplianceCostsUiState
     data class Error(
         val reason: String,
         val exception: Throwable,

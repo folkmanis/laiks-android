@@ -3,7 +3,6 @@ package com.folkmanis.laiks.ui.screens.clock
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
@@ -79,12 +78,10 @@ fun ClockSelector(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                Spacer(modifier = Modifier.weight(1f))
-
                 AppliancesSelector(
                     appliances = appliances,
                     onSelected = onSelected,
-                    modifier = Modifier.padding(bottom = 16.dp),
+                    modifier = Modifier.padding(bottom = 16.dp).weight(1f),
                 )
 
                 UpDownButtons(
@@ -96,10 +93,8 @@ fun ClockSelector(
                     hours = time.hoursString,
                     minutes = time.minutesString,
                     modifier = Modifier
-                        .padding(vertical = 16.dp),
+                        .padding(vertical = 16.dp).weight(1f),
                 )
-
-                Spacer(modifier = Modifier.weight(1f))
 
             }
 

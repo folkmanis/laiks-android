@@ -56,7 +56,8 @@ class AppliancesServiceFirebase @Inject constructor(
     }
 
     companion object {
-        private const val POWER_APPLIANCES_COLLECTION = "PresetPowerAppliances"
+        private const val POWER_APPLIANCES_COLLECTION = "powerAppliances"
+        @Suppress("unused")
         private const val TAG = "AppliancesServiceFirebase"
     }
 }
