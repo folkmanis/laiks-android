@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,6 +30,9 @@ class MainActivity : ComponentActivity() {
         MobileAds.initialize(this) {}
 
         setContent {
+            var adHeight by remember {
+                mutableStateOf(50)
+            }
             LaiksTheme {
                 val windowSize = calculateWindowSizeClass(activity = this)
                 Surface {
@@ -35,12 +42,13 @@ class MainActivity : ComponentActivity() {
                         LaiksAppScreen(
                             windowSize = windowSize,
                             modifier = Modifier
-                                .padding(bottom = 50.dp)
+                                .padding(bottom = adHeight.dp)
                         )
 
                         AdmobBanner(
+                            onSetHeight = { adHeight = it },
                             modifier = Modifier
-                                .align(Alignment.BottomCenter)
+                                .align(Alignment.BottomCenter),
                         )
                     }
                 }

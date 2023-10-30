@@ -30,12 +30,12 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            buildConfigField "String", "AD_UNIT_ID", "\"ca-app-pub-6916596059834518/1104465626\""
+            buildConfigField "String", "AD_UNIT_ID", "\"ca-app-pub-6916596059834518/7085250737\""
         }
         debug {
             applicationIdSuffix ".debug"
             debuggable true
-            buildConfigField "String", "AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "AD_UNIT_ID", "\"ca-app-pub-3940256099942544/9214589741\""
         }
     }
     compileOptions {
