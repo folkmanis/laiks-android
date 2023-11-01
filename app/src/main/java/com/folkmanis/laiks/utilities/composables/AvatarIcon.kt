@@ -13,14 +13,14 @@ import coil.request.ImageRequest
 @Composable
 fun AvatarIcon(
     photoUrl: Uri,
-    displayName: String,
+    contentDescription: String,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(photoUrl)
             .build(),
-        contentDescription = displayName,
+        contentDescription = contentDescription,
         contentScale = ContentScale.FillBounds,
         modifier = modifier
             .clip(shape = CircleShape)
