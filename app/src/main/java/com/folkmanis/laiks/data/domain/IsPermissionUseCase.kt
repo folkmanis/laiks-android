@@ -12,17 +12,15 @@ import javax.inject.Inject
 class IsPermissionUseCase @Inject constructor(
     private val permissionsService: PermissionsService,
     private val accountService: AccountService,
-    ) {
+) {
 
     operator fun invoke(permission: String): Flow<Boolean> =
         accountService.firebaseUserFlow
             .flatMapLatest { user ->
-                if (user != null) {
+                user?.let {
                     permissionsService
-                        .getPermissionFlow(user.uid, permission)
-                } else {
-                    flowOf(false)
-                }
+                        .getPermissionFlow(it.uid, permission)
+                } ?: flowOf(false)
             }
 
 }
