@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.user_settings.appliance_edit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.model.PowerApplianceDelay
 
 
@@ -37,6 +39,7 @@ fun DelayInput(
                     selected = option == delay,
                     onClick = { onValueChange(option.name) },
                     enabled = enabled,
+                    modifier = Modifier.width(48.dp),
                 )
                 Text(
                     text = stringResource(id = option.label),

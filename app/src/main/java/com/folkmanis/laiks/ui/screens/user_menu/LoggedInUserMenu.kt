@@ -43,13 +43,13 @@ fun LoggedInUserMenu(
             if (state.photoUrl != null) {
                 AvatarIcon(
                     photoUrl = state.photoUrl,
-                    displayName = state.displayName,
+                    contentDescription = stringResource(R.string.expand_user_menu_button),
                     modifier = Modifier.size(30.dp)
                 )
             } else {
                 Icon(
                     imageVector = Icons.Outlined.AccountCircle,
-                    contentDescription = stringResource(id = R.string.login_button),
+                    contentDescription = stringResource(R.string.expand_user_menu_button),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -61,7 +61,7 @@ fun LoggedInUserMenu(
             // Logout
             DropdownMenuItem(
                 text = {
-                    Text(text = stringResource(id = R.string.logout_menu_item))
+                    Text(text = stringResource(R.string.logout_menu_item))
                 },
                 onClick = {
                     menuExpanded = false
@@ -69,7 +69,7 @@ fun LoggedInUserMenu(
                 },
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.logout),
+                        painter = painterResource(R.drawable.logout),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp)
                     )
@@ -101,7 +101,7 @@ fun LoggedInUserMenu(
                     },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.dishwasher_gen),
+                            painter = painterResource(R.drawable.dishwasher_gen),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                         )
@@ -110,7 +110,7 @@ fun LoggedInUserMenu(
                 // PVN
                 DropdownMenuItem(
                     text = {
-                        Text(text = stringResource(id = R.string.include_vat))
+                        Text(text = stringResource(R.string.include_vat))
                     },
                     onClick = {
                         onSetVat(!isVat)

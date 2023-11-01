@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,10 @@ fun ColorSelection(
                     color = Color(color.toColorInt()),
                     shape = MaterialTheme.shapes.extraSmall
                 )
-                .clickable { showDialog = true }
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = stringResource(R.string.appliance_color_selection_dialog_open)
+                ) { showDialog = true }
         )
         Text(
             text = color,
