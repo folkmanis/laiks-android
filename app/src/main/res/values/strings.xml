@@ -11,6 +11,7 @@
     <string name="loading_failed">Loading failed!</string>
     <string name="login_menu_item">Login</string>
     <string name="logout_menu_item">Logout</string>
+    <string name="expand_user_menu_button">Open user menu</string>
     <string name="include_vat">Include VAT</string>
     <string name="users_screen">Users</string>
     <string name="users_menu">Edit Users</string>
@@ -35,7 +36,8 @@
     <string name="appliance_delay_start_label">Start</string>
     <string name="appliance_delay_end_label">End</string>
     <string name="appliance_cycles_label">Power consumption cycles</string>
-    <string name="appliance_color_label">Background color</string>
+    <string name="appliance_color_label">Color label</string>
+    <string name="appliance_color_selection_dialog_open">Open appliance color selection dialog</string>
     <string name="units_minutes" translatable="false">min</string>
     <string name="units_watts" translatable="false">W</string>
     <string name="add">Add</string>
