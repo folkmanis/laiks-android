@@ -16,8 +16,8 @@ import com.folkmanis.laiks.R
 fun ButtonRow(
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
+    modifier: Modifier = Modifier,
     saveEnabled: Boolean = true,
-    modifier: Modifier = Modifier
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
