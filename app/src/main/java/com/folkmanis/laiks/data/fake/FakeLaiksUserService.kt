@@ -3,17 +3,18 @@ package com.folkmanis.laiks.data.fake
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.PowerApplianceCycle
-import com.folkmanis.laiks.model.PresetPowerAppliance
 import com.folkmanis.laiks.model.UserPowerAppliance
 import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-@Suppress("RedundantNullableReturnType")
 class FakeLaiksUserService : LaiksUserService {
 
     override val vatAmountFlow: Flow<Double>
         get() = flowOf(1.21)
+
+    override val npAllowedFlow: Flow<Boolean>
+        get() = flowOf(true)
 
     override fun laiksUserFlow(): Flow<LaiksUser?> =
         flowOf(laiksUser)

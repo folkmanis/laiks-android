@@ -5,6 +5,7 @@ import com.folkmanis.laiks.USER_COLLECTION
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.AppliancesService
 import com.folkmanis.laiks.data.LaiksUserService
+import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.UserPowerAppliance
 import com.folkmanis.laiks.utilities.NotLoggedInException
@@ -21,13 +22,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-private val DEFAULT_APPLIANCES_IDS = listOf("washer", "dishwasher")
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class LaiksUserServiceFirebase @Inject constructor(
     firestore: FirebaseFirestore,
     private val accountService: AccountService,
     private val appliancesService: AppliancesService,
+    private val permissionsService: PermissionsService,
 ) : LaiksUserService {
 
     private val collection = firestore.collection(USER_COLLECTION)
@@ -38,6 +38,17 @@ class LaiksUserServiceFirebase @Inject constructor(
     override val vatAmountFlow: Flow<Double>
         get() = laiksUserFlow()
             .map { it?.tax ?: 1.0 }
+
+    override val npAllowedFlow: Flow<Boolean>
+        get() = accountService.firebaseUserFlow
+            .flatMapLatest { user ->
+                user?.let {
+                    permissionsService.getPermissionFlow(
+                        it.uid,
+                        "npUser"
+                    )
+                } ?: flowOf(false)
+            }
 
     override fun laiksUsersFlow(): Flow<List<LaiksUser>> =
         collection.snapshots()
@@ -72,7 +83,7 @@ class LaiksUserServiceFirebase @Inject constructor(
     override suspend fun createLaiksUser(user: UserInfo) {
 
         val appliances = buildList {
-            DEFAULT_APPLIANCES_IDS.forEach { id ->
+            defaultAppliancesIds.forEach { id ->
                 appliancesService.getAppliance(id)?.also {
                     add(UserPowerAppliance(it))
                 }
@@ -132,5 +143,6 @@ class LaiksUserServiceFirebase @Inject constructor(
 
     companion object {
         private const val TAG = "LaiksUserService"
+        private val defaultAppliancesIds = listOf("washer", "dishwasher")
     }
 }

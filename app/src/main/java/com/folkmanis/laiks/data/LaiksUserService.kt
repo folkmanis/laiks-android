@@ -8,6 +8,8 @@ interface LaiksUserService {
 
     val vatAmountFlow: Flow<Double>
 
+    val npAllowedFlow: Flow<Boolean>
+
     fun laiksUserFlow(): Flow<LaiksUser?>
 
     fun laiksUsersFlow(): Flow<List<LaiksUser>>

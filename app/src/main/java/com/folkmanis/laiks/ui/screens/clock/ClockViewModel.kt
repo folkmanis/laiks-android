@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.UserPreferencesRepository
-import com.folkmanis.laiks.data.domain.IsPermissionUseCase
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,11 +17,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ClockViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
-    isPermission: IsPermissionUseCase,
     laiksUserService: LaiksUserService,
 ) : ViewModel() {
 
-    val isPricesAllowed = isPermission("npUser")
+    val isPricesAllowed = laiksUserService.npAllowedFlow
 
     val appliances = laiksUserService.laiksUserFlow()
         .map { user-> user?.appliances?.take(2) ?: emptyList() }
