@@ -15,6 +15,8 @@ import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCostsScreen
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
 import com.folkmanis.laiks.ui.screens.clock.clockScreen
 import com.folkmanis.laiks.ui.screens.clock.navigateToClock
+import com.folkmanis.laiks.ui.screens.login.loginScreen
+import com.folkmanis.laiks.ui.screens.login.navigateToLogin
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
@@ -66,6 +68,9 @@ fun LaiksAppScreen(
                         popUpTo(CLOCK_ROUTE)
                     }
                 },
+                onLogin = {
+                    navController.navigateToLogin()
+                },
                 user = appState.user,
             )
         },
@@ -84,6 +89,16 @@ fun LaiksAppScreen(
                 onNavigateToAppliance = navController::applianceCosts,
                 setTitle = viewModel::setTitle,
                 windowWidth = windowSize.widthSizeClass,
+            )
+
+            loginScreen(
+                onLogin = {
+                    navController.navigateToClock {
+                        launchSingleTop = true
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                setTitle = viewModel::setTitle,
             )
 
             pricesScreen(
