@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,10 +29,11 @@ internal fun ClockScreen(
     updateOffset: (Int) -> Unit,
     onShowPrices: () -> Unit,
     onShowAppliance: (idx: Int, name: String) -> Unit,
+    windowWidth: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
-    windowHeight: WindowHeightSizeClass,
 ) {
 
+    val isNarrow = windowWidth == WindowWidthSizeClass.Compact
 
     Box(
         modifier = modifier
@@ -43,9 +44,9 @@ internal fun ClockScreen(
             offset = offset,
             time = time,
             onOffsetChange = updateOffset,
-            windowHeight = windowHeight,
             appliances = appliances,
             onSelected = onShowAppliance,
+            isNarrow = isNarrow,
             modifier = Modifier.align(Alignment.Center),
         )
 
@@ -80,7 +81,7 @@ fun ClockScreenPreview() {
             onShowPrices = {},
             updateOffset = {},
             onShowAppliance = { _, _ -> },
-            windowHeight = WindowHeightSizeClass.Medium,
+            windowWidth = WindowWidthSizeClass.Compact,
         )
     }
 }
@@ -101,7 +102,7 @@ fun ClockScreenPreviewLandscape() {
             onShowPrices = {},
             updateOffset = {},
             onShowAppliance = { _, _ -> },
-            windowHeight = WindowHeightSizeClass.Compact,
+            windowWidth = WindowWidthSizeClass.Medium,
         )
     }
 }

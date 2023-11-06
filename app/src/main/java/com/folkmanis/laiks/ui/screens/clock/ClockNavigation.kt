@@ -1,7 +1,7 @@
 package com.folkmanis.laiks.ui.screens.clock
 
 import android.util.Log
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -21,7 +21,7 @@ const val TAG = "ClockScreen"
 fun NavGraphBuilder.clockScreen(
     onNavigateToPrices: () -> Unit,
     onNavigateToAppliance: (Int, String) -> Unit,
-    windowHeight: WindowHeightSizeClass,
+    windowWidth: WindowWidthSizeClass,
     setTitle: (String) -> Unit
 ) {
 
@@ -52,7 +52,7 @@ fun NavGraphBuilder.clockScreen(
             onShowPrices = onNavigateToPrices,
             updateOffset = viewModel::updateOffset,
             onShowAppliance = onNavigateToAppliance,
-            windowHeight = windowHeight,
+            windowWidth = windowWidth,
         )
 
     }
