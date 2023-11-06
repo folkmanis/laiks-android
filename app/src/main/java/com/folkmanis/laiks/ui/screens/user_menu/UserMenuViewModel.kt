@@ -49,16 +49,6 @@ class UserMenuViewModel @Inject constructor(
         }
     }
 
-
-    fun login() {
-        viewModelScope.launch {
-            val user = accountService.authUser
-            if (user != null && !laiksUserService.userExists(user.uid)) {
-                laiksUserService.createLaiksUser(user)
-            }
-        }
-    }
-
     fun logout(context: Context) {
         AuthUI.getInstance()
             .signOut(context)

@@ -10,6 +10,8 @@
     <string name="loading">Notiek ielāde</string>
     <string name="loading_failed">Kaut kas nogāja greizi</string>
     <string name="login_menu_item">Pieslēgties</string>
+    <string name="login_title">Pieslēgties</string>
+    <string name="password_visibility">Paroles redzamība</string>
     <string name="logout_menu_item">Atslēgties</string>
     <string name="expand_user_menu_button">Atvērt lietotāja izvēlni</string>
     <string name="include_vat">PVN iekļauts</string>
@@ -61,4 +63,12 @@
     <string name="user_defined">Lietotāja</string>
     <string name="predefined">No gatavajiem</string>
     <string name="appliance_color_selection_dialog_open">Atvērt aparāta izceltās krāsas izvēlni</string>
+    <string name="login_success">Pieslēgšanās veiksmīga!</string>
+    <string name="email_input_error">Nederīga e-pasta adrese</string>
+    <string name="password_input_error">Parole nav pietiekami sarežģīta</string>
+    <string name="email_input_label">e-pasts</string>
+    <string name="password_input_label">Parole</string>
+    <string name="login_email_button">Pieslēgties ar e-pastu</string>
+    <string name="login_google_button">Pieslēgties ar Google</string>
+    <string name="login_fail">Neizdevās pieslēgties</string>
 </resources>

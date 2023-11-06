@@ -5,11 +5,21 @@
     <string name="hour_minus_button">Hour Down</string>
     <string name="minutes_separator" translatable="false">:</string>
     <string name="login_button">Login</string>
+    <string name="login_email_button">Login with e-mail</string>
+    <string name="login_google_button">Login with Google</string>
     <string name="show_prices_button">Show Prices</string>
     <string name="prices_screen">Prices</string>
     <string name="loading">Loading&#8230;</string>
     <string name="loading_failed">Loading failed!</string>
     <string name="login_menu_item">Login</string>
+    <string name="login_title">Login</string>
+    <string name="login_success">Login successful!</string>
+    <string name="login_fail">Login failed</string>
+    <string name="email_input_error">Email not valid</string>
+    <string name="password_input_error">Password not valid</string>
+    <string name="email_input_label">e-mail</string>
+    <string name="password_input_label">Password</string>
+    <string name="password_visibility">Password visibility</string>
     <string name="logout_menu_item">Logout</string>
     <string name="expand_user_menu_button">Open user menu</string>
     <string name="include_vat">Include VAT</string>

@@ -1,11 +1,13 @@
 package com.folkmanis.laiks.data.implementations
 
 import com.folkmanis.laiks.data.AccountService
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AccountServiceFirebase @Inject constructor(
@@ -23,6 +25,12 @@ class AccountServiceFirebase @Inject constructor(
 
     override val authUser: FirebaseUser?
         get() = auth.currentUser
+
+    override suspend fun loginWithEmail(email: String, password: String): AuthResult {
+        return auth
+            .signInWithEmailAndPassword(email, password)
+            .await()
+    }
 
     companion object {
         @Suppress("unused")
