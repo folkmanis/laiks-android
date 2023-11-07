@@ -12,4 +12,6 @@ interface AccountService {
 
    suspend fun loginWithEmail(email: String, password: String):AuthResult
 
+   suspend fun resetPassword(email: String)
+
 }

@@ -1,6 +1,8 @@
 package com.folkmanis.laiks.utilities.composables
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.text.KeyboardActionScope
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -17,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -46,12 +49,14 @@ fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    keyboardActions: KeyboardActions= KeyboardActions.Default,
 ) {
     PasswordField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
-        placeHolder = R.string.password_input_label
+        placeHolder = R.string.password_input_label,
+        keyboardActions = keyboardActions,
     )
 }
 
@@ -61,6 +66,7 @@ fun PasswordField(
     onValueChange: (String) -> Unit,
     @StringRes placeHolder: Int,
     modifier: Modifier = Modifier,
+    keyboardActions: KeyboardActions= KeyboardActions.Default,
 ) {
     val label = stringResource(placeHolder)
 
@@ -91,5 +97,6 @@ fun PasswordField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = visualTransformation,
+        keyboardActions = keyboardActions,
     )
 }

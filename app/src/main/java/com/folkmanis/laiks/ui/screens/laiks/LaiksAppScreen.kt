@@ -17,6 +17,8 @@ import com.folkmanis.laiks.ui.screens.clock.clockScreen
 import com.folkmanis.laiks.ui.screens.clock.navigateToClock
 import com.folkmanis.laiks.ui.screens.login.loginScreen
 import com.folkmanis.laiks.ui.screens.login.navigateToLogin
+import com.folkmanis.laiks.ui.screens.password_reset.navigateToPasswordReset
+import com.folkmanis.laiks.ui.screens.password_reset.passwordReset
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
@@ -100,6 +102,14 @@ fun LaiksAppScreen(
                 },
                 setTitle = viewModel::setTitle,
                 windowWidth = windowSize.widthSizeClass,
+                onPasswordReset = navController::navigateToPasswordReset
+            )
+
+            passwordReset(
+                setTitle = viewModel::setTitle,
+                onPasswordRequestSent = {
+                    navController.popBackStack()
+                }
             )
 
             pricesScreen(

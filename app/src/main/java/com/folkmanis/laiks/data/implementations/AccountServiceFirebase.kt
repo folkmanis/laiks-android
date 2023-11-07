@@ -8,6 +8,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.util.Locale
 import javax.inject.Inject
 
 class AccountServiceFirebase @Inject constructor(
@@ -30,6 +31,18 @@ class AccountServiceFirebase @Inject constructor(
         return auth
             .signInWithEmailAndPassword(email, password)
             .await()
+    }
+
+    override suspend fun resetPassword(email: String) {
+        setLanguage()
+        auth
+            .sendPasswordResetEmail(email)
+            .await()
+    }
+
+    private fun setLanguage() {
+        val locale = Locale.getDefault().language
+        auth.setLanguageCode(locale)
     }
 
     companion object {

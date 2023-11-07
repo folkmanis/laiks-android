@@ -19,6 +19,7 @@ const val LOGIN_ROUTE = "Login"
 
 fun NavGraphBuilder.loginScreen(
     onLogin: () -> Unit,
+    onPasswordReset: () -> Unit,
     setTitle: (String) -> Unit,
     windowWidth: WindowWidthSizeClass,
 ) {
@@ -54,6 +55,7 @@ fun NavGraphBuilder.loginScreen(
             onSetPassword = viewModel::setPassword,
             onGoogleLogin = { loginLauncher.launch(getGoogleSignInIntent()) },
             onEmailLogin = { viewModel.loginWithEmail(onLogin) },
+            onPasswordReset = onPasswordReset,
             isHorizontal = isHorizontal,
         )
 

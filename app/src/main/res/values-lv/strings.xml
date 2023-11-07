@@ -71,4 +71,8 @@
     <string name="login_email_button">Pieslēgties ar e-pastu</string>
     <string name="login_google_button">Pieslēgties ar Google</string>
     <string name="login_fail">Neizdevās pieslēgties</string>
+    <string name="password_reset_screen_title">Paroles atiestatīšana</string>
+    <string name="password_reset_button">Pieprasīt paroles atiestatīšanu</string>
+    <string name="navigate_to_password_reset">Aizmirsta parole?</string>
+    <string name="password_reset_email_sent">Paroles atiestatīšanas saite nosūtīta uz \"%1$s\"</string>
 </resources>
