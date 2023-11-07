@@ -9,6 +9,11 @@ sealed class SnackbarMessage {
 
     class StringSnackbar(val message: String) : SnackbarMessage()
     class ResourceSnackbar(@StringRes val message: Int) : SnackbarMessage()
+
+    class FormattedSnackbar(
+        @StringRes val message: Int,
+        vararg val formatArgs: Any
+    ): SnackbarMessage()
     class PluralsSnackbar(
         @PluralsRes val message: Int,
         val count: Int,
@@ -21,6 +26,7 @@ sealed class SnackbarMessage {
                 is StringSnackbar -> message
                 is ResourceSnackbar -> resources.getString(message)
                 is PluralsSnackbar -> resources.getQuantityString(message, count, *formatArgs)
+                is FormattedSnackbar -> resources.getString(message, *formatArgs)
             }
         }
 

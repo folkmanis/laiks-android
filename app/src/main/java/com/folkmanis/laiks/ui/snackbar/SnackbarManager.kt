@@ -24,8 +24,11 @@ class SnackbarManager @Inject constructor() {
         messages.value = SnackbarMessage.ResourceSnackbar(message)
     }
 
+    fun showMessage(@StringRes message: Int, vararg  formatArgs: Any) {
+        messages.value = SnackbarMessage.FormattedSnackbar(message, *formatArgs)
+    }
+
     fun showMessage(@PluralsRes message: Int, count: Int, vararg formatArgs: Any) {
-        Log.d(TAG, "count: $count; $formatArgs")
         messages.value =
             SnackbarMessage.PluralsSnackbar(message, count, *formatArgs)
     }

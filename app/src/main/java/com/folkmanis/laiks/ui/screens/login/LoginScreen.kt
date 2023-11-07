@@ -10,13 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import android.view.KeyEvent
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +51,7 @@ fun LoginScreen(
     onSetPassword: (String) -> Unit,
     onGoogleLogin: () -> Unit,
     onEmailLogin: () -> Unit,
+    onPasswordReset: () -> Unit,
     isHorizontal: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -73,6 +78,7 @@ fun LoginScreen(
                 onSetPassword = onSetPassword,
                 onGoogleLogin = onGoogleLogin,
                 onEmailLogin = onEmailLogin,
+                onPasswordReset = onPasswordReset,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
@@ -107,6 +113,7 @@ fun LoginScreen(
                 onSetPassword = onSetPassword,
                 onGoogleLogin = onGoogleLogin,
                 onEmailLogin = onEmailLogin,
+                onPasswordReset = onPasswordReset,
             )
 
             Spacer(modifier = Modifier.weight(2f))
@@ -125,9 +132,13 @@ fun LoginInputPanel(
     onSetPassword: (String) -> Unit,
     onGoogleLogin: () -> Unit,
     onEmailLogin: () -> Unit,
+    onPasswordReset: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         EmailField(
             value = email,
             onValueChange = onSetEmail,
@@ -137,7 +148,15 @@ fun LoginInputPanel(
         PasswordField(
             value = password,
             onValueChange = onSetPassword,
-            modifier = Modifier.fieldModifier()
+            modifier = Modifier
+                .fieldModifier(),
+//                .onKeyEvent {
+//                    if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+//                        onEmailLogin()
+//                    }
+//                   return@onKeyEvent true
+//                },
+            keyboardActions = KeyboardActions(onDone = { onEmailLogin() }),
         )
 
         FilledTonalButton(
@@ -146,6 +165,10 @@ fun LoginInputPanel(
             enabled = email.isValidEmail()
         ) {
             Text(text = stringResource(id = R.string.login_email_button))
+        }
+
+        TextButton(onClick = onPasswordReset) {
+            Text(text = stringResource(R.string.navigate_to_password_reset))
         }
 
         HorizontalDivider(
@@ -174,6 +197,7 @@ fun LoginScreenVerticalPreview() {
             onSetPassword = {},
             onGoogleLogin = { },
             onEmailLogin = { },
+            onPasswordReset = {},
             isHorizontal = false,
         )
     }
@@ -190,6 +214,7 @@ fun LoginScreenHorizontalPreview() {
             onSetPassword = {},
             onGoogleLogin = { },
             onEmailLogin = { },
+            onPasswordReset = {},
             isHorizontal = true,
         )
     }
