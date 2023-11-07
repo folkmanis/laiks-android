@@ -2,11 +2,13 @@ package com.folkmanis.laiks.ui.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilledTonalButton
@@ -45,22 +47,87 @@ fun LoginScreen(
     onSetPassword: (String) -> Unit,
     onGoogleLogin: () -> Unit,
     onEmailLogin: () -> Unit,
+    isHorizontal: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
 
-        Spacer(modifier = Modifier.weight(1f))
+    if (isHorizontal) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-        Image(
-            painter = painterResource(R.drawable.clock_clock),
-            contentDescription = stringResource(R.string.login_title),
-            modifier = Modifier.fillMaxSize()
-        )
+            Image(
+                painter = painterResource(R.drawable.clock_clock),
+                contentDescription = stringResource(R.string.login_title),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(32.dp)
+                    .fillMaxSize()
+            )
+
+            LoginInputPanel(
+                email = email,
+                password = password,
+                onSetEmail = onSetEmail,
+                onSetPassword = onSetPassword,
+                onGoogleLogin = onGoogleLogin,
+                onEmailLogin = onEmailLogin,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            )
+
+        }
+
+    } else {
+
+        Column(
+            modifier = modifier
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Image(
+                painter = painterResource(R.drawable.clock_clock),
+                contentDescription = stringResource(R.string.login_title),
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .widthIn(min = 48.dp, max = 128.dp)
+            )
+
+            LoginInputPanel(
+                email = email,
+                password = password,
+                onSetEmail = onSetEmail,
+                onSetPassword = onSetPassword,
+                onGoogleLogin = onGoogleLogin,
+                onEmailLogin = onEmailLogin,
+            )
+
+            Spacer(modifier = Modifier.weight(2f))
+
+        }
+
+    }
+
+}
+
+@Composable
+fun LoginInputPanel(
+    email: String,
+    password: String,
+    onSetEmail: (String) -> Unit,
+    onSetPassword: (String) -> Unit,
+    onGoogleLogin: () -> Unit,
+    onEmailLogin: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
         EmailField(
             value = email,
             onValueChange = onSetEmail,
@@ -92,13 +159,13 @@ fun LoginScreen(
         ) {
             Text(text = stringResource(id = R.string.login_google_button))
         }
-        Spacer(modifier = Modifier.weight(2f))
+
     }
 }
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
+fun LoginScreenVerticalPreview() {
     LaiksTheme {
         LoginScreen(
             email = "user@example.com",
@@ -106,7 +173,24 @@ fun LoginScreenPreview() {
             onSetEmail = {},
             onSetPassword = {},
             onGoogleLogin = { },
-            onEmailLogin = { }
+            onEmailLogin = { },
+            isHorizontal = false,
+        )
+    }
+}
+
+@Preview(device = "spec:parent=pixel_5,orientation=landscape")
+@Composable
+fun LoginScreenHorizontalPreview() {
+    LaiksTheme {
+        LoginScreen(
+            email = "user@example.com",
+            password = "some_password",
+            onSetEmail = {},
+            onSetPassword = {},
+            onGoogleLogin = { },
+            onEmailLogin = { },
+            isHorizontal = true,
         )
     }
 }

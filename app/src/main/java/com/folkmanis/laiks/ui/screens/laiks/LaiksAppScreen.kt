@@ -99,16 +99,7 @@ fun LaiksAppScreen(
                     }
                 },
                 setTitle = viewModel::setTitle,
-            )
-
-            loginScreen(
-                onLogin = {
-                    navController.navigateToClock {
-                        launchSingleTop = true
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-                setTitle = viewModel::setTitle,
+                windowWidth = windowSize.widthSizeClass,
             )
 
             pricesScreen(

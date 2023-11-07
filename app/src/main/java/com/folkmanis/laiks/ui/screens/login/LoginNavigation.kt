@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.login
 
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +20,7 @@ const val LOGIN_ROUTE = "Login"
 fun NavGraphBuilder.loginScreen(
     onLogin: () -> Unit,
     setTitle: (String) -> Unit,
+    windowWidth: WindowWidthSizeClass,
 ) {
     composable(LOGIN_ROUTE) {
         val title = stringResource(R.string.login_title)
@@ -31,6 +33,8 @@ fun NavGraphBuilder.loginScreen(
         val uiState by viewModel.uiState
 
         val context = LocalContext.current
+
+        val isHorizontal = windowWidth != WindowWidthSizeClass.Compact
 
         LaunchedEffect(true) {
             viewModel.logout(context)
@@ -50,6 +54,7 @@ fun NavGraphBuilder.loginScreen(
             onSetPassword = viewModel::setPassword,
             onGoogleLogin = { loginLauncher.launch(getGoogleSignInIntent()) },
             onEmailLogin = { viewModel.loginWithEmail(onLogin) },
+            isHorizontal = isHorizontal,
         )
 
     }
