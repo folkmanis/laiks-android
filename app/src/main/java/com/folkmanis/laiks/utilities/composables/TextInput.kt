@@ -1,7 +1,6 @@
 package com.folkmanis.laiks.utilities.composables
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -19,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -30,6 +28,9 @@ fun EmailField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
 
     val label = stringResource(R.string.email_input_label)
@@ -40,7 +41,10 @@ fun EmailField(
         modifier = modifier,
         singleLine = true,
         placeholder = { Text(label) },
-        leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = label) }
+        leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = label) },
+        keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Email),
+        keyboardActions = keyboardActions,
+        enabled = enabled,
     )
 }
 
@@ -49,7 +53,9 @@ fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    keyboardActions: KeyboardActions= KeyboardActions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    enabled: Boolean = true,
 ) {
     PasswordField(
         value = value,
@@ -57,6 +63,8 @@ fun PasswordField(
         modifier = modifier,
         placeHolder = R.string.password_input_label,
         keyboardActions = keyboardActions,
+        keyboardOptions = keyboardOptions,
+        enabled = enabled,
     )
 }
 
@@ -66,7 +74,9 @@ fun PasswordField(
     onValueChange: (String) -> Unit,
     @StringRes placeHolder: Int,
     modifier: Modifier = Modifier,
-    keyboardActions: KeyboardActions= KeyboardActions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    enabled: Boolean = true,
 ) {
     val label = stringResource(placeHolder)
 
@@ -95,8 +105,11 @@ fun PasswordField(
                 )
             }
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = keyboardOptions.copy(
+            keyboardType = KeyboardType.Password,
+        ),
         visualTransformation = visualTransformation,
         keyboardActions = keyboardActions,
+        enabled = enabled,
     )
 }

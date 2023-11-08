@@ -51,6 +51,7 @@ fun NavGraphBuilder.loginScreen(
         LoginScreen(
             email = uiState.email,
             password = uiState.password,
+            busy = uiState.isBusy,
             onSetEmail = viewModel::setEmail,
             onSetPassword = viewModel::setPassword,
             onGoogleLogin = { loginLauncher.launch(getGoogleSignInIntent()) },

@@ -14,6 +14,7 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.folkmanis.laiks.utilities.ext.isValidEmail
+import com.folkmanis.laiks.utilities.ext.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -34,12 +35,20 @@ class LoginViewModel @Inject constructor(
     private val password
         get() = uiState.value.password
 
+    private var isBusy
+        get() = uiState.value.isBusy
+        set(value) {
+            uiState.value = uiState.value.copy(isBusy = value)
+        }
+
     fun setEmail(newEmail: String) {
         uiState.value = uiState.value.copy(email = newEmail)
     }
 
     fun setPassword(newPassword: String) {
-        uiState.value = uiState.value.copy(password = newPassword)
+        Log.d(TAG, newPassword)
+        if (newPassword.isEmpty() || newPassword.isValidPassword())
+            uiState.value = uiState.value.copy(password = newPassword)
     }
 
     fun logout(context: Context) {
@@ -77,9 +86,12 @@ class LoginViewModel @Inject constructor(
             return
         }
 
+        isBusy = true
+
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
                 snackbarManager.showMessage(throwable.toSnackbarMessage())
+                isBusy = false
             }
         ) {
             accountService.loginWithEmail(email, password)
@@ -87,6 +99,7 @@ class LoginViewModel @Inject constructor(
                 snackbarManager.showMessage(R.string.login_success)
                 afterLogin()
             }
+            isBusy = false
         }
     }
 
