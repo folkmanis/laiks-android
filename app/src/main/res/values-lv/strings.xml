@@ -65,7 +65,7 @@
     <string name="appliance_color_selection_dialog_open">Atvērt aparāta izceltās krāsas izvēlni</string>
     <string name="login_success">Pieslēgšanās veiksmīga!</string>
     <string name="email_input_error">Nederīga e-pasta adrese</string>
-    <string name="password_input_error">Parole nav pietiekami sarežģīta</string>
+    <string name="password_input_error">Perolei jāsastāv no lielajiem un mazajiem burtiem un vismaz viena cipara</string>
     <string name="email_input_label">e-pasts</string>
     <string name="password_input_label">Parole</string>
     <string name="login_email_button">Pieslēgties ar e-pastu</string>
@@ -75,4 +75,13 @@
     <string name="password_reset_button">Pieprasīt paroles atiestatīšanu</string>
     <string name="navigate_to_password_reset">Aizmirsta parole?</string>
     <string name="password_reset_email_sent">Paroles atiestatīšanas saite nosūtīta uz \"%1$s\"</string>
+    <string name="user_registration_title">Reģistrēties ar e-pastu</string>
+    <string name="user_registered">Izveidots jauns lietotājs. e-pasta adreses apstiprinājums nosūtīts uz %1$s</string>
+    <string name="password_repeat_input_label">Parole atkārtoti</string>
+    <string name="user_registration_action_button">Reģistrēties!</string>
+    <string name="login_register_with_email">Reģistrēties ar e-pastu</string>
+    <string name="display_name_input_label">Vārds</string>
+    <string name="email_not_verified">Lietotāja e-pasta adrese nav verificēta. Pārbaudiet iesūtni un veiciet norādītās darbības.</string>
+    <string name="display_name_input_error">Jānorāda vārds</string>
+    <string name="password_repeat_not_matching">Perolēm jāsakrīt</string>
 </resources>

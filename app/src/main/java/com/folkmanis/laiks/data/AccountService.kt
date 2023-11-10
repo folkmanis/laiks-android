@@ -10,8 +10,12 @@ interface AccountService {
 
     val authUser: FirebaseUser?
 
-   suspend fun loginWithEmail(email: String, password: String):AuthResult
+    suspend fun loginWithEmail(email: String, password: String): AuthResult
 
-   suspend fun resetPassword(email: String)
+    suspend fun resetPassword(email: String)
+
+    suspend fun createUserWithEmail(email: String, password: String, name: String)
+
+    suspend fun signOut()
 
 }
