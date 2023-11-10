@@ -46,7 +46,6 @@ class LoginViewModel @Inject constructor(
     }
 
     fun setPassword(newPassword: String) {
-        Log.d(TAG, newPassword)
         if (newPassword.isEmpty() || newPassword.isValidPassword())
             uiState.value = uiState.value.copy(password = newPassword)
     }
@@ -95,9 +94,13 @@ class LoginViewModel @Inject constructor(
             }
         ) {
             accountService.loginWithEmail(email, password)
-            if (accountService.authUser != null) {
-                snackbarManager.showMessage(R.string.login_success)
-                afterLogin()
+            accountService.authUser?.also { user ->
+                if (user.isEmailVerified) {
+                    loginSuccess(afterLogin)
+                } else {
+                    snackbarManager.showMessage(R.string.email_not_verified)
+                    accountService.signOut()
+                }
             }
             isBusy = false
         }

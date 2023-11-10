@@ -40,7 +40,7 @@ class UserMenuViewModel @Inject constructor(
             val permissions = permissionsService.getPermissions(laiksUser.id)
             _uiState.value = UserMenuUiState.LoggedIn(
                 isAdmin = permissions.admin,
-                isPricesAllowed = permissions.npUser,
+                isPricesAllowed = !permissions.npBlocked,
                 displayName = laiksUser.name,
                 photoUrl = user?.photoUrl,
                 includeVat = laiksUser.includeVat,

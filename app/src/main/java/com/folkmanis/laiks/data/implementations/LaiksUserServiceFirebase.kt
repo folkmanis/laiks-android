@@ -36,49 +36,38 @@ class LaiksUserServiceFirebase @Inject constructor(
         get() = accountService.authUser?.uid ?: throw NotLoggedInException()
 
     override val vatAmountFlow: Flow<Double>
-        get() = laiksUserFlow()
-            .map { it?.tax ?: 1.0 }
+        get() = laiksUserFlow().map { it?.tax ?: 1.0 }
 
     override val npAllowedFlow: Flow<Boolean>
         get() = accountService.firebaseUserFlow
             .flatMapLatest { user ->
                 user?.let {
                     permissionsService.getPermissionFlow(
-                        it.uid,
-                        "npUser"
+                        it.uid, "npBlocked"
                     )
-                } ?: flowOf(false)
+                } ?: flowOf(true)
             }
+            .map { npBlocked -> !npBlocked }
 
-    override fun laiksUsersFlow(): Flow<List<LaiksUser>> =
-        collection.snapshots()
-            .map { snapshot ->
-                snapshot.toObjects()
-            }
+    override fun laiksUsersFlow(): Flow<List<LaiksUser>> = collection.snapshots().map { snapshot ->
+        snapshot.toObjects()
+    }
 
     override fun laiksUserFlow(): Flow<LaiksUser?> =
-        accountService.firebaseUserFlow
-            .flatMapLatest { user ->
-                if (user == null) {
-                    flowOf(null)
-                } else {
-                    laiksUserFlow(user.uid)
-                }
+        accountService.firebaseUserFlow.flatMapLatest { user ->
+            if (user == null) {
+                flowOf(null)
+            } else {
+                laiksUserFlow(user.uid)
             }
+        }
 
-    override suspend fun laiksUser(): LaiksUser =
-        accountService.authUser?.let {
-            collection.document(it.uid)
-                .get()
-                .await()
-                .toObject()
-        } ?: throw NotLoggedInException()
+    override suspend fun laiksUser(): LaiksUser = accountService.authUser?.let {
+        collection.document(it.uid).get().await().toObject()
+    } ?: throw NotLoggedInException()
 
     override suspend fun userExists(id: String): Boolean =
-        collection.document(id)
-            .get()
-            .await()
-            .exists()
+        collection.document(id).get().await().exists()
 
     override suspend fun createLaiksUser(user: UserInfo) {
 
@@ -98,24 +87,15 @@ class LaiksUserServiceFirebase @Inject constructor(
             appliances = appliances,
         )
         Log.d(TAG, "new user: $user")
-        collection
-            .document(user.uid)
-            .set(laiksUser)
-            .await()
+        collection.document(user.uid).set(laiksUser).await()
     }
 
     override suspend fun updateLaiksUser(user: LaiksUser) {
-        collection
-            .document(uId)
-            .set(user)
-            .await()
+        collection.document(uId).set(user).await()
     }
 
     override suspend fun updateLaiksUser(update: HashMap<String, Any>) {
-        collection
-            .document(uId)
-            .update(update)
-            .await()
+        collection.document(uId).update(update).await()
     }
 
     override suspend fun updateLaiksUser(key: String, value: Any) {
@@ -127,19 +107,14 @@ class LaiksUserServiceFirebase @Inject constructor(
     }
 
     override suspend fun setVatEnabled(value: Boolean) {
-        collection
-            .document(uId)
-            .update("includeVat", value)
-            .await()
+        collection.document(uId).update("includeVat", value).await()
     }
 
     private fun laiksUserFlow(uId: String): Flow<LaiksUser?> =
-        collection.document(uId)
-            .snapshots()
-            .map { document ->
-                Log.d(TAG, "Laiks user ${document.data}")
-                document.toObject<LaiksUser>()
-            }
+        collection.document(uId).snapshots().map { document ->
+            Log.d(TAG, "Laiks user ${document.data}")
+            document.toObject<LaiksUser>()
+        }
 
     companion object {
         private const val TAG = "LaiksUserService"

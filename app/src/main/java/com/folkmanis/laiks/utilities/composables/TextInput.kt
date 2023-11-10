@@ -31,6 +31,7 @@ fun EmailField(
     enabled: Boolean = true,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    errorId: (@StringRes Int)? = null,
 ) {
 
     val label = stringResource(R.string.email_input_label)
@@ -40,11 +41,13 @@ fun EmailField(
         onValueChange = onValueChange,
         modifier = modifier,
         singleLine = true,
-        placeholder = { Text(label) },
+        label = { Text(label) },
         leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = label) },
         keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Email),
         keyboardActions = keyboardActions,
         enabled = enabled,
+        isError = errorId != null,
+        supportingText = { TextOrEmpty(id = errorId) }
     )
 }
 
@@ -56,15 +59,17 @@ fun PasswordField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     enabled: Boolean = true,
+    errorId: (@StringRes Int)? = null,
 ) {
     PasswordField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
-        placeHolder = R.string.password_input_label,
+        label = R.string.password_input_label,
         keyboardActions = keyboardActions,
         keyboardOptions = keyboardOptions,
         enabled = enabled,
+        errorId = errorId,
     )
 }
 
@@ -72,13 +77,14 @@ fun PasswordField(
 fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
-    @StringRes placeHolder: Int,
+    @StringRes label: Int,
     modifier: Modifier = Modifier,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     enabled: Boolean = true,
+    errorId: (@StringRes Int)? = null,
 ) {
-    val label = stringResource(placeHolder)
+    val labelString = stringResource(label)
 
     var isVisible by remember {
         mutableStateOf(false)
@@ -95,8 +101,8 @@ fun PasswordField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
-        placeholder = { Text(label) },
-        leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = label) },
+        label = { Text(labelString) },
+        leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = labelString) },
         trailingIcon = {
             IconButton(onClick = { isVisible = !isVisible }) {
                 Icon(
@@ -111,5 +117,7 @@ fun PasswordField(
         visualTransformation = visualTransformation,
         keyboardActions = keyboardActions,
         enabled = enabled,
+        isError = errorId != null,
+        supportingText = { TextOrEmpty(id = errorId) }
     )
 }

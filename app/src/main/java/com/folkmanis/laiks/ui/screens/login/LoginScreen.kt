@@ -15,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.ui.theme.LaiksTheme
 import com.folkmanis.laiks.utilities.composables.EmailField
+import com.folkmanis.laiks.utilities.composables.ListDivider
 import com.folkmanis.laiks.utilities.composables.PasswordField
 import com.folkmanis.laiks.utilities.ext.isValidEmail
 
@@ -55,6 +55,7 @@ fun LoginScreen(
     onGoogleLogin: () -> Unit,
     onEmailLogin: () -> Unit,
     onPasswordReset: () -> Unit,
+    onRegisterWithEmail: () -> Unit,
     isHorizontal: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -83,6 +84,7 @@ fun LoginScreen(
                 onGoogleLogin = onGoogleLogin,
                 onEmailLogin = onEmailLogin,
                 onPasswordReset = onPasswordReset,
+                onRegisterWithEmail=onRegisterWithEmail,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
@@ -119,6 +121,7 @@ fun LoginScreen(
                 onGoogleLogin = onGoogleLogin,
                 onEmailLogin = onEmailLogin,
                 onPasswordReset = onPasswordReset,
+                onRegisterWithEmail=onRegisterWithEmail,
             )
 
             Spacer(modifier = Modifier.weight(2f))
@@ -139,6 +142,7 @@ fun LoginInputPanel(
     onGoogleLogin: () -> Unit,
     onEmailLogin: () -> Unit,
     onPasswordReset: () -> Unit,
+    onRegisterWithEmail: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -189,8 +193,14 @@ fun LoginInputPanel(
             Text(text = stringResource(R.string.navigate_to_password_reset))
         }
 
-        HorizontalDivider(
-            thickness = 2.dp,
+        TextButton(
+            onClick = onRegisterWithEmail,
+            enabled = !busy
+        ) {
+            Text(text = stringResource(R.string.login_register_with_email))
+        }
+
+        ListDivider(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
 
@@ -219,6 +229,7 @@ fun LoginScreenVerticalPreview() {
             onPasswordReset = {},
             busy = false,
             isHorizontal = false,
+            onRegisterWithEmail = {},
         )
     }
 }
@@ -237,6 +248,7 @@ fun LoginScreenHorizontalPreview() {
             onEmailLogin = { },
             onPasswordReset = {},
             isHorizontal = true,
+            onRegisterWithEmail = {},
         )
     }
 }

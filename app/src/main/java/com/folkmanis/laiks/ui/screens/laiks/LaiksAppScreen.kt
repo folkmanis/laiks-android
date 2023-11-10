@@ -22,6 +22,8 @@ import com.folkmanis.laiks.ui.screens.password_reset.passwordReset
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
+import com.folkmanis.laiks.ui.screens.user_registration.navigateToNewUserRegistration
+import com.folkmanis.laiks.ui.screens.user_registration.userRegistration
 import com.folkmanis.laiks.ui.screens.user_settings.appliances.navigateToAppliances
 import com.folkmanis.laiks.ui.screens.user_settings.userSettings
 import com.folkmanis.laiks.ui.screens.user_settings.userSettingsGraph
@@ -102,13 +104,24 @@ fun LaiksAppScreen(
                 },
                 setTitle = viewModel::setTitle,
                 windowWidth = windowSize.widthSizeClass,
-                onPasswordReset = navController::navigateToPasswordReset
+                onPasswordReset = navController::navigateToPasswordReset,
+                onRegisterWithEmail = navController::navigateToNewUserRegistration,
             )
 
             passwordReset(
                 setTitle = viewModel::setTitle,
                 onPasswordRequestSent = {
                     navController.popBackStack()
+                }
+            )
+
+            userRegistration(
+                setTitle = viewModel::setTitle,
+                onUserRegistered = {
+                    navController.navigateToClock {
+                        launchSingleTop = true
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             )
 

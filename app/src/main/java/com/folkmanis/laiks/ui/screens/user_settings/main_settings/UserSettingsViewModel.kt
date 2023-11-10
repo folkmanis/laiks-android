@@ -86,7 +86,7 @@ class UserSettingsViewModel @Inject constructor(
             throw NoSuchElementException()
         }
         val zone = zonesService.getMarketZone(id = user.marketZoneId)
-        val npUser = permissionsService.getPermissions(user.id).npUser
+        val npBlocked =  permissionsService.getPermissions(user.id).npBlocked
         return UserSettingsUiState.Success(
             id = user.id,
             email = user.email,
@@ -95,7 +95,7 @@ class UserSettingsViewModel @Inject constructor(
             name = user.name,
             marketZoneId = user.marketZoneId,
             vatAmount = user.vatAmount,
-            npUser = npUser,
+            npUser = !npBlocked,
             marketZoneName = "${user.marketZoneId}, ${zone?.description ?: ""}",
         )
     }
