@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.user_settings.appliances
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.LaiksUserService
+import com.folkmanis.laiks.utilities.ext.swap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -37,16 +38,31 @@ class AppliancesViewModel @Inject constructor(
     }
 
     fun delete(idx: Int) {
-        uiState.update {
-            it.copy(saving = true)
+        uiState.update { state ->
+            state.copy(
+                appliances = state.appliances.toMutableList()
+                    .apply { removeAt(idx) }
+            )
         }
-        uiState.update { it.removeRecordAt(idx) }
+        saveAppliances()
+    }
 
+    fun reorder(from: Int, to: Int) {
+        uiState.update { state ->
+            state.copy(
+                appliances = state.appliances.toMutableList().swap(from, to),
+            )
+        }
+    }
+
+    fun saveAppliances() {
+        uiState.update { state ->
+            state.copy(saving = true)
+        }
         viewModelScope.launch {
             laiksUserService.updateLaiksUser("appliances", uiState.value.appliances)
             uiState.update { it.copy(saving = false) }
         }
-
     }
 
 

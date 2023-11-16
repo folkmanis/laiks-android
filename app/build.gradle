@@ -14,9 +14,9 @@ android {
 
     defaultConfig {
         applicationId "com.folkmanis.laiks"
-        minSdk 26
+        minSdk 24
         targetSdk 34
-        versionCode 7
+        versionCode 8
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -101,6 +101,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
     implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0'
+
+    implementation "org.burnoutcrew.composereorderable:reorderable:0.9.6"
 
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test.ext:junit:1.1.5"

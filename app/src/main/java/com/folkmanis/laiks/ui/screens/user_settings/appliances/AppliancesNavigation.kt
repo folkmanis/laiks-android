@@ -47,6 +47,8 @@ fun NavGraphBuilder.appliancesScreen(
                 onAdd = onAddAppliance,
                 appliances = state.appliances,
                 busy = state.saving,
+                onReorder = viewModel::reorder,
+                onReorderEnd = viewModel::saveAppliances,
             )
         }
 

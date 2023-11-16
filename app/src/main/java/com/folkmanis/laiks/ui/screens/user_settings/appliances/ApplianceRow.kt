@@ -30,15 +30,20 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
+import org.burnoutcrew.reorderable.ReorderableLazyListState
+import org.burnoutcrew.reorderable.detectReorder
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun ApplianceRow(
-    name:String,
+    name: String,
     color: String,
-    modifier: Modifier = Modifier,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
+    onSchedule: () -> Unit,
     busy: Boolean,
+    reorderableState: ReorderableLazyListState,
+    modifier: Modifier = Modifier,
 ) {
 
     var deleteConfirmationActive by remember {
@@ -64,29 +69,44 @@ fun ApplianceRow(
             Row(verticalAlignment = Alignment.CenterVertically) {
 
                 IconButton(
+                    onClick = onSchedule,
+                    enabled = !busy,
+                ) {
+                    Icon(
+                        painterResource(R.drawable.schedule_24px),
+                        contentDescription = stringResource(
+                            R.string.appliance_costs_screen_open,
+                            name
+                        )
+                    )
+                }
+
+                IconButton(
                     onClick = onEdit,
                     enabled = !busy,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
-                        contentDescription = stringResource(id = R.string.settings)
+                        contentDescription = stringResource(R.string.settings)
                     )
                 }
 
                 IconButton(
-                    onClick = onDelete,
+                    onClick = { deleteConfirmationActive = true },
                     enabled = !busy,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
-                        contentDescription = stringResource(id = R.string.delete_button)
+                        contentDescription = stringResource(R.string.delete_button)
                     )
                 }
 
                 Icon(
-                    painter = painterResource(R.drawable.drag_handle_48px),
+                    painter = painterResource(R.drawable.drag_indicator_24px),
                     contentDescription = stringResource(R.string.drag_handle),
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .detectReorder(reorderableState),
                 )
             }
         }
@@ -155,6 +175,9 @@ fun ApplianceDeleteConfirmationDialogPreview() {
 @Preview
 @Composable
 fun ApplianceRowPreview() {
+
+    val reorderableState = rememberReorderableLazyListState(onMove = { _, _ -> })
+
     MaterialTheme {
         ApplianceRow(
             name = FakeAppliancesService.dishWasher.name,
@@ -162,6 +185,8 @@ fun ApplianceRowPreview() {
             onDelete = {},
             onEdit = {},
             busy = true,
+            reorderableState = reorderableState,
+            onSchedule = {},
         )
     }
 }
