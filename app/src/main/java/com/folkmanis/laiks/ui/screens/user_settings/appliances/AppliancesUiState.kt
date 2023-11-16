@@ -6,5 +6,4 @@ data class AppliancesUiState(
     val appliances: List<PowerAppliance> = emptyList(),
     val saving:Boolean = false,
     val loading: Boolean=true,
-    ) {
-}
+    )
