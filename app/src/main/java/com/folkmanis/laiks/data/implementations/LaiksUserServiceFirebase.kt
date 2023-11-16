@@ -112,7 +112,6 @@ class LaiksUserServiceFirebase @Inject constructor(
 
     private fun laiksUserFlow(uId: String): Flow<LaiksUser?> =
         collection.document(uId).snapshots().map { document ->
-            Log.d(TAG, "Laiks user ${document.data}")
             document.toObject<LaiksUser>()
         }
 
