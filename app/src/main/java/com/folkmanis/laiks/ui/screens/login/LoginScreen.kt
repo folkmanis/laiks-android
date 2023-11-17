@@ -15,11 +15,14 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,7 +75,9 @@ fun LoginScreen(
                 modifier = Modifier
                     .weight(1f)
                     .padding(32.dp)
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                colorFilter = ColorFilter
+                    .tint(MaterialTheme.colorScheme.primary),
             )
 
             LoginInputPanel(
@@ -84,7 +89,7 @@ fun LoginScreen(
                 onGoogleLogin = onGoogleLogin,
                 onEmailLogin = onEmailLogin,
                 onPasswordReset = onPasswordReset,
-                onRegisterWithEmail=onRegisterWithEmail,
+                onRegisterWithEmail = onRegisterWithEmail,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
@@ -109,7 +114,9 @@ fun LoginScreen(
                 contentDescription = stringResource(R.string.login_title),
                 modifier = Modifier
                     .padding(bottom = 8.dp)
-                    .widthIn(min = 48.dp, max = 128.dp)
+                    .widthIn(min = 48.dp, max = 128.dp),
+                colorFilter = ColorFilter
+                    .tint(MaterialTheme.colorScheme.primary),
             )
 
             LoginInputPanel(
@@ -121,7 +128,7 @@ fun LoginScreen(
                 onGoogleLogin = onGoogleLogin,
                 onEmailLogin = onEmailLogin,
                 onPasswordReset = onPasswordReset,
-                onRegisterWithEmail=onRegisterWithEmail,
+                onRegisterWithEmail = onRegisterWithEmail,
             )
 
             Spacer(modifier = Modifier.weight(2f))
@@ -215,7 +222,7 @@ fun LoginInputPanel(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun LoginScreenVerticalPreview() {
     LaiksTheme {
@@ -234,7 +241,7 @@ fun LoginScreenVerticalPreview() {
     }
 }
 
-@Preview(device = "spec:parent=pixel_5,orientation=landscape")
+@Preview(device = "spec:parent=pixel_5,orientation=landscape", showBackground = true)
 @Composable
 fun LoginScreenHorizontalPreview() {
     LaiksTheme {
@@ -252,3 +259,25 @@ fun LoginScreenHorizontalPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenVerticalDarkPreview() {
+    LaiksTheme(darkTheme = true) {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            LoginScreen(
+                email = "user@example.com",
+                password = "some_password",
+                onSetEmail = {},
+                onSetPassword = {},
+                onGoogleLogin = { },
+                onEmailLogin = { },
+                onPasswordReset = {},
+                busy = false,
+                isHorizontal = false,
+                onRegisterWithEmail = {},
+            )
+        }
+    }
+}
+
