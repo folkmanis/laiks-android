@@ -3,18 +3,14 @@ package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -31,7 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeMarketZonesService
 import com.folkmanis.laiks.model.MarketZone
-import com.folkmanis.laiks.utilities.composables.ButtonRow
+import com.folkmanis.laiks.utilities.composables.DialogWithSaveAndCancel
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,57 +80,38 @@ fun MarketZoneInput(
     uiState: MarketZonesState,
 ) {
 
-    Surface(
-        modifier = modifier
-            .wrapContentWidth()
-            .wrapContentHeight(),
-        shape = MaterialTheme.shapes.large,
-        tonalElevation = AlertDialogDefaults.TonalElevation,
+    DialogWithSaveAndCancel(
+        onCancel = onDismiss,
+        onSave = {
+            val zone = uiState.zones.find { it.id == currentZoneId }
+            zone?.let { onAccept(it) }
+        },
+        saveEnabled = saveEnabled,
+        modifier = modifier,
+        headingText = R.string.market_zone_select,
     ) {
-        Column(modifier = Modifier) {
-            Text(
-                text = stringResource(id = R.string.market_zone_select),
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp),
-            )
-            HorizontalDivider()
-            when (uiState) {
-                is MarketZonesState.Loading ->
-                    LoadingScreen()
-
-                is MarketZonesState.Success -> {
-                    LazyColumn {
-                        items(uiState.zones, key = { it.id }) { zone ->
-                            ListItem(
-                                headlineContent = {
-                                    Text(
-                                        text = "${zone.id}, ${zone.description}",
-                                        modifier = Modifier
-                                            .clickable { onZoneChange(zone.id) }
-                                    )
-                                },
-                                leadingContent = {
-                                    RadioButton(
-                                        selected = zone.id == currentZoneId,
-                                        onClick = { onZoneChange(zone.id) },
-                                    )
-                                }
+        if (uiState.loading) {
+            LoadingScreen()
+        } else {
+            LazyColumn {
+                items(uiState.zones, key = { it.id }) { zone ->
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = "${zone.id}, ${zone.description}",
+                                modifier = Modifier
+                                    .clickable { onZoneChange(zone.id) }
+                            )
+                        },
+                        leadingContent = {
+                            RadioButton(
+                                selected = zone.id == currentZoneId,
+                                onClick = { onZoneChange(zone.id) },
                             )
                         }
-                    }
-
-                    HorizontalDivider()
-                    ButtonRow(
-                        onDismiss = onDismiss,
-                        onAccept = {
-                            val zone = uiState.zones.find { it.id == currentZoneId }
-                            zone?.let { onAccept(it) }
-                        },
-                        saveEnabled = saveEnabled,
                     )
                 }
             }
-
         }
     }
 

@@ -47,13 +47,11 @@ fun UserSettingsScreen(
     uiState: UserSettingsUiState.Success,
     onIncludeVatChange: (Boolean) -> Unit,
     onVatChange: (Double) -> Unit,
+    onNameChange: (String) -> Unit,
     onMarketZoneChange: (MarketZone) -> Unit,
-    onEditAppliances: ()->Unit,
+    onEditAppliances: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    var vatEditorOpen by remember { mutableStateOf(false) }
-    var zoneInputOpen by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -63,52 +61,28 @@ fun UserSettingsScreen(
 
         if (uiState.npUser) {
 
-            Row(
+            NameEdit(
+                name = uiState.name,
+                onNameChange = onNameChange,
                 modifier = Modifier.settingsRow(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-
-                Text(
-                    text = stringResource(id = R.string.market_zone_name),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = uiState.marketZoneName,
-                    style = MaterialTheme.typography.labelLarge,
-                )
-
-                EditButton(
-                    onClick = { zoneInputOpen = true },
-                    modifier = Modifier.padding(start = 8.dp),
-                )
-
-            }
+            )
 
             HorizontalDivider()
 
-            Row(
+            MarketZoneEdit(
+                marketZoneName = uiState.marketZoneName,
+                marketZoneId = uiState.marketZoneId,
+                onMarketZoneChange = onMarketZoneChange,
                 modifier = Modifier.settingsRow(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            )
 
-                Text(
-                    text = stringResource(id = R.string.vat_amount),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = uiState.vatAmount.toPercentString(),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                EditButton(
-                    onClick = { vatEditorOpen = true },
-                    modifier = Modifier.padding(start = 8.dp),
-                )
+            HorizontalDivider()
 
-            }
+            VatEdit(
+                modifier = Modifier.settingsRow(),
+                onVatChange = onVatChange,
+                vatAmount = uiState.vatAmount,
+            )
 
             HorizontalDivider()
 
@@ -116,7 +90,10 @@ fun UserSettingsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.settingsRow(),
             ) {
-                Text(stringResource(R.string.include_vat))
+                Text(
+                    stringResource(R.string.include_vat),
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = uiState.includeVat,
@@ -142,25 +119,132 @@ fun UserSettingsScreen(
 
     }
 
-    if (vatEditorOpen) {
-        VatInputDialog(
-            initialValue = (uiState.vatAmount * 100.0).toLong(),
-            onVatAccept = { vatUpdate ->
-                vatEditorOpen = false
-                onVatChange(vatUpdate / 100.0)
+}
+
+@Composable
+fun NameEdit(
+    modifier: Modifier = Modifier,
+    name: String,
+    onNameChange: (String) -> Unit,
+) {
+
+    var nameInputOpen by remember {
+        mutableStateOf(false)
+    }
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = name,
+            style = MaterialTheme.typography.labelLarge,
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        EditButton(onClick = { nameInputOpen = true })
+    }
+
+    if (nameInputOpen) {
+        TextInputDialog(
+            value = name,
+            onValueChange = { newName ->
+                nameInputOpen = false
+                onNameChange(newName)
             },
-            onDismiss = { vatEditorOpen = false })
+            onDismiss = { nameInputOpen = false },
+            label = R.string.display_name_input_label
+        )
+    }
+
+}
+
+@Composable
+fun MarketZoneEdit(
+    marketZoneName: String,
+    marketZoneId: String,
+    onMarketZoneChange: (MarketZone) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+
+    var zoneInputOpen by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        Text(
+            text = stringResource(id = R.string.market_zone_name),
+            style = MaterialTheme.typography.labelLarge,
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Text(
+            text = marketZoneName,
+            style = MaterialTheme.typography.labelLarge,
+        )
+
+        EditButton(
+            onClick = { zoneInputOpen = true },
+            modifier = Modifier.padding(start = 8.dp),
+        )
+
     }
 
     if (zoneInputOpen) {
         MarketZoneInputDialog(
-            initialZoneId = uiState.marketZoneId,
+            initialZoneId = marketZoneId,
             onZoneAccept = {
                 zoneInputOpen = false
                 onMarketZoneChange(it)
             },
             onDismiss = { zoneInputOpen = false }
         )
+    }
+
+}
+
+@Composable
+fun VatEdit(
+    vatAmount: Double,
+    onVatChange: (Double) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+
+    var vatEditorOpen by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        Text(
+            text = stringResource(id = R.string.vat_amount),
+            style = MaterialTheme.typography.labelLarge,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = vatAmount.toPercentString(),
+            style = MaterialTheme.typography.labelLarge,
+        )
+        EditButton(
+            onClick = { vatEditorOpen = true },
+            modifier = Modifier.padding(start = 8.dp),
+        )
+
+    }
+
+    if (vatEditorOpen) {
+        VatInputDialog(
+            initialValue = (vatAmount * 100.0).toLong(),
+            onVatAccept = { vatUpdate ->
+                vatEditorOpen = false
+                onVatChange(vatUpdate / 100.0)
+            },
+            onDismiss = { vatEditorOpen = false })
     }
 
 }
@@ -202,6 +286,7 @@ fun UserSettingsScreenPreview() {
                 uiState = uiState.copy(marketZoneId = it.id)
             },
             onEditAppliances = {},
+            onNameChange = {},
         )
     }
 }

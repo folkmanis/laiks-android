@@ -1,20 +1,13 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -27,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.NumberInput
+import com.folkmanis.laiks.utilities.composables.DialogWithSaveAndCancel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,56 +70,22 @@ fun VatInputScreen(
     onAccept: () -> Unit,
     saveEnabled: Boolean = false,
 ) {
-    Surface(
-        modifier = modifier
-            .wrapContentWidth()
-            .wrapContentHeight(),
-        shape = MaterialTheme.shapes.large,
-        tonalElevation = AlertDialogDefaults.TonalElevation,
+
+    DialogWithSaveAndCancel(
+        onCancel = onDismiss,
+        onSave = onAccept,
+        modifier = modifier,
+        saveEnabled = saveEnabled,
+        headingText = R.string.vat_amount
     ) {
 
-        Column(
+        NumberInput(
+            value = vatPercent,
+            onValueChange = onVatChange,
+            suffix = { Text(text = "%") },
             modifier = Modifier
-        ) {
-
-            Text(
-                text = stringResource(id = R.string.vat_amount),
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .padding(16.dp)
-            )
-
-            HorizontalDivider()
-
-            NumberInput(
-                value = vatPercent,
-                onValueChange = onVatChange,
-                suffix = { Text(text = "%") },
-                modifier = Modifier
-                    .padding(16.dp)
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        end = 16.dp,
-                        start = 16.dp,
-                        bottom = 8.dp
-                    )
-            ) {
-                TextButton(onClick = onDismiss) {
-                    Text(text = stringResource(id = R.string.action_cancel))
-                }
-                TextButton(
-                    onClick = onAccept,
-                    enabled = saveEnabled,
-                ) {
-                    Text(text = stringResource(id = R.string.action_save))
-                }
-            }
-        }
+                .padding(16.dp)
+        )
 
     }
 

@@ -39,6 +39,16 @@ class UserSettingsViewModel @Inject constructor(
         }
     }
 
+    fun setName(value: String) {
+        val state = uiState.value
+        if (state is UserSettingsUiState.Success && value.isNotEmpty()) {
+            uiState.value = state.copy(name = value)
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser("name", value)
+            }
+        }
+    }
+
     fun setIncludeVat(value: Boolean) {
         val state = uiState.value
         if (state is UserSettingsUiState.Success) {

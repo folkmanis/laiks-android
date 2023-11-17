@@ -48,6 +48,7 @@ fun NavGraphBuilder.mainSettingsScreen(
                     onVatChange = viewModel::setVatAmount,
                     onMarketZoneChange = viewModel::setMarketZoneId,
                     onEditAppliances = onUserAppliances,
+                    onNameChange = viewModel::setName,
                 )
             }
         }

@@ -18,18 +18,18 @@ class MarketZoneInputViewModel @Inject constructor(
 
     val uiState: StateFlow<MarketZonesState> =
         zonesService.marketZonesFlow
-            .map(MarketZonesState::Success)
+            .map { zones ->
+                MarketZonesState(loading = false, zones = zones)
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = MarketZonesState.Loading,
+                initialValue = MarketZonesState(),
             )
 
 }
 
-sealed interface MarketZonesState {
-    object Loading : MarketZonesState
-    data class Success(
-        val zones: List<MarketZone>
-    ) : MarketZonesState
-}
+data class MarketZonesState(
+    val loading: Boolean = true,
+    val zones: List<MarketZone> = emptyList(),
+)
