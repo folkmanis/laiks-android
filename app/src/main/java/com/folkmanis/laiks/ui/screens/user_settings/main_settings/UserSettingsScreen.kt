@@ -7,10 +7,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -50,8 +57,11 @@ fun UserSettingsScreen(
     onNameChange: (String) -> Unit,
     onMarketZoneChange: (MarketZone) -> Unit,
     onEditAppliances: () -> Unit,
+    onDeleteUser: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    val npUser = uiState.npUser
 
     Column(
         modifier = modifier
@@ -59,15 +69,15 @@ fun UserSettingsScreen(
             .verticalScroll(rememberScrollState())
     ) {
 
-        if (uiState.npUser) {
+        NameEdit(
+            name = uiState.name,
+            onNameChange = onNameChange,
+            modifier = Modifier.settingsRow(),
+        )
 
-            NameEdit(
-                name = uiState.name,
-                onNameChange = onNameChange,
-                modifier = Modifier.settingsRow(),
-            )
+        HorizontalDivider()
 
-            HorizontalDivider()
+        if (npUser) {
 
             MarketZoneEdit(
                 marketZoneName = uiState.marketZoneName,
@@ -101,13 +111,22 @@ fun UserSettingsScreen(
                 )
             }
 
-            HorizontalDivider()
+        }
 
-            Row(
-                modifier = Modifier.settingsRow(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-            ) {
+        HorizontalDivider()
+
+        Row(
+            modifier = Modifier.settingsRow(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End,
+        ) {
+
+            DeleteAccountButton(onDelete = onDeleteUser)
+
+            if (npUser) {
+
+                Spacer(modifier = Modifier.width(16.dp))
+
                 FilledTonalButton(
                     onClick = onEditAppliances,
                 ) {
@@ -282,11 +301,12 @@ fun UserSettingsScreenPreview() {
             onVatChange = {
                 uiState = uiState.copy(vatAmount = it)
             },
+            onNameChange = {},
             onMarketZoneChange = {
                 uiState = uiState.copy(marketZoneId = it.id)
             },
             onEditAppliances = {},
-            onNameChange = {},
+            onDeleteUser = {},
         )
     }
 }

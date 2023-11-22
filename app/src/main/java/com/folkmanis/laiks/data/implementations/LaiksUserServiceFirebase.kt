@@ -9,6 +9,7 @@ import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.UserPowerAppliance
 import com.folkmanis.laiks.utilities.NotLoggedInException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserInfo
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
@@ -42,9 +43,7 @@ class LaiksUserServiceFirebase @Inject constructor(
         get() = accountService.firebaseUserFlow
             .flatMapLatest { user ->
                 user?.let {
-                    permissionsService.getPermissionFlow(
-                        it.uid, "npBlocked"
-                    )
+                    permissionsService.npBlockedFlow(it.uid)
                 } ?: flowOf(true)
             }
             .map { npBlocked -> !npBlocked }
@@ -104,6 +103,11 @@ class LaiksUserServiceFirebase @Inject constructor(
                 key to value
             )
         )
+    }
+
+    override suspend fun deleteLaiksUser() {
+//        collection.document(uId).delete().await()
+//        accountService.deleteAccount()
     }
 
     override suspend fun setVatEnabled(value: Boolean) {

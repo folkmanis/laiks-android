@@ -15,6 +15,7 @@ import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCostsScreen
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
 import com.folkmanis.laiks.ui.screens.clock.clockScreen
 import com.folkmanis.laiks.ui.screens.clock.navigateToClock
+import com.folkmanis.laiks.ui.screens.clock.navigateToClockSingleTop
 import com.folkmanis.laiks.ui.screens.login.loginScreen
 import com.folkmanis.laiks.ui.screens.login.navigateToLogin
 import com.folkmanis.laiks.ui.screens.password_reset.navigateToPasswordReset
@@ -53,12 +54,7 @@ fun LaiksAppScreen(
         snackbarHostState = viewModel.snackbarHostState,
         appMenu = {
             UserMenu(
-                onPopToStart = {
-                    navController.navigateToClock {
-                        launchSingleTop = true
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
+                onPopToStart = navController::navigateToClockSingleTop,
                 onUserSettings = {
                     appState.user?.also {
                         viewModel.setTitle(it.name)
@@ -118,9 +114,11 @@ fun LaiksAppScreen(
             userRegistration(
                 setTitle = viewModel::setTitle,
                 onUserRegistered = {
-                    navController.navigateToClock {
-                        launchSingleTop = true
-                        popUpTo(0) { inclusive = true }
+                    appState.user?.also {
+                        viewModel.setTitle(it.name)
+                    }
+                    navController.userSettings {
+                        popUpTo(CLOCK_ROUTE)
                     }
                 }
             )

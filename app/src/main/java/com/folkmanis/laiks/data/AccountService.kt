@@ -16,6 +16,8 @@ interface AccountService {
 
     suspend fun createUserWithEmail(email: String, password: String, name: String)
 
+    suspend fun deleteAccount()
+
     suspend fun signOut()
 
 }

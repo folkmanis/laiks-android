@@ -5,6 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navigation
 import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCosts
+import com.folkmanis.laiks.ui.screens.clock.navigateToClock
+import com.folkmanis.laiks.ui.screens.clock.navigateToClockSingleTop
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceEditScreen
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceNewRoute
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.editAppliance
@@ -29,6 +31,7 @@ fun NavGraphBuilder.userSettingsGraph(
         mainSettingsScreen(
             setTitle = setTitle,
             onUserAppliances = navController::navigateToAppliances,
+            onUserDeleted = navController::navigateToClockSingleTop,
         )
 
         appliancesScreen(

@@ -1,11 +1,10 @@
 package com.folkmanis.laiks.data.implementations
 
-import com.folkmanis.laiks.PERMISSIONS_COLLECTION
+import com.folkmanis.laiks.ADMINS_COLLECTION
+import com.folkmanis.laiks.NP_BLOCKED_COLLECTION
 import com.folkmanis.laiks.data.PermissionsService
-import com.folkmanis.laiks.model.Permissions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
-import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -15,23 +14,30 @@ class PermissionsFirebase @Inject constructor(
     firestore: FirebaseFirestore,
 ) : PermissionsService {
 
-    private val collection = firestore.collection(PERMISSIONS_COLLECTION)
+    private val adminsCollection = firestore.collection(ADMINS_COLLECTION)
+    private val npBlockedCollection = firestore.collection(NP_BLOCKED_COLLECTION)
 
-    override suspend fun getPermissions(uId: String): Permissions =
-        collection.document(uId)
-            .get()
-            .await()
-            .toObject<Permissions>() ?: Permissions()
+    override fun isAdminFlow(uId: String): Flow<Boolean> = adminsCollection
+        .document(uId)
+        .snapshots()
+        .map { snapshot -> snapshot.exists() }
 
-    override fun getPermissionFlow(uId: String, key: String): Flow<Boolean> =
-        collection.document(uId)
-            .snapshots()
-            .map { snapshot-> snapshot.get(key) == true }
+    override suspend fun isAdmin(uId: String): Boolean = adminsCollection
+        .document(uId)
+        .get()
+        .await()
+        .exists()
 
-    override suspend fun updatePermission(uId: String, field: String, value: Any) {
-        collection.document(uId)
-            .update(field, value)
-    }
+    override fun npBlockedFlow(uId: String): Flow<Boolean> = npBlockedCollection
+        .document(uId)
+        .snapshots()
+        .map { snapshot -> snapshot.exists() }
+
+    override suspend fun npBlocked(uId: String): Boolean = npBlockedCollection
+        .document(uId)
+        .get()
+        .await()
+        .exists()
 
     companion object {
         @Suppress("unused")

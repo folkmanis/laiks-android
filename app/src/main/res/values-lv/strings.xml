@@ -85,4 +85,6 @@
     <string name="display_name_input_error">Jānorāda vārds</string>
     <string name="password_repeat_not_matching">Perolēm jāsakrīt</string>
     <string name="appliance_costs_screen_open">Atvērs %1$s izmaksas katrai stundai</string>
+    <string name="user_delete_account_button">Dzēst kontu</string>
+    <string name="user_delete_confirmation">Vai tiešām vēlaties dzēst lietotāja kontu un ar to saistītos iestatījumus?</string>
 </resources>
