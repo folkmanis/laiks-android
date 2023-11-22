@@ -62,3 +62,11 @@ fun NavGraphBuilder.clockScreen(
 fun NavController.navigateToClock(builder: NavOptionsBuilder.() -> Unit = {}) {
     this.navigate(CLOCK_ROUTE, builder)
 }
+
+fun NavController.navigateToClockSingleTop(builder: NavOptionsBuilder.() -> Unit = {}) {
+    this.navigate(CLOCK_ROUTE) {
+        launchSingleTop = true
+        popUpTo(0) { inclusive = true }
+        builder()
+    }
+}

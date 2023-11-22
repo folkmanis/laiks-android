@@ -9,9 +9,12 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,24 +32,30 @@ class UserMenuViewModel @Inject constructor(
         }
     }
 
-    private val _uiState = MutableStateFlow<UserMenuUiState>(UserMenuUiState.NotLoggedIn)
-    val uiState: StateFlow<UserMenuUiState> = _uiState.asStateFlow()
+    private val userFlow = MutableStateFlow<LaiksUser?>(null)
 
-    suspend fun setUser(laiksUser: LaiksUser?) {
-        if (laiksUser == null) {
-            _uiState.value = UserMenuUiState.NotLoggedIn
-        } else {
-            val user = accountService.authUser
-            val permissions = permissionsService.getPermissions(laiksUser.id)
-            _uiState.value = UserMenuUiState.LoggedIn(
-                isAdmin = permissions.admin,
-                isPricesAllowed = !permissions.npBlocked,
-                displayName = laiksUser.name,
-                photoUrl = user?.photoUrl,
-                includeVat = laiksUser.includeVat,
-                userId = laiksUser.id,
-            )
-        }
+    fun setUser(laiksUser: LaiksUser?) {
+        userFlow.value = laiksUser
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val uiState: Flow<UserMenuUiState> = userFlow.flatMapLatest { user ->
+        user?.let { laiksUser ->
+            combine(
+                permissionsService.npBlockedFlow(laiksUser.id),
+                permissionsService.isAdminFlow(laiksUser.id)
+            ) { npBlocked, isAdmin ->
+                UserMenuUiState.LoggedIn(
+                    isAdmin = isAdmin,
+                    isPricesAllowed = !npBlocked,
+                    photoUrl = accountService.authUser?.photoUrl,
+                    displayName = laiksUser.name,
+                    includeVat = laiksUser.includeVat,
+                    userId = laiksUser.id,
+                )
+            }
+        } as Flow<UserMenuUiState>?
+            ?: flowOf(UserMenuUiState.NotLoggedIn) as Flow<UserMenuUiState>
     }
 
     fun logout(context: Context) {

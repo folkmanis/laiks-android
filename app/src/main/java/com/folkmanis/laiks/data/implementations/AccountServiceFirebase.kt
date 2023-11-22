@@ -53,9 +53,16 @@ class AccountServiceFirebase @Inject constructor(
         }
     }
 
+    override suspend fun deleteAccount() {
+        authUser?.run {
+            delete().await()
+        }
+    }
+
     override suspend fun signOut() {
         auth.signOut()
     }
+
     private fun setLanguage() {
         val locale = Locale.getDefault().language
         auth.setLanguageCode(locale)

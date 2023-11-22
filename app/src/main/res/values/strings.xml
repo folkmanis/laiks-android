@@ -40,6 +40,8 @@
     <string name="users_menu">Edit Users</string>
     <string name="user_editor">User Setup</string>
     <string name="user_not_found">User "%1$s" not found in database!</string>
+    <string name="user_delete_account_button">Delete account</string>
+    <string name="user_delete_confirmation">Do you really want delete your account and all settings?</string>
     <string name="np_allowed_checkbox">Allowed access to utility prices</string>
     <string name="is_admin_checkbox">Administrator</string>
     <string name="np_upload_allowed_checkbox">Can update utility prices</string>

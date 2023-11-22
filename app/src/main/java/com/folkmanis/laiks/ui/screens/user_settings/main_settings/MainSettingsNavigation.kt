@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -10,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
@@ -19,6 +21,7 @@ const val ROUTE = "MainSettings"
 fun NavGraphBuilder.mainSettingsScreen(
     setTitle: (String) -> Unit,
     onUserAppliances: () -> Unit,
+    onUserDeleted: () -> Unit,
 ) {
 
     composable(
@@ -33,10 +36,17 @@ fun NavGraphBuilder.mainSettingsScreen(
             .collectAsStateWithLifecycle()
             .value
 
-        val title =composableTitle(state = uiState)
+        val title = composableTitle(state = uiState)
         LaunchedEffect(title) {
             setTitle(title)
         }
+
+        val loginLauncher = rememberLauncherForActivityResult(
+            FirebaseAuthUIActivityResultContract()
+        ) { result ->
+//            viewModel.onLoginResult(result, onLogin)
+        }
+
 
         when (uiState) {
             is UserSettingsUiState.Loading -> LoadingScreen()
@@ -49,6 +59,9 @@ fun NavGraphBuilder.mainSettingsScreen(
                     onMarketZoneChange = viewModel::setMarketZoneId,
                     onEditAppliances = onUserAppliances,
                     onNameChange = viewModel::setName,
+                    onDeleteUser = {
+                        viewModel.deleteAccount(onUserDeleted)
+                    }
                 )
             }
         }
