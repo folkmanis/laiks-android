@@ -1,8 +1,10 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.firebase.ui.auth.AuthUI
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
@@ -101,21 +103,23 @@ class UserSettingsViewModel @Inject constructor(
         }
     }
 
-    fun deleteAccount(onDeleted: () -> Unit) {
+    fun deleteAccount(context: Context, onDeleted: () -> Unit) {
 
         viewModelScope.launch {
             val user = accountService.authUser!!
             val token = user.getIdToken(true).await()
             Log.d(TAG, "Provider: ${token?.signInProvider}")
             if (token.signInProvider == GoogleAuthProvider.PROVIDER_ID) {
-                val credential = GoogleAuthProvider.getCredential(token.token, null)
-                Log.d(TAG, "Credential: ${credential}")
-                val result = user.reauthenticate(credential).await()
-                Log.d(TAG, "Google result: ${result}")
+                AuthUI.getInstance().delete(context).await()
+                onDeleted()
+
+//                val credential = GoogleAuthProvider.getCredential(token.token, null)
+//                Log.d(TAG, "Credential: ${credential}")
+//                val result = user.reauthenticate(credential).await()
+//                Log.d(TAG, "Google result: ${result}")
             }
 
 //            laiksUserService.deleteLaiksUser()
-            onDeleted()
         }
     }
 

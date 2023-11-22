@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,6 +48,7 @@ fun NavGraphBuilder.mainSettingsScreen(
 //            viewModel.onLoginResult(result, onLogin)
         }
 
+        val context = LocalContext.current
 
         when (uiState) {
             is UserSettingsUiState.Loading -> LoadingScreen()
@@ -60,7 +62,7 @@ fun NavGraphBuilder.mainSettingsScreen(
                     onEditAppliances = onUserAppliances,
                     onNameChange = viewModel::setName,
                     onDeleteUser = {
-                        viewModel.deleteAccount(onUserDeleted)
+                        viewModel.deleteAccount(context, onUserDeleted)
                     }
                 )
             }
