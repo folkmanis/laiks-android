@@ -18,6 +18,7 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.folkmanis.laiks.utilities.oauth.getGoogleSignInIntent
+import com.google.firebase.auth.FirebaseUser
 
 const val ROUTE = "MainSettings"
 
@@ -59,6 +60,20 @@ fun NavGraphBuilder.mainSettingsScreen(
                     )
                 }
             )
+
+        uiState.shouldReAuthenticateAndDelete.also { user ->
+            if (user is FirebaseUser) {
+                ReAuthenticate(
+                    onReAuthenticated = {
+                        viewModel.deleteAccount(
+                            onDeleted = onUserDeleted,
+                        )
+                    },
+                    onCancel = viewModel::cancelReLogin,
+                    user = user,
+                )
+            }
+        }
 
     }
 }

@@ -130,7 +130,9 @@ class UserSettingsViewModel @Inject constructor(
         viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
             if (throwable is FirebaseAuthRecentLoginRequiredException) {
                 Log.d(TAG, "Must relogin")
-                _uiState.update { state -> state.copy(shouldReAuthenticateAndDelete = true) }
+                _uiState.update { state ->
+                    state.copy(shouldReAuthenticateAndDelete = accountService.authUser)
+                }
             }
         }) {
 
@@ -138,7 +140,14 @@ class UserSettingsViewModel @Inject constructor(
             accountService.deleteAccount()
             Log.d(TAG, "User $laiksUserName deleted")
             snackbarManager.showMessage(R.string.user_deleted_success, laiksUserName)
+            _uiState.update { state -> state.copy(shouldReAuthenticateAndDelete = null) }
             onDeleted()
+        }
+    }
+
+    fun cancelReLogin() {
+        _uiState.update { state ->
+            state.copy(shouldReAuthenticateAndDelete = null)
         }
     }
 
