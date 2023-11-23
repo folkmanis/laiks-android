@@ -59,7 +59,7 @@ fun UserMenu(
         )
     } else {
         NotLoggedInUserMenu(
-            onLogin = { loginLauncher.launch(getGoogleSignInIntent())},
+            onLogin = onLogin,
             modifier = modifier,
         )
     }

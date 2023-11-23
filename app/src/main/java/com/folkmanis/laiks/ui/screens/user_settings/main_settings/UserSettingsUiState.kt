@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
 import com.folkmanis.laiks.data.fake.FakeLaiksUserService
+import com.google.firebase.auth.FirebaseUser
 
 data class UserSettingsUiState(
     val loading: Boolean = true,
@@ -12,7 +13,7 @@ data class UserSettingsUiState(
     val vatAmount: Double = 0.0,
     val npUser: Boolean = false,
     val marketZoneName: String = "",
-    val shouldReAuthenticateAndDelete: Boolean = false,
+    val shouldReAuthenticateAndDelete: FirebaseUser? = null,
 ) {
     companion object {
         private val user = FakeLaiksUserService.laiksUser

@@ -88,4 +88,6 @@
     <string name="appliance_costs_screen_open">Atvērs %1$s izmaksas katrai stundai</string>
     <string name="user_delete_account_button">Dzēst kontu</string>
     <string name="user_delete_confirmation">Vai tiešām vēlaties dzēst lietotāja kontu un ar to saistītos iestatījumus? Iespējams, jums vēlreiz vajadzēs apstiprināt savu lietotājvārdu un paroli.</string>
+    <string name="password_input_dialog_title">Parole</string>
+    <string name="password_input_dialog_text">Vēlreiz jāievada lietotāja %1$s parole, lai veiktu nākamo darbību</string>
 </resources>
