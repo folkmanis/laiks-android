@@ -2,29 +2,22 @@ package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
 import com.folkmanis.laiks.data.fake.FakeLaiksUserService
 
-sealed interface UserSettingsUiState {
-
-    object Loading : UserSettingsUiState
-
-    data class Error(
-        val reason: String,
-        val exception: Throwable,
-    ) : UserSettingsUiState
-
-    data class Success(
-        val id: String,
-        val email: String,
-        val name: String,
-        val marketZoneId: String,
-        val includeVat: Boolean,
-        val vatAmount: Double,
-        val npUser: Boolean,
-        val marketZoneName : String,
-    ) : UserSettingsUiState
-
+data class UserSettingsUiState(
+    val loading: Boolean = true,
+    val id: String? = null,
+    val email: String = "",
+    val name: String = "",
+    val marketZoneId: String = "LV",
+    val includeVat: Boolean = true,
+    val vatAmount: Double = 0.0,
+    val npUser: Boolean = false,
+    val marketZoneName: String = "",
+    val shouldReAuthenticateAndDelete: Boolean = false,
+) {
     companion object {
         private val user = FakeLaiksUserService.laiksUser
-        val testUiState = Success(
+        val testUiState = UserSettingsUiState(
+            loading = false,
             name = user.name,
             email = user.email,
             id = user.id,

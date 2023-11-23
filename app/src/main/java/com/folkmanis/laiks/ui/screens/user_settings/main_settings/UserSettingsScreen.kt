@@ -51,7 +51,7 @@ fun Modifier.settingsRow(): Modifier =
 
 @Composable
 fun UserSettingsScreen(
-    uiState: UserSettingsUiState.Success,
+    uiState: UserSettingsUiState,
     onIncludeVatChange: (Boolean) -> Unit,
     onVatChange: (Double) -> Unit,
     onNameChange: (String) -> Unit,
