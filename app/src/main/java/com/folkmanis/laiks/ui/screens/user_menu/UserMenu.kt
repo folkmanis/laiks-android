@@ -1,12 +1,15 @@
 package com.folkmanis.laiks.ui.screens.user_menu
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.model.LaiksUser
+import com.folkmanis.laiks.utilities.oauth.getGoogleSignInIntent
 
 
 @Composable
@@ -30,6 +33,13 @@ fun UserMenu(
 
     val context = LocalContext.current
 
+    val loginLauncher = rememberLauncherForActivityResult(
+        FirebaseAuthUIActivityResultContract()
+    ) { result ->
+        viewModel.onLoginResult(result, onLogin)
+    }
+
+
     if (uiState is UserMenuUiState.LoggedIn) {
         LoggedInUserMenu(
             onLogout = {
@@ -49,7 +59,7 @@ fun UserMenu(
         )
     } else {
         NotLoggedInUserMenu(
-            onLogin = onLogin,
+            onLogin = { loginLauncher.launch(getGoogleSignInIntent())},
             modifier = modifier,
         )
     }

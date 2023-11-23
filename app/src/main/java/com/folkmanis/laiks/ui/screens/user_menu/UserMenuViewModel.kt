@@ -1,13 +1,17 @@
 package com.folkmanis.laiks.ui.screens.user_menu
 
+import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
+import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +27,7 @@ class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
     private val laiksUserService: LaiksUserService,
     private val permissionsService: PermissionsService,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
 
@@ -57,6 +62,24 @@ class UserMenuViewModel @Inject constructor(
         } as Flow<UserMenuUiState>?
             ?: flowOf(UserMenuUiState.NotLoggedIn) as Flow<UserMenuUiState>
     }
+
+    fun onLoginResult(result: FirebaseAuthUIAuthenticationResult, afterLogin: () -> Unit) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            loginSuccess(afterLogin)
+        }
+    }
+
+    private fun loginSuccess(afterLogin: () -> Unit) {
+        viewModelScope.launch {
+            val user = accountService.authUser
+            if (user != null && !laiksUserService.userExists(user.uid)) {
+                laiksUserService.createLaiksUser(user)
+            }
+            snackbarManager.showMessage(R.string.login_success)
+            afterLogin()
+        }
+    }
+
 
     fun logout(context: Context) {
         AuthUI.getInstance()

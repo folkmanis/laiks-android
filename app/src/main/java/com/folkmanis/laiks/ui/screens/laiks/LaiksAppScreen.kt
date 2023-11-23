@@ -68,9 +68,7 @@ fun LaiksAppScreen(
                         popUpTo(CLOCK_ROUTE)
                     }
                 },
-                onLogin = {
-                    navController.navigateToLogin()
-                },
+                onLogin = navController::navigateToClockSingleTop,
                 user = appState.user,
             )
         },

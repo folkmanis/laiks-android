@@ -19,6 +19,7 @@
     <string name="users_menu">Lietotāji</string>
     <string name="user_editor">Lietotāja iestatījumi</string>
     <string name="user_not_found">Lietotājs \"%1$s\" nav atrasts</string>
+    <string name="user_deleted_success">Lietotājs %1$s izdzēsts</string>
     <string name="np_allowed_checkbox">Ir pieeja elektrības cenām</string>
     <string name="is_admin_checkbox">Administratora tiesības</string>
     <string name="alert_ok">Apstiprināt</string>
@@ -86,5 +87,5 @@
     <string name="password_repeat_not_matching">Perolēm jāsakrīt</string>
     <string name="appliance_costs_screen_open">Atvērs %1$s izmaksas katrai stundai</string>
     <string name="user_delete_account_button">Dzēst kontu</string>
-    <string name="user_delete_confirmation">Vai tiešām vēlaties dzēst lietotāja kontu un ar to saistītos iestatījumus?</string>
+    <string name="user_delete_confirmation">Vai tiešām vēlaties dzēst lietotāja kontu un ar to saistītos iestatījumus? Iespējams, jums vēlreiz vajadzēs apstiprināt savu lietotājvārdu un paroli.</string>
 </resources>
