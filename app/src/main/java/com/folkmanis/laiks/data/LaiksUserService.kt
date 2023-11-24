@@ -22,8 +22,6 @@ interface LaiksUserService {
 
     suspend fun updateLaiksUser(key: String, value: Any)
 
-    suspend fun deleteLaiksUser()
-
     suspend fun updateLaiksUser(update: HashMap<String, Any>)
 
     suspend fun userExists(id: String): Boolean

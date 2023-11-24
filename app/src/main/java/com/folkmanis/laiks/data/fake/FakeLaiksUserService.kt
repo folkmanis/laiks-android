@@ -23,10 +23,6 @@ class FakeLaiksUserService : LaiksUserService {
 
     }
 
-    override suspend fun deleteLaiksUser() {
-
-    }
-
     override suspend fun laiksUser(): LaiksUser =
         laiksUser
 

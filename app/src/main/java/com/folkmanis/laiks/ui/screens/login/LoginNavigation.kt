@@ -20,6 +20,7 @@ const val LOGIN_ROUTE = "Login"
 fun NavGraphBuilder.loginScreen(
     onLogin: () -> Unit,
     onPasswordReset: () -> Unit,
+    onLaiksUserCreated: () -> Unit,
     onRegisterWithEmail: () -> Unit,
     setTitle: (String) -> Unit,
     windowWidth: WindowWidthSizeClass,
@@ -45,7 +46,7 @@ fun NavGraphBuilder.loginScreen(
         val loginLauncher = rememberLauncherForActivityResult(
             FirebaseAuthUIActivityResultContract()
         ) { result ->
-            viewModel.onLoginResult(result, onLogin)
+            viewModel.onLoginResult(result, onLogin, onLaiksUserCreated)
         }
 
 
@@ -56,7 +57,7 @@ fun NavGraphBuilder.loginScreen(
             onSetEmail = viewModel::setEmail,
             onSetPassword = viewModel::setPassword,
             onGoogleLogin = { loginLauncher.launch(getGoogleSignInIntent()) },
-            onEmailLogin = { viewModel.loginWithEmail(onLogin) },
+            onEmailLogin = { viewModel.loginWithEmail(onLogin, onLaiksUserCreated) },
             onPasswordReset = onPasswordReset,
             isHorizontal = isHorizontal,
             onRegisterWithEmail = onRegisterWithEmail,

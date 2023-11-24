@@ -58,24 +58,17 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun onLoginResult(result: FirebaseAuthUIAuthenticationResult, afterLogin: () -> Unit) {
+    fun onLoginResult(
+        result: FirebaseAuthUIAuthenticationResult,
+        afterLogin: () -> Unit,
+        onLaiksUserCreated: () -> Unit
+    ) {
         if (result.resultCode == Activity.RESULT_OK) {
-            loginSuccess(afterLogin)
+            loginSuccess(afterLogin, onLaiksUserCreated)
         }
     }
 
-    private fun loginSuccess(afterLogin: () -> Unit) {
-        viewModelScope.launch {
-            val user = accountService.authUser
-            if (user != null && !laiksUserService.userExists(user.uid)) {
-                laiksUserService.createLaiksUser(user)
-            }
-            snackbarManager.showMessage(R.string.login_success)
-            afterLogin()
-        }
-    }
-
-    fun loginWithEmail(afterLogin: () -> Unit) {
+    fun loginWithEmail(afterLogin: () -> Unit, onLaiksUserCreated: () -> Unit) {
         if (!email.isValidEmail()) {
             snackbarManager.showMessage(R.string.email_input_error)
             return
@@ -96,13 +89,26 @@ class LoginViewModel @Inject constructor(
             accountService.loginWithEmail(email, password)
             accountService.authUser?.also { user ->
                 if (user.isEmailVerified) {
-                    loginSuccess(afterLogin)
+                    loginSuccess(afterLogin, onLaiksUserCreated)
                 } else {
                     snackbarManager.showMessage(R.string.email_not_verified)
                     accountService.signOut()
                 }
             }
             isBusy = false
+        }
+    }
+
+    private fun loginSuccess(afterLogin: () -> Unit, onLaiksUserCreated: () -> Unit) {
+        viewModelScope.launch {
+            val user = accountService.authUser
+            snackbarManager.showMessage(R.string.login_success)
+            if (user != null && !laiksUserService.userExists(user.uid)) {
+                laiksUserService.createLaiksUser(user)
+                onLaiksUserCreated()
+            } else {
+                afterLogin()
+            }
         }
     }
 
