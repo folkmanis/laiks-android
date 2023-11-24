@@ -13,7 +13,7 @@ data class UserSettingsUiState(
     val vatAmount: Double = 0.0,
     val npUser: Boolean = false,
     val marketZoneName: String = "",
-    val shouldReAuthenticateAndDelete: FirebaseUser? = null,
+    val userToReAuthenticateAndDelete: FirebaseUser? = null,
 ) {
     companion object {
         private val user = FakeLaiksUserService.laiksUser

@@ -1,23 +1,15 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
-import com.folkmanis.laiks.utilities.oauth.getGoogleSignInIntent
 import com.google.firebase.auth.FirebaseUser
 
 const val ROUTE = "MainSettings"
@@ -61,7 +53,7 @@ fun NavGraphBuilder.mainSettingsScreen(
                 }
             )
 
-        uiState.shouldReAuthenticateAndDelete.also { user ->
+        uiState.userToReAuthenticateAndDelete.also { user ->
             if (user is FirebaseUser) {
                 ReAuthenticate(
                     onReAuthenticated = {

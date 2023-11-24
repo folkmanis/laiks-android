@@ -43,6 +43,7 @@
     <string name="user_delete_account_button">Delete account</string>
     <string name="user_delete_confirmation">Do you really want delete your account and all settings? You can be asked to login again to confirm your account deletion.</string>
     <string name="user_deleted_success">User "%1$s" deleted successfully</string>
+    <string name="user_not_deleted">User "%1$s" not deleted</string>
     <string name="password_input_dialog_title">Password</string>
     <string name="password_input_dialog_text">You are required to input password for account "%1$s" to perform required action</string>
     <string name="np_allowed_checkbox">Allowed access to utility prices</string>

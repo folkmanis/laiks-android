@@ -1,45 +1,30 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.firebase.ui.auth.AuthUI
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
-import com.folkmanis.laiks.data.PermissionsService
-import com.folkmanis.laiks.data.implementations.LaiksUserServiceFirebase
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
-import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
-import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserSettingsViewModel @Inject constructor(
     private val zonesService: MarketZonesService,
     private val laiksUserService: LaiksUserService,
-    private val permissionsService: PermissionsService,
     private val snackbarManager: SnackbarManager,
     private val accountService: AccountService,
 ) : ViewModel() {
@@ -65,7 +50,6 @@ class UserSettingsViewModel @Inject constructor(
                 _uiState.update { state ->
                     state.copy(npUser = npAllowed)
                 }
-                Log.d(TAG, "NpUser: $npAllowed")
             }
 
         }
@@ -129,26 +113,28 @@ class UserSettingsViewModel @Inject constructor(
     fun deleteAccount(onDeleted: () -> Unit) {
         viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
             if (throwable is FirebaseAuthRecentLoginRequiredException) {
-                Log.d(TAG, "Must relogin")
+                Log.d(TAG, "Must re-login")
                 _uiState.update { state ->
-                    state.copy(shouldReAuthenticateAndDelete = accountService.authUser)
+                    state.copy(userToReAuthenticateAndDelete = accountService.authUser)
                 }
-            }
+            } else throw throwable
         }) {
 
-            val laiksUserName = laiksUserService.laiksUser().name
+//            if (_uiState.value.userToReAuthenticateAndDelete == null)
+//                throw FirebaseAuthRecentLoginRequiredException("ReLogin", "laiksUserName")
             accountService.deleteAccount()
-            Log.d(TAG, "User $laiksUserName deleted")
-            snackbarManager.showMessage(R.string.user_deleted_success, laiksUserName)
-            _uiState.update { state -> state.copy(shouldReAuthenticateAndDelete = null) }
+            Log.d(TAG, "User ${uiState.value.email} deleted")
+            snackbarManager.showMessage(R.string.user_deleted_success, uiState.value.email)
+            _uiState.update { state -> state.copy(userToReAuthenticateAndDelete = null) }
             onDeleted()
         }
     }
 
     fun cancelReLogin() {
         _uiState.update { state ->
-            state.copy(shouldReAuthenticateAndDelete = null)
+            state.copy(userToReAuthenticateAndDelete = null)
         }
+        snackbarManager.showMessage(R.string.user_not_deleted, uiState.value.email)
     }
 
     private suspend fun updateStateWithUser(user: LaiksUser) {
