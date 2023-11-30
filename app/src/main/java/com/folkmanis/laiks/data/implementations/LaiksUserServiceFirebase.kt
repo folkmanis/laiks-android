@@ -42,7 +42,9 @@ class LaiksUserServiceFirebase @Inject constructor(
         get() = accountService.firebaseUserFlow
             .flatMapLatest { user ->
                 user?.let {
-                    permissionsService.npBlockedFlow(it.uid)
+                    if (it.isEmailVerified)
+                        permissionsService.npBlockedFlow(it.uid)
+                    else null
                 } ?: flowOf(true)
             }
             .map { npBlocked -> !npBlocked }

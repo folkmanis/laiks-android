@@ -7,6 +7,7 @@ data class UserSettingsUiState(
     val loading: Boolean = true,
     val id: String? = null,
     val email: String = "",
+    val emailVerified: Boolean = false,
     val name: String = "",
     val marketZoneId: String = "LV",
     val includeVat: Boolean = true,

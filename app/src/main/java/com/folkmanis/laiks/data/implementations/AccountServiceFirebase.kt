@@ -48,6 +48,11 @@ class AccountServiceFirebase @Inject constructor(
                 displayName = name
             }
             user.updateProfile(profileUpdate).await()
+        }
+    }
+
+    override suspend fun sendEmailVerification() {
+        authUser?.also { user ->
             setLanguage()
             user.sendEmailVerification().await()
         }

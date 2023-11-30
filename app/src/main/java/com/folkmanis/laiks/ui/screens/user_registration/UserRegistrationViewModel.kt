@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.folkmanis.laiks.utilities.ext.isValidPassword
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class UserRegistrationViewModel @Inject constructor(
     private val accountService: AccountService,
     private val snackbarManager: SnackbarManager,
+    private val laiksUserService: LaiksUserService,
 ) : ViewModel() {
 
     var uiState = mutableStateOf(UserRegistrationUiState())
@@ -48,7 +50,8 @@ class UserRegistrationViewModel @Inject constructor(
 
     fun setPasswordRepeat(newPassword: String) {
         if (newPassword.isEmpty() || newPassword.isValidPassword())
-            uiState.value = uiState.value.copy(passwordRepeat = newPassword, passwordRepeatPristine = false)
+            uiState.value =
+                uiState.value.copy(passwordRepeat = newPassword, passwordRepeatPristine = false)
     }
 
     fun setDisplayName(newName: String) {
@@ -67,9 +70,10 @@ class UserRegistrationViewModel @Inject constructor(
             }
         ) {
             accountService.createUserWithEmail(email, password, displayName)
+            accountService.sendEmailVerification()
             accountService.authUser?.also { user ->
-                snackbarManager.showMessage(R.string.user_registered,user.email!!)
-                accountService.signOut()
+                laiksUserService.createLaiksUser(user)
+                snackbarManager.showMessage(R.string.user_registered, user.email!!)
                 onSuccess()
             }
             busy = false

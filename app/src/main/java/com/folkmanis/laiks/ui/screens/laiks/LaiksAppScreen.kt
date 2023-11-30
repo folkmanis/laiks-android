@@ -114,7 +114,7 @@ fun LaiksAppScreen(
                     appState.user?.also {
                         viewModel.setTitle(it.name)
                     }
-                    navController.navigateToLogin {
+                    navController.userSettings {
                         popUpTo(CLOCK_ROUTE)
                     }
                 }

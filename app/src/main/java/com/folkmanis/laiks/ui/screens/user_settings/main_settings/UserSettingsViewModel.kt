@@ -15,7 +15,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,6 +54,18 @@ class UserSettingsViewModel @Inject constructor(
                 }
             }
 
+        }
+
+        viewModelScope.launch {
+            accountService.firebaseUserFlow
+                .map { user ->
+                    user?.isEmailVerified ?: false
+                }
+                .collect { emailVerified ->
+                    _uiState.update { state ->
+                        state.copy(emailVerified = emailVerified)
+                    }
+                }
         }
     }
 
@@ -135,6 +149,13 @@ class UserSettingsViewModel @Inject constructor(
             state.copy(userToReAuthenticateAndDelete = null)
         }
         snackbarManager.showMessage(R.string.user_not_deleted, uiState.value.email)
+    }
+
+    fun sendEmailVerification() {
+        viewModelScope.launch {
+            accountService.sendEmailVerification()
+            snackbarManager.showMessage(R.string.email_verification_sent)
+        }
     }
 
     private suspend fun updateStateWithUser(user: LaiksUser) {

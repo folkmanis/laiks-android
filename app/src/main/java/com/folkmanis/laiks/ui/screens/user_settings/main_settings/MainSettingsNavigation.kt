@@ -46,11 +46,12 @@ fun NavGraphBuilder.mainSettingsScreen(
                 onMarketZoneChange = viewModel::setMarketZoneId,
                 onEditAppliances = onUserAppliances,
                 onNameChange = viewModel::setName,
+                onSendEmailVerification = viewModel::sendEmailVerification,
                 onDeleteUser = {
                     viewModel.deleteAccount(
                         onDeleted = onUserDeleted,
                     )
-                }
+                },
             )
 
         uiState.userToReAuthenticateAndDelete.also { user ->
