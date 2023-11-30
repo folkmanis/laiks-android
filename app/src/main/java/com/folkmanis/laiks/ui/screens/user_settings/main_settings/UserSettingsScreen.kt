@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -58,6 +60,7 @@ fun UserSettingsScreen(
     onMarketZoneChange: (MarketZone) -> Unit,
     onEditAppliances: () -> Unit,
     onDeleteUser: () -> Unit,
+    onSendEmailVerification: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -68,6 +71,15 @@ fun UserSettingsScreen(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
+
+        EmailRow(
+            email = uiState.email,
+            emailVerified = uiState.emailVerified,
+            onSendEmailVerification = onSendEmailVerification,
+            modifier = Modifier.settingsRow(),
+        )
+
+        HorizontalDivider()
 
         NameEdit(
             name = uiState.name,
@@ -177,6 +189,55 @@ fun NameEdit(
         )
     }
 
+}
+
+@Composable
+fun EmailRow(
+    modifier: Modifier = Modifier,
+    email: String,
+    emailVerified: Boolean,
+    onSendEmailVerification: () -> Unit
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = email,
+                color = if (emailVerified)
+                    MaterialTheme.colorScheme.onBackground
+                else MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.labelLarge,
+            )
+            if (!emailVerified) {
+                Text(
+                    text = stringResource(R.string.email_not_verified),
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+        }
+
+        if (!emailVerified) {
+            OutlinedIconButton(
+                onClick = onSendEmailVerification,
+                modifier = modifier
+                    .padding(start = 8.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Email,
+                    contentDescription = stringResource(R.string.email_verification_button_text),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+
+    }
 }
 
 @Composable
@@ -307,6 +368,7 @@ fun UserSettingsScreenPreview() {
             },
             onEditAppliances = {},
             onDeleteUser = {},
+            onSendEmailVerification = {},
         )
     }
 }

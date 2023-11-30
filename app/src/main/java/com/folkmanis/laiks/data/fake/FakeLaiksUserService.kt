@@ -87,6 +87,7 @@ class FakeLaiksUserService : LaiksUserService {
             vatAmount = 0.21,
             includeVat = true,
             appliances = testAppliances,
+            email = "example@example.com"
         )
 
         private val laiksAdmin = LaiksUser(

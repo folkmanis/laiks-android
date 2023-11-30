@@ -17,7 +17,9 @@
     <string name="login_fail">Login failed</string>
     <string name="email_input_error">Email not valid</string>
     <string name="email_not_verified">Email not verified. Check your inbox and perform required actions!</string>
+    <string name="email_verification_sent">Email verification sent to "%1$s"</string>
     <string name="email_input_label">e-mail</string>
+    <string name="email_verification_button_text">Verify!</string>
     <string name="password_input_label">Password</string>
     <string name="password_input_error">Password must contain upper and lower case letters and numbers</string>
     <string name="password_repeat_not_matching">Passwords should match</string>

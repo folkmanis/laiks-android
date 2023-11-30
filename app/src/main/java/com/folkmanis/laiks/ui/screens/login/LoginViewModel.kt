@@ -88,12 +88,10 @@ class LoginViewModel @Inject constructor(
         ) {
             accountService.loginWithEmail(email, password)
             accountService.authUser?.also { user ->
-                if (user.isEmailVerified) {
-                    loginSuccess(afterLogin, onLaiksUserCreated)
-                } else {
+                if (!user.isEmailVerified) {
                     snackbarManager.showMessage(R.string.email_not_verified)
-                    accountService.signOut()
                 }
+                loginSuccess(afterLogin, onLaiksUserCreated)
             }
             isBusy = false
         }
