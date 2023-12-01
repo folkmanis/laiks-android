@@ -4,12 +4,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -46,9 +50,10 @@ fun Double.toPercentString(): String =
     "${(this * 100).toFormattedDecimals()}%"
 
 fun Modifier.settingsRow(): Modifier =
-    fillMaxWidth()
-        .height(80.dp)
+    this
+        .fillMaxWidth()
         .padding(horizontal = 16.dp)
+        .height(80.dp)
 
 
 @Composable
@@ -201,12 +206,11 @@ fun EmailRow(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
         Column(
             horizontalAlignment = Alignment.Start,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = email,
@@ -214,11 +218,13 @@ fun EmailRow(
                     MaterialTheme.colorScheme.onBackground
                 else MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.wrapContentWidth()
             )
             if (!emailVerified) {
                 Text(
                     text = stringResource(R.string.email_not_verified),
-                    style = MaterialTheme.typography.labelSmall
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.wrapContentWidth(),
                 )
             }
         }
@@ -226,7 +232,7 @@ fun EmailRow(
         if (!emailVerified) {
             OutlinedIconButton(
                 onClick = onSendEmailVerification,
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 8.dp),
             ) {
                 Icon(
@@ -336,7 +342,7 @@ fun EditButton(
 ) {
     OutlinedIconButton(
         onClick = onClick,
-        modifier = modifier.padding(start = 8.dp),
+        modifier = modifier,
     ) {
         Icon(
             imageVector = Icons.Filled.Edit,
