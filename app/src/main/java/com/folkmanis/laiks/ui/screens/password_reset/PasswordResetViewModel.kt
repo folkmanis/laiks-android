@@ -21,11 +21,14 @@ class PasswordResetViewModel @Inject constructor(
 
     var state = mutableStateOf(PasswordResetUiState())
         private set
-    private val email: String
+    private var email: String
         get() = state.value.email
+        set(value) {
+            state.value = state.value.copy(email = value)
+        }
 
     fun setEmail(newEmail: String) {
-        state.value = state.value.copy(email=newEmail)
+        email = newEmail
     }
     fun resetPassword(onPasswordResetSent: ()->Unit) {
         viewModelScope.launch(

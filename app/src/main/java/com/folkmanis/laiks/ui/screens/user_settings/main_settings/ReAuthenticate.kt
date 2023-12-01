@@ -55,6 +55,7 @@ fun ReAuthenticate(
 
     LaunchedEffect(Unit) {
         when (user.getIdToken(true).await().signInProvider) {
+
             GoogleAuthProvider.PROVIDER_ID -> {
                 googleLauncher.launch(getGoogleSignInIntent())
             }

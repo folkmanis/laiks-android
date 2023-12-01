@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -33,6 +32,12 @@ class UserSettingsViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UserSettingsUiState())
     val uiState = _uiState.asStateFlow()
+
+    private var loading: Boolean
+        set(value) = _uiState.update { state ->
+            state.copy(loading = value)
+        }
+        get() = _uiState.value.loading
 
     fun initialize() {
 
@@ -125,6 +130,9 @@ class UserSettingsViewModel @Inject constructor(
     }
 
     fun deleteAccount(onDeleted: () -> Unit) {
+
+        loading = true
+
         viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
             if (throwable is FirebaseAuthRecentLoginRequiredException) {
                 Log.d(TAG, "Must re-login")
@@ -134,17 +142,19 @@ class UserSettingsViewModel @Inject constructor(
             } else throw throwable
         }) {
 
-//            if (_uiState.value.userToReAuthenticateAndDelete == null)
-//                throw FirebaseAuthRecentLoginRequiredException("ReLogin", "laiksUserName")
             accountService.deleteAccount()
             Log.d(TAG, "User ${uiState.value.email} deleted")
-            snackbarManager.showMessage(R.string.user_deleted_success, uiState.value.email)
-            _uiState.update { state -> state.copy(userToReAuthenticateAndDelete = null) }
+            snackbarManager
+                .showMessage(R.string.user_deleted_success, uiState.value.email)
+            _uiState
+                .update { state -> state.copy(userToReAuthenticateAndDelete = null) }
+            loading = false
             onDeleted()
         }
     }
 
     fun cancelReLogin() {
+        loading = false
         _uiState.update { state ->
             state.copy(userToReAuthenticateAndDelete = null)
         }
@@ -152,9 +162,10 @@ class UserSettingsViewModel @Inject constructor(
     }
 
     fun sendEmailVerification() {
+        val email = _uiState.value.email
         viewModelScope.launch {
             accountService.sendEmailVerification()
-            snackbarManager.showMessage(R.string.email_verification_sent)
+            snackbarManager.showMessage(R.string.email_verification_sent, email)
         }
     }
 
