@@ -22,6 +22,6 @@ interface AccountService {
 
     suspend fun deleteAccount()
 
-    suspend fun signOut()
+    fun signOut()
 
 }

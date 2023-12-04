@@ -72,7 +72,7 @@ class AccountServiceFirebase @Inject constructor(
         }
     }
 
-    override suspend fun signOut() {
+    override fun signOut() {
         auth.signOut()
     }
 

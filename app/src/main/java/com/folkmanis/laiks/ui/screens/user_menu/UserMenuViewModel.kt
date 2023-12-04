@@ -12,6 +12,7 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -63,27 +64,11 @@ class UserMenuViewModel @Inject constructor(
             ?: flowOf(UserMenuUiState.NotLoggedIn) as Flow<UserMenuUiState>
     }
 
-    fun onLoginResult(result: FirebaseAuthUIAuthenticationResult, afterLogin: () -> Unit) {
-        if (result.resultCode == Activity.RESULT_OK) {
-            loginSuccess(afterLogin)
-        }
-    }
-
-    private fun loginSuccess(afterLogin: () -> Unit) {
-        viewModelScope.launch {
-            val user = accountService.authUser
-            if (user != null && !laiksUserService.userExists(user.uid)) {
-                laiksUserService.createLaiksUser(user)
-            }
-            snackbarManager.showMessage(R.string.login_success)
-            afterLogin()
-        }
-    }
-
-
     fun logout(context: Context) {
-        AuthUI.getInstance()
-            .signOut(context)
+        Identity.getSignInClient(context)
+            .signOut()
+        accountService
+            .signOut()
     }
 
     companion object {
