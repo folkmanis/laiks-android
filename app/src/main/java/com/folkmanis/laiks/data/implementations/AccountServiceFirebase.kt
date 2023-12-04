@@ -4,6 +4,7 @@ import com.folkmanis.laiks.data.AccountService
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,13 @@ class AccountServiceFirebase @Inject constructor(
     override suspend fun loginWithEmail(email: String, password: String): AuthResult {
         return auth
             .signInWithEmailAndPassword(email, password)
+            .await()
+    }
+
+    override suspend fun loginWithGoogle(idToken: String): AuthResult {
+        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+        return auth
+            .signInWithCredential(firebaseCredential)
             .await()
     }
 

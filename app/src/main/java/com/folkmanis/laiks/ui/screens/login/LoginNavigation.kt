@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.login
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.LaunchedEffect
@@ -13,9 +14,12 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.utilities.oauth.getGoogleSignInIntent
+import com.folkmanis.laiks.utilities.onetap.OneTapSignInWithGoogle
+import com.folkmanis.laiks.utilities.onetap.rememberOneTapSignInState
 
 const val LOGIN_ROUTE = "Login"
+
+private const val TAG = "loginScreen"
 
 fun NavGraphBuilder.loginScreen(
     onLogin: () -> Unit,
@@ -33,7 +37,9 @@ fun NavGraphBuilder.loginScreen(
 
         val viewModel: LoginViewModel = hiltViewModel()
 
-        val uiState by viewModel.uiState
+        val uiState = viewModel.uiState
+
+        val googleLoginState = rememberOneTapSignInState()
 
         val context = LocalContext.current
 
@@ -56,11 +62,28 @@ fun NavGraphBuilder.loginScreen(
             busy = uiState.isBusy,
             onSetEmail = viewModel::setEmail,
             onSetPassword = viewModel::setPassword,
-            onGoogleLogin = { loginLauncher.launch(getGoogleSignInIntent()) },
+//            onGoogleLogin = { loginLauncher.launch(getGoogleSignInIntent()) },
+            onGoogleLogin = { googleLoginState.open() },
             onEmailLogin = { viewModel.loginWithEmail(onLogin, onLaiksUserCreated) },
             onPasswordReset = onPasswordReset,
             isHorizontal = isHorizontal,
             onRegisterWithEmail = onRegisterWithEmail,
+        )
+
+        OneTapSignInWithGoogle(
+            state = googleLoginState,
+            clientId = stringResource(R.string.one_tap_web_client_id),
+            onTokenIdReceived = {
+                Log.d(TAG, "Token: $it")
+                viewModel.loginWithGoogle(
+                    tokenId = it,
+                    afterLogin = onLogin,
+                    onLaiksUserCreated = onLaiksUserCreated,
+                )
+            },
+            onError = {
+                Log.e(TAG, "${it.message}")
+            }
         )
 
     }
