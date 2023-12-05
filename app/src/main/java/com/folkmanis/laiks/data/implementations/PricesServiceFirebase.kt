@@ -6,7 +6,9 @@ import com.folkmanis.laiks.NP_PRICES_COLLECTION
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.model.*
+import com.folkmanis.laiks.model.MarketZone
+import com.folkmanis.laiks.model.NpPrice
+import com.folkmanis.laiks.model.NpPricesDocument
 import com.folkmanis.laiks.utilities.ext.instant.toTimestamp
 import com.folkmanis.laiks.utilities.ext.minusDays
 import com.folkmanis.laiks.utilities.ext.toInstant
@@ -16,7 +18,6 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
@@ -32,7 +33,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PricesServiceFirebase @Inject constructor(
-    private val firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,
     private val laiksUser: LaiksUserService,
     private val zones: MarketZonesService,
 ) : PricesService {
