@@ -28,12 +28,6 @@ class FakePricesService : PricesService {
         return Instant.MIN
     }
 
-    override suspend fun uploadPrices(
-        prices: List<NpPrice>, npPricesDocument: NpPricesDocument
-    ) {
-
-    }
-
     override suspend fun npPricesDocument(): NpPricesDocument? {
         return NpPricesDocument()
     }

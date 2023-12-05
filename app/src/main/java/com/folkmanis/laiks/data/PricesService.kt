@@ -13,8 +13,6 @@ interface PricesService {
 
     suspend fun latestPriceStartTime(): Instant
 
-    suspend fun uploadPrices(prices: List<NpPrice>, npPricesDocument: NpPricesDocument)
-
     suspend fun npPricesDocument(): NpPricesDocument?
 
     fun npPricesDocumentFlow(): Flow<NpPricesDocument?>

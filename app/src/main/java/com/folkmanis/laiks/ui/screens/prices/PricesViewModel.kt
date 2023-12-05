@@ -24,10 +24,7 @@ class PricesViewModel @Inject constructor(
     appliancesCosts: AppliancesCostsUseCase,
     statistics: StatisticsUseCase,
     hourlyPrices: HourlyPricesUseCase,
-//    npUpdate: NpUpdateUseCase,
-//    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
-//    snackbarManager: SnackbarManager,
-) : ViewModel()  { // : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager)
+) : ViewModel()  {
 
 
     val pricesStatistics: Flow<PricesStatistics> = statistics()

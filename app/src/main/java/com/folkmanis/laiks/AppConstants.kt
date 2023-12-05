@@ -14,9 +14,3 @@ const val NP_BLOCKED_COLLECTION = "npBlocked"
 const val MARKET_ZONES_COLLECTION = "zones"
 const val LOCALES_COLLECTION = "locales"
 const val POWER_APPLIANCES_COLLECTION = "powerAppliances"
-
-const val BASE_URL = "https://www.nordpoolgroup.com/api/marketdata/"
-const val DAY_AHEAD_LV = "page/59"
-const val REFRESH_AT_HOURS = 13
-const val REFRESH_AT_MINUTES = 0
-const val REFRESH_AT_TZ = "CET"

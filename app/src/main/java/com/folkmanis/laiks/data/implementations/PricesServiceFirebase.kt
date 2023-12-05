@@ -114,23 +114,6 @@ class PricesServiceFirebase @Inject constructor(
         return lastPrice?.startTime?.toInstant() ?: Instant.MIN
     }
 
-    override suspend fun uploadPrices(
-        prices: List<NpPrice>,
-        npPricesDocument: NpPricesDocument
-    ) {
-        val batch = firestore.batch()
-        prices.forEach { price ->
-            val docRef = npPricesCollection().document(price.id)
-            batch.set(docRef, price)
-        }
-        batch.set(
-            npPricesDocumentRef(),
-            npPricesDocument,
-            SetOptions.merge()
-        )
-        batch.commit().await()
-    }
-
     override suspend fun npPricesDocument(): NpPricesDocument? = npPricesDocumentRef()
         .get()
         .await()
