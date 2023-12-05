@@ -64,7 +64,7 @@ fun ColorSelection(
     }
 
     if (showDialog) {
-        AlertDialog(
+        BasicAlertDialog(
             onDismissRequest = { showDialog = false },
         ) {
             Surface(
