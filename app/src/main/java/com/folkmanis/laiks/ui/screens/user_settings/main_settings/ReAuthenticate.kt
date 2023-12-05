@@ -1,9 +1,6 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
-import android.app.Activity
-import android.content.Intent
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -22,18 +19,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.composables.DialogWithSaveAndCancel
 import com.folkmanis.laiks.utilities.composables.PasswordField
-import com.folkmanis.laiks.utilities.oauth.getGoogleSignInIntent
+import com.folkmanis.laiks.utilities.onetap.OneTapSignInWithGoogle
+import com.folkmanis.laiks.utilities.onetap.rememberOneTapSignInState
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+
+private const val TAG = "ReAuthenticate"
 
 @Composable
 fun ReAuthenticate(
@@ -42,22 +40,23 @@ fun ReAuthenticate(
     user: FirebaseUser,
 ) {
 
+    val googleLoginState = rememberOneTapSignInState()
+
     val scope = rememberCoroutineScope()
+
+    val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+        onCancel()
+    }
 
     var passwordInputActive by remember {
         mutableStateOf(false)
     }
 
-    val googleLauncher = googleLoginLauncher(
-        onResultOk = onReAuthenticated,
-        onCancel = onCancel
-    )
-
     LaunchedEffect(Unit) {
         when (user.getIdToken(true).await().signInProvider) {
 
             GoogleAuthProvider.PROVIDER_ID -> {
-                googleLauncher.launch(getGoogleSignInIntent())
+                googleLoginState.open()
             }
 
             EmailAuthProvider.PROVIDER_ID -> {
@@ -73,11 +72,7 @@ fun ReAuthenticate(
             onCancel = onCancel,
             onPassword = { password ->
                 val credential = EmailAuthProvider.getCredential(user.email!!, password)
-                scope.launch(
-                    CoroutineExceptionHandler { _, _ ->
-                        onCancel()
-                    }
-                ) {
+                scope.launch(exceptionHandler) {
                     user.reauthenticate(credential).await()
                     onReAuthenticated()
                 }
@@ -85,21 +80,21 @@ fun ReAuthenticate(
             }
         )
 
-}
-
-@Composable
-fun googleLoginLauncher(
-    onResultOk: () -> Unit,
-    onCancel: () -> Unit,
-): ManagedActivityResultLauncher<Intent, FirebaseAuthUIAuthenticationResult> {
-    return rememberLauncherForActivityResult(
-        FirebaseAuthUIActivityResultContract()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK)
-            onResultOk()
-        else
+    OneTapSignInWithGoogle(
+        state = googleLoginState,
+        clientId = stringResource(R.string.one_tap_web_client_id),
+        onTokenIdReceived = { idToken ->
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            scope.launch(exceptionHandler) {
+                user.reauthenticate(credential).await()
+                onReAuthenticated()
+            }
+        },
+        onError = {
+            Log.e(TAG, "${it.message}")
             onCancel()
-    }
+        }
+    )
 
 }
 
