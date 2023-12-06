@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.data
 
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,11 @@ interface AccountService {
 
     suspend fun loginWithGoogle(idToken: String): AuthResult
 
-    suspend fun resetPassword(email: String)
+    suspend fun loginWithCredential(credential: AuthCredential): AuthResult
+
+    suspend fun linkWithCredential(credential: AuthCredential): AuthResult
+
+    suspend fun resetPassword(email: String): Void
 
     suspend fun createUserWithEmail(email: String, password: String, name: String)
 

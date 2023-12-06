@@ -30,8 +30,10 @@
     <string name="password_reset_email_sent">Password reset link sent to "%1$s"</string>
     <string name="user_registration_title">Register with email</string>
     <string name="user_registered">New user created. e-mail confirmation link sent to "%1$s"</string>
+    <string name="login_user_created">New user account created!</string>
     <string name="user_registration_action_button">Register!</string>
     <string name="login_register_with_email">Register with e-mail</string>
+    <string name="login_register_with_google">Register with Google account</string>
     <string name="display_name_input_label">Your name</string>
     <string name="display_name_input_error">Name must be provided</string>
     <string name="navigate_to_password_reset">Password forgotten?</string>

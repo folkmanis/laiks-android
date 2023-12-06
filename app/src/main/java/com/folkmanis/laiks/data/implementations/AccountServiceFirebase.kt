@@ -1,7 +1,10 @@
 package com.folkmanis.laiks.data.implementations
 
 import com.folkmanis.laiks.data.AccountService
+import com.folkmanis.laiks.utilities.NotLoggedInException
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -30,21 +33,27 @@ class AccountServiceFirebase @Inject constructor(
         get() = auth.currentUser
 
     override suspend fun loginWithEmail(email: String, password: String): AuthResult {
-        return auth
-            .signInWithEmailAndPassword(email, password)
-            .await()
+        val credential = EmailAuthProvider.getCredential(email, password)
+        return loginWithCredential(credential)
     }
 
     override suspend fun loginWithGoogle(idToken: String): AuthResult {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-        return auth
-            .signInWithCredential(firebaseCredential)
-            .await()
+        return loginWithCredential(firebaseCredential)
     }
 
-    override suspend fun resetPassword(email: String) {
+    override suspend fun loginWithCredential(credential: AuthCredential): AuthResult {
+        return auth.signInWithCredential(credential).await()
+    }
+
+    override suspend fun linkWithCredential(credential: AuthCredential): AuthResult {
+        val currentUser = authUser ?: throw NotLoggedInException()
+        return currentUser.linkWithCredential(credential).await()
+    }
+
+    override suspend fun resetPassword(email: String): Void {
         setLanguage()
-        auth
+        return auth
             .sendPasswordResetEmail(email)
             .await()
     }
