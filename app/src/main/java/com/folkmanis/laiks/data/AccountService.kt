@@ -11,9 +11,7 @@ interface AccountService {
 
     val authUser: FirebaseUser?
 
-    suspend fun loginWithEmail(email: String, password: String): AuthResult
-
-    suspend fun loginWithGoogle(idToken: String): AuthResult
+    val isRegistered: Flow<Boolean>
 
     suspend fun loginWithCredential(credential: AuthCredential): AuthResult
 

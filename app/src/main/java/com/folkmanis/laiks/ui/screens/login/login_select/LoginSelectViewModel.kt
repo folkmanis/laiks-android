@@ -30,12 +30,13 @@ class LoginSelectViewModel @Inject constructor(
     }
 
     fun loginWithGoogle(tokenId: String, afterLogin: () -> Unit) {
+        val credential = GoogleAuthProvider.getCredential(tokenId, null)
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
                 snackbarManager.showMessage(throwable.toSnackbarMessage())
             }
         ) {
-            accountService.loginWithGoogle(tokenId).user?.also {
+            accountService.loginWithCredential(credential).user?.also {
                 afterLogin()
             }
         }

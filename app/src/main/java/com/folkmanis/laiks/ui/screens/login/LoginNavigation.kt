@@ -1,81 +1,73 @@
 package com.folkmanis.laiks.ui.screens.login
 
-import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
-import com.folkmanis.laiks.R
-import com.folkmanis.laiks.utilities.onetap.OneTapSignInWithGoogle
-import com.folkmanis.laiks.utilities.onetap.rememberOneTapSignInState
+import androidx.navigation.navigation
+import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
+import com.folkmanis.laiks.ui.screens.clock.navigateToClockSingleTop
+import com.folkmanis.laiks.ui.screens.login.login_email.loginEmailNavigation
+import com.folkmanis.laiks.ui.screens.login.login_email.navigateToLoginEmailScreen
+import com.folkmanis.laiks.ui.screens.login.login_select.LOGIN_SELECT_ROUTE
+import com.folkmanis.laiks.ui.screens.login.login_select.loginSelectScreen
+import com.folkmanis.laiks.ui.screens.login.password_reset.navigateToPasswordReset
+import com.folkmanis.laiks.ui.screens.login.password_reset.passwordResetNavigation
+import com.folkmanis.laiks.ui.screens.login.user_registration.navigateToNewUserRegistration
+import com.folkmanis.laiks.ui.screens.login.user_registration.userRegistration
+import com.folkmanis.laiks.ui.screens.user_settings.userSettings
 
 const val LOGIN_ROUTE = "Login"
 
-private const val TAG = "loginScreen"
-
-fun NavGraphBuilder.loginScreen(
-    onLogin: () -> Unit,
-    onPasswordReset: () -> Unit,
-    onLaiksUserCreated: () -> Unit,
-    onRegisterWithEmail: () -> Unit,
+fun NavGraphBuilder.loginGraph(
+    navController: NavController,
     setTitle: (String) -> Unit,
     windowWidth: WindowWidthSizeClass,
 ) {
-    composable(LOGIN_ROUTE) {
-        val title = stringResource(R.string.login_title)
-        LaunchedEffect(title, setTitle) {
-            setTitle(title)
-        }
 
-        val viewModel: LoginViewModel = hiltViewModel()
+    navigation(
+        startDestination = LOGIN_SELECT_ROUTE,
+        route = LOGIN_ROUTE,
+    ) {
 
-        val uiState = viewModel.uiState
-
-        val googleLoginState = rememberOneTapSignInState()
-
-        val context = LocalContext.current
-
-        val isHorizontal = windowWidth != WindowWidthSizeClass.Compact
-
-        LaunchedEffect(true) {
-            viewModel.logout(context)
-        }
-
-        LoginScreen(
-            email = uiState.email,
-            password = uiState.password,
-            busy = uiState.isBusy,
-            onSetEmail = viewModel::setEmail,
-            onSetPassword = viewModel::setPassword,
-            onGoogleLogin = { googleLoginState.open() },
-            onEmailLogin = { viewModel.loginWithEmail(onLogin, onLaiksUserCreated) },
-            onPasswordReset = onPasswordReset,
-            isHorizontal = isHorizontal,
-            onRegisterWithEmail = onRegisterWithEmail,
+        loginSelectScreen(
+            setTitle = setTitle,
+            windowWidth = windowWidth,
+            onLoginWithEmail = navController::navigateToLoginEmailScreen,
+            onRegisterWithEmail = navController::navigateToNewUserRegistration,
+            onLogin = navController::navigateToClockSingleTop,
+            onLaiksUserCreated = {
+                navController.userSettings {
+                    launchSingleTop = true
+                    popUpTo(0) { inclusive = true }
+                }
+            },
         )
 
-        OneTapSignInWithGoogle(
-            state = googleLoginState,
-            clientId = stringResource(R.string.one_tap_web_client_id),
-            onTokenIdReceived = {
-                Log.d(TAG, "Token: $it")
-                viewModel.loginWithGoogle(
-                    tokenId = it,
-                    afterLogin = onLogin,
-                    onLaiksUserCreated = onLaiksUserCreated,
-                )
-            },
-            onError = {
-                Log.e(TAG, "${it.message}")
+        passwordResetNavigation(
+            setTitle = setTitle,
+            onReset = navController::navigateToLoginEmailScreen,
+        )
+
+        loginEmailNavigation(
+            setTitle=setTitle,
+            windowWidth = windowWidth,
+            onLogin = navController::navigateToClockSingleTop,
+            onResetPassword = navController::navigateToPasswordReset,
+        )
+
+        userRegistration(
+            setTitle = setTitle,
+            onUserRegistered = {
+                navController.userSettings {
+                    popUpTo(CLOCK_ROUTE)
+                }
             }
         )
 
+
     }
+
 }
 
 

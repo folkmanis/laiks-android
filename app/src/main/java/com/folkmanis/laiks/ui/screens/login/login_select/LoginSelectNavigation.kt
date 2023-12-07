@@ -7,15 +7,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.onetap.OneTapSignInWithGoogle
 import com.folkmanis.laiks.utilities.onetap.rememberOneTapSignInState
 
-private const val LOGIN_SELECT_ROUTE = "LoginSelect"
+const val LOGIN_SELECT_ROUTE = "LoginSelect"
 private const val TAG = "loginSelectScreen"
 fun NavGraphBuilder.loginSelectScreen(
     setTitle: (String) -> Unit,
@@ -76,8 +74,4 @@ fun NavGraphBuilder.loginSelectScreen(
         )
 
     }
-}
-
-fun NavController.navigateToLoginScreen(builder: NavOptionsBuilder.() -> Unit = {}) {
-    navigate(LOGIN_SELECT_ROUTE, builder)
 }

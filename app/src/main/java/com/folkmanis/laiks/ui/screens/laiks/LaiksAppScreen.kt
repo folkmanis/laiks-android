@@ -15,15 +15,11 @@ import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCostsScreen
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
 import com.folkmanis.laiks.ui.screens.clock.clockScreen
 import com.folkmanis.laiks.ui.screens.clock.navigateToClockSingleTop
-import com.folkmanis.laiks.ui.screens.login.loginScreen
+import com.folkmanis.laiks.ui.screens.login.loginGraph
 import com.folkmanis.laiks.ui.screens.login.navigateToLogin
-import com.folkmanis.laiks.ui.screens.password_reset.navigateToPasswordReset
-import com.folkmanis.laiks.ui.screens.password_reset.passwordReset
 import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
-import com.folkmanis.laiks.ui.screens.user_registration.navigateToNewUserRegistration
-import com.folkmanis.laiks.ui.screens.user_registration.userRegistration
 import com.folkmanis.laiks.ui.screens.user_settings.appliances.navigateToAppliances
 import com.folkmanis.laiks.ui.screens.user_settings.userSettings
 import com.folkmanis.laiks.ui.screens.user_settings.userSettingsGraph
@@ -88,38 +84,6 @@ fun LaiksAppScreen(
                 windowWidth = windowSize.widthSizeClass,
             )
 
-            loginScreen(
-                onLogin = navController::navigateToClockSingleTop,
-                setTitle = viewModel::setTitle,
-                windowWidth = windowSize.widthSizeClass,
-                onPasswordReset = navController::navigateToPasswordReset,
-                onRegisterWithEmail = navController::navigateToNewUserRegistration,
-                onLaiksUserCreated = {
-                    navController.userSettings {
-                        popUpTo(CLOCK_ROUTE)
-                    }
-                }
-            )
-
-            passwordReset(
-                setTitle = viewModel::setTitle,
-                onPasswordRequestSent = {
-                    navController.popBackStack()
-                }
-            )
-
-            userRegistration(
-                setTitle = viewModel::setTitle,
-                onUserRegistered = {
-                    appState.user?.also {
-                        viewModel.setTitle(it.name)
-                    }
-                    navController.userSettings {
-                        popUpTo(CLOCK_ROUTE)
-                    }
-                }
-            )
-
             pricesScreen(
                 setTitle = viewModel::setTitle,
             )
@@ -133,6 +97,11 @@ fun LaiksAppScreen(
                 setTitle = viewModel::setTitle,
             )
 
+            loginGraph(
+                navController = navController,
+                setTitle = viewModel::setTitle,
+                windowWidth = windowSize.widthSizeClass,
+            )
 
         }
     }

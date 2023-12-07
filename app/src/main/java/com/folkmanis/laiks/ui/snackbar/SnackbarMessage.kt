@@ -13,7 +13,8 @@ sealed class SnackbarMessage {
     class FormattedSnackbar(
         @StringRes val message: Int,
         vararg val formatArgs: Any
-    ): SnackbarMessage()
+    ) : SnackbarMessage()
+
     class PluralsSnackbar(
         @PluralsRes val message: Int,
         val count: Int,
@@ -31,7 +32,9 @@ sealed class SnackbarMessage {
         }
 
         fun Throwable.toSnackbarMessage(): SnackbarMessage {
-            val message = this.message.orEmpty()
+            val message = this.localizedMessage.ifEmpty {
+                this.message.orEmpty()
+            }
             return if (message.isNotBlank()) StringSnackbar(message)
             else ResourceSnackbar(R.string.generic_error)
         }

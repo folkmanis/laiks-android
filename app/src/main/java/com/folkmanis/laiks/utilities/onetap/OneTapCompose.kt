@@ -61,25 +61,25 @@ fun OneTapSignInWithGoogle(
                 else -> onError(e)
 
             }
-            state.close()
         }
+        state.close()
     }
 
     LaunchedEffect(state.opened) {
         if (state.opened) {
-signIn(
-    context=context,
-    clientId=clientId,
-    rememberAccount=rememberAccount,
-    nonce=nonce,
-    launcherActivityResult = {intentSenderRequest->
-        activityLauncher.launch(intentSenderRequest)
-    },
-    onError={
-        onError(it)
-        state.close()
-    }
-)
+            signIn(
+                context = context,
+                clientId = clientId,
+                rememberAccount = rememberAccount,
+                nonce = nonce,
+                launcherActivityResult = { intentSenderRequest ->
+                    activityLauncher.launch(intentSenderRequest)
+                },
+                onError = {
+                    onError(it)
+                    state.close()
+                }
+            )
         }
     }
 }
@@ -120,9 +120,9 @@ private fun signIn(
         }
         .addOnFailureListener {
             signUp(
-                context=context,
-                clientId=clientId,
-                nonce=nonce,
+                context = context,
+                clientId = clientId,
+                nonce = nonce,
                 launchedActivityResult = launcherActivityResult,
                 onError = onError,
             )
@@ -134,7 +134,7 @@ private fun signUp(
     context: Context,
     clientId: String,
     nonce: String?,
-    launchedActivityResult: (IntentSenderRequest)-> Unit,
+    launchedActivityResult: (IntentSenderRequest) -> Unit,
     onError: (Throwable) -> Unit,
 ) {
     val oneTapClient = Identity.getSignInClient(context)
@@ -150,7 +150,7 @@ private fun signUp(
         .build()
 
     oneTapClient.beginSignIn(signInRequest)
-        .addOnSuccessListener { result->
+        .addOnSuccessListener { result ->
             try {
                 launchedActivityResult(
                     IntentSenderRequest.Builder(

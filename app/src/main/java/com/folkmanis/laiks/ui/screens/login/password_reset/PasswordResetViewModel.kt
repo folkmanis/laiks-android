@@ -24,10 +24,10 @@ class PasswordResetViewModel @Inject constructor(
     var uiState by mutableStateOf(PasswordResetUiState())
         private set
 
-    var busy
+    private var busy
         get() = uiState.isBusy
         set(value) {
-            uiState.copy(isBusy = value)
+            uiState = uiState.copy(isBusy = value)
         }
 
     fun setEmail(newEmail: String) {
@@ -54,6 +54,7 @@ class PasswordResetViewModel @Inject constructor(
             accountService.resetPassword(email)
             snackbarManager.showMessage(R.string.password_reset_email_sent, email)
             busy = false
+            onReset()
         }
     }
 }

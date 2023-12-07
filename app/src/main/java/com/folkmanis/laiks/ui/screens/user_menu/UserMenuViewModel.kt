@@ -1,17 +1,12 @@
 package com.folkmanis.laiks.ui.screens.user_menu
 
-import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +23,6 @@ class UserMenuViewModel @Inject constructor(
     private val accountService: AccountService,
     private val laiksUserService: LaiksUserService,
     private val permissionsService: PermissionsService,
-    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
 

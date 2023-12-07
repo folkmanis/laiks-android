@@ -27,6 +27,7 @@ fun PasswordResetScreen(
     onReset: () -> Unit,
     email: String,
     setEmail: (String) -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -51,12 +52,14 @@ fun PasswordResetScreen(
             onValueChange = setEmail,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            enabled = enabled,
+
+            )
 
         FilledTonalButton(
             onClick = onReset,
-            enabled = email.isValidEmail(),
+            enabled = email.isValidEmail() && enabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -75,7 +78,8 @@ fun PasswordResetScreenPreview() {
         PasswordResetScreen(
             onReset = { },
             email = "user@example.com",
-            setEmail = {}
+            setEmail = {},
+            enabled = false,
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui.screens.user_registration
+package com.folkmanis.laiks.ui.screens.login.user_registration
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,7 +10,7 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
 
-private const val USER_REGISTRATION_ROUTE = "user_registration"
+private const val USER_REGISTRATION_ROUTE = "UserRegistration"
 
 fun NavGraphBuilder.userRegistration(
     setTitle: (String) -> Unit,
@@ -33,7 +33,12 @@ fun NavGraphBuilder.userRegistration(
             setPassword = viewModel::setPassword,
             setPasswordRepeat = viewModel::setPasswordRepeat,
             setDisplayName = viewModel::setDisplayName,
-            onRegisterUser = { viewModel.createUser(onUserRegistered) },
+            onRegisterUser = {
+                viewModel.createUser {user->
+                    user.displayName?.also(setTitle)
+                    onUserRegistered()
+                }
+            },
         )
     }
 

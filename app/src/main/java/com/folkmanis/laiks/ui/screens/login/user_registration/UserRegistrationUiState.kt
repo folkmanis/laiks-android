@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui.screens.user_registration
+package com.folkmanis.laiks.ui.screens.login.user_registration
 
 import androidx.annotation.StringRes
 import com.folkmanis.laiks.R

@@ -4,14 +4,13 @@ import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.utilities.NotLoggedInException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import javax.inject.Inject
@@ -32,15 +31,11 @@ class AccountServiceFirebase @Inject constructor(
     override val authUser: FirebaseUser?
         get() = auth.currentUser
 
-    override suspend fun loginWithEmail(email: String, password: String): AuthResult {
-        val credential = EmailAuthProvider.getCredential(email, password)
-        return loginWithCredential(credential)
-    }
-
-    override suspend fun loginWithGoogle(idToken: String): AuthResult {
-        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-        return loginWithCredential(firebaseCredential)
-    }
+    override val isRegistered: Flow<Boolean>
+        get() = firebaseUserFlow
+            .map { user ->
+                user?.isAnonymous ?: false
+            }
 
     override suspend fun loginWithCredential(credential: AuthCredential): AuthResult {
         return auth.signInWithCredential(credential).await()

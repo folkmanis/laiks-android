@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui.screens.user_registration
+package com.folkmanis.laiks.ui.screens.login.user_registration
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,6 +9,7 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.folkmanis.laiks.utilities.ext.isValidPassword
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -58,7 +59,7 @@ class UserRegistrationViewModel @Inject constructor(
         uiState.value = uiState.value.copy(displayName = newName, displayNamePristine = false)
     }
 
-    fun createUser(onSuccess: () -> Unit) {
+    fun createUser(onSuccess: (FirebaseUser) -> Unit) {
         if (!uiState.value.isValid) {
             return
         }
@@ -74,7 +75,7 @@ class UserRegistrationViewModel @Inject constructor(
             accountService.authUser?.also { user ->
                 laiksUserService.createLaiksUser(user)
                 snackbarManager.showMessage(R.string.user_registered, user.email!!)
-                onSuccess()
+                onSuccess(user)
             }
             busy = false
         }
