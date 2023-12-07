@@ -14,7 +14,7 @@ interface LaiksUserService {
 
     fun laiksUsersFlow(): Flow<List<LaiksUser>>
 
-    suspend fun laiksUser(): LaiksUser
+    suspend fun laiksUser(): LaiksUser?
 
     suspend fun createLaiksUser(user: UserInfo)
 

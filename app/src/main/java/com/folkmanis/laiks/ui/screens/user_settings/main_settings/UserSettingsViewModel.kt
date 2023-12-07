@@ -171,18 +171,20 @@ class UserSettingsViewModel @Inject constructor(
 
     private suspend fun updateStateWithUser(user: LaiksUser) {
 
-        val zone = zonesService.getMarketZone(user.marketZoneId)
-
         _uiState.update { state ->
+
+            val marketZoneId = user.marketZoneId ?: state.marketZoneId
+            val zone = zonesService.getMarketZone(marketZoneId)
+
             state.copy(
                 loading = false,
                 id = user.id,
                 email = user.email,
                 includeVat = user.includeVat,
                 name = user.name,
-                marketZoneId = user.marketZoneId,
+                marketZoneId = marketZoneId,
                 vatAmount = user.vatAmount,
-                marketZoneName = "${user.marketZoneId}, ${zone?.description ?: ""}",
+                marketZoneName = "$marketZoneId, ${zone?.description ?: ""}",
             )
         }
     }

@@ -9,7 +9,7 @@ data class UserSettingsUiState(
     val email: String = "",
     val emailVerified: Boolean = false,
     val name: String = "",
-    val marketZoneId: String = "LV",
+    val marketZoneId: String = "",
     val includeVat: Boolean = true,
     val vatAmount: Double = 0.0,
     val npUser: Boolean = false,
@@ -23,12 +23,13 @@ data class UserSettingsUiState(
             name = user.name,
             email = user.email,
             id = user.id,
-            marketZoneId = user.marketZoneId,
+            marketZoneId = user?.marketZoneId ?: "LV",
             npUser = true,
             includeVat = user.includeVat,
             vatAmount = user.vatAmount,
             marketZoneName = "LV, Latvija"
         )
+        val emptyUser = UserSettingsUiState()
     }
 
 }

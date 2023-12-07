@@ -13,10 +13,10 @@ data class LaiksUser(
     val npUploadAllowed: Boolean = false,
     val verified: Boolean = false,
     val appliances: List<UserPowerAppliance> = emptyList(),
-    val marketZoneId: String = "LV",
+    val marketZoneId: String? = null,
     val includeVat: Boolean = true,
-    val vatAmount: Double = 0.21,
-    val locale: String = "lv",
+    val vatAmount: Double = 0.0,
+    val locale: String? = null,
 ) {
     @get:Exclude
     val tax: Double

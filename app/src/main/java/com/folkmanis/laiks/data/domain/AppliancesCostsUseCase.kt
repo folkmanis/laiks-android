@@ -44,7 +44,9 @@ class AppliancesCostsUseCase @Inject constructor(
         minute: LocalDateTime,
     ): Map<Int, List<PowerApplianceHour>> {
 
-        val appliances = laiksUserService.laiksUser().appliances
+        val laiksUser = laiksUserService.laiksUser() ?: return emptyMap()
+
+        val appliances = laiksUser.appliances
 
         val startTime = minute.atZone(ZoneId.systemDefault()).toInstant()
         val appliancesAllCosts: Map<PowerAppliance, Map<Long, Double>> =

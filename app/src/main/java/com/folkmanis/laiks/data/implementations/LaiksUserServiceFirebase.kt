@@ -62,9 +62,9 @@ class LaiksUserServiceFirebase @Inject constructor(
             }
         }
 
-    override suspend fun laiksUser(): LaiksUser = accountService.authUser?.let {
+    override suspend fun laiksUser(): LaiksUser? = accountService.authUser?.let {
         collection.document(it.uid).get().await().toObject()
-    } ?: throw NotLoggedInException()
+    }
 
     override suspend fun userExists(id: String): Boolean =
         collection.document(id).get().await().exists()

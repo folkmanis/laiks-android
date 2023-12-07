@@ -47,15 +47,17 @@ class ApplianceEditViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val appliance = uiState.value.toPowerAppliance()
-            val userAppliances = laiksUserService.laiksUser().appliances.toMutableList()
-            uiState.value.idx.also {
-                if (it == null) {
-                    userAppliances.add(appliance)
-                } else {
-                    userAppliances[it] = (appliance)
+            laiksUserService.laiksUser()?.also { laiksUser ->
+                val userAppliances = laiksUser.appliances.toMutableList()
+                uiState.value.idx.also { idx ->
+                    if (idx == null) {
+                        userAppliances.add(appliance)
+                    } else {
+                        userAppliances[idx] = (appliance)
+                    }
                 }
+                laiksUserService.updateLaiksUser("appliances", userAppliances)
             }
-            laiksUserService.updateLaiksUser("appliances", userAppliances)
             uiState.update {
                 it.copy(isSaving = false)
             }
@@ -72,8 +74,9 @@ class ApplianceEditViewModel @Inject constructor(
         }
         viewModelScope.launch {
 
-            val appliance = if (idx != null) {
-                laiksUserService.laiksUser().appliances[idx]
+            val laiksUser = laiksUserService.laiksUser()
+            val appliance = if (idx != null && laiksUser != null) {
+                laiksUser.appliances[idx]
             } else {
                 UserPowerAppliance()
             }

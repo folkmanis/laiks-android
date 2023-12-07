@@ -6,7 +6,6 @@ import com.folkmanis.laiks.NP_PRICES_COLLECTION
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.data.PricesService
-import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.NpPricesDocument
 import com.folkmanis.laiks.utilities.ext.instant.toTimestamp
@@ -34,24 +33,26 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class PricesServiceFirebase @Inject constructor(
     firestore: FirebaseFirestore,
-    private val laiksUser: LaiksUserService,
-    private val zones: MarketZonesService,
+    private val laiksUserService: LaiksUserService,
+    private val zonesService: MarketZonesService,
 ) : PricesService {
 
     private val collection = firestore
         .collection(LAIKS_COLLECTION)
 
-    private suspend fun npPricesDocumentRef(): DocumentReference {
-        val zoneId = laiksUser.laiksUser().marketZoneId
-        val zone = zones.getMarketZone(zoneId) ?: MarketZone()
-        return collection.document(zone.dbName)
+    private suspend fun npPricesDocumentRef(): DocumentReference? {
+        return laiksUserService.laiksUser()?.marketZoneId?.let { zoneId ->
+            zonesService.getMarketZone(zoneId)?.dbName
+        }?.let { dbName ->
+            collection.document(dbName)
+        }
     }
 
     private fun npPricesDocumentRefFlow(): Flow<DocumentReference> =
-        laiksUser.laiksUserFlow()
+        laiksUserService.laiksUserFlow()
+            .map { it?.marketZoneId }
             .filterNotNull()
-            .map { it.marketZoneId }
-            .map { zones.getMarketZone(it) }
+            .map { zonesService.getMarketZone(it) }
             .filterNotNull()
             .map { collection.document(it.dbName) }
 
@@ -61,15 +62,15 @@ class PricesServiceFirebase @Inject constructor(
             .map { it.collection(NP_PRICES_COLLECTION) }
 
     private suspend fun npPricesCollection() = npPricesDocumentRef()
-        .collection(NP_PRICES_COLLECTION)
+        ?.collection(NP_PRICES_COLLECTION)
 
     override suspend fun npPrices(start: Instant): List<NpPrice> {
         return npPricesCollection()
-            .whereGreaterThanOrEqualTo("startTime", start.toTimestamp())
-            .orderBy("startTime")
-            .get()
-            .await()
-            .toObjects()
+            ?.whereGreaterThanOrEqualTo("startTime", start.toTimestamp())
+            ?.orderBy("startTime")
+            ?.get()
+            ?.await()
+            ?.toObjects() ?: emptyList()
     }
 
 
@@ -106,19 +107,19 @@ class PricesServiceFirebase @Inject constructor(
 
     override suspend fun latestPriceStartTime(): Instant {
         val lastPrice = npPricesCollection()
-            .orderBy("startTime", Query.Direction.DESCENDING)
-            .limit(1)
-            .get()
-            .await()
-            .toObjects<NpPrice>()
-            .firstOrNull()
+            ?.orderBy("startTime", Query.Direction.DESCENDING)
+            ?.limit(1)
+            ?.get()
+            ?.await()
+            ?.toObjects<NpPrice>()
+            ?.firstOrNull()
         return lastPrice?.startTime?.toInstant() ?: Instant.MIN
     }
 
     override suspend fun npPricesDocument(): NpPricesDocument? = npPricesDocumentRef()
-        .get()
-        .await()
-        .toObject()
+        ?.get()
+        ?.await()
+        ?.toObject()
 
     override fun npPricesDocumentFlow(): Flow<NpPricesDocument?> =
         npPricesDocumentRefFlow()
