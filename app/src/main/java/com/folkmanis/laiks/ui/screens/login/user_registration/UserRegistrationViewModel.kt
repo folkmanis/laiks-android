@@ -9,6 +9,7 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.folkmanis.laiks.utilities.ext.isValidPassword
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -73,7 +74,11 @@ class UserRegistrationViewModel @Inject constructor(
             accountService.createUserWithEmail(email, password, displayName)
             accountService.sendEmailVerification()
             accountService.authUser?.also { user ->
-                laiksUserService.createLaiksUser(user)
+                val update = hashMapOf<String, Any>(
+                    "email" to user.email!!,
+                    "name" to user.displayName!!,
+                )
+                laiksUserService.updateLaiksUser(update)
                 snackbarManager.showMessage(R.string.user_registered, user.email!!)
                 onSuccess(user)
             }

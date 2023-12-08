@@ -23,6 +23,8 @@ interface AccountService {
 
     suspend fun sendEmailVerification()
 
+    suspend fun createAnonymous(): AuthResult
+
     suspend fun deleteAccount()
 
     fun signOut()

@@ -23,10 +23,10 @@ data class UserSettingsUiState(
             name = user.name,
             email = user.email,
             id = user.id,
-            marketZoneId = user?.marketZoneId ?: "LV",
+            marketZoneId = user.marketZoneId ?: "LV",
             npUser = true,
             includeVat = user.includeVat,
-            vatAmount = user.vatAmount,
+            vatAmount = user.vatAmount ?: 0.21,
             marketZoneName = "LV, Latvija"
         )
         val emptyUser = UserSettingsUiState()

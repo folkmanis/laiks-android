@@ -51,8 +51,12 @@ class LoginSelectViewModel @Inject constructor(
         ) {
             val result = accountService.linkWithCredential(credential)
             result.user?.also { user ->
+                val update = hashMapOf<String, Any>(
+                    "email" to user.email!!,
+                    "name" to user.displayName!!,
+                )
+                laiksUserService.updateLaiksUser(update)
                 snackbarManager.showMessage(R.string.login_user_created)
-                laiksUserService.createLaiksUser(user)
                 onLaiksUserCreated()
             }
         }

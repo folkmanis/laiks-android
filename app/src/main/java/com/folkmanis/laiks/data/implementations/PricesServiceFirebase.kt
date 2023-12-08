@@ -8,6 +8,7 @@ import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.NpPricesDocument
+import com.folkmanis.laiks.utilities.MarketZoneNotSetException
 import com.folkmanis.laiks.utilities.ext.instant.toTimestamp
 import com.folkmanis.laiks.utilities.ext.minusDays
 import com.folkmanis.laiks.utilities.ext.toInstant
@@ -50,12 +51,11 @@ class PricesServiceFirebase @Inject constructor(
 
     private fun npPricesDocumentRefFlow(): Flow<DocumentReference> =
         laiksUserService.laiksUserFlow()
-            .map { it?.marketZoneId }
             .filterNotNull()
+            .map { it.marketZoneId ?: throw MarketZoneNotSetException() }
             .map { zonesService.getMarketZone(it) }
             .filterNotNull()
             .map { collection.document(it.dbName) }
-
 
     private fun npPricesCollectionRefFlow(): Flow<CollectionReference> =
         npPricesDocumentRefFlow()

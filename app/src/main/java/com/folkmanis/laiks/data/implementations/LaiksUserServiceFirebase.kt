@@ -83,7 +83,6 @@ class LaiksUserServiceFirebase @Inject constructor(
             id = user.uid,
             name = user.displayName ?: "",
             email = user.email ?: "",
-            verified = false,
             appliances = appliances,
         )
         Log.d(TAG, "new user: $user")

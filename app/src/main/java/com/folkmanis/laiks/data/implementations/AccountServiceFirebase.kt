@@ -4,6 +4,7 @@ import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.utilities.NotLoggedInException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
@@ -54,13 +55,23 @@ class AccountServiceFirebase @Inject constructor(
     }
 
     override suspend fun createUserWithEmail(email: String, password: String, name: String) {
-        auth.createUserWithEmailAndPassword(email, password).await()
-        authUser?.also { user ->
+
+        val task =
+            authUser?.linkWithCredential(EmailAuthProvider.getCredential(email, password))
+                ?: auth.createUserWithEmailAndPassword(email, password)
+
+        task.await().user?.also { user ->
             val profileUpdate = userProfileChangeRequest {
                 displayName = name
             }
             user.updateProfile(profileUpdate).await()
         }
+    }
+
+    override suspend fun createAnonymous(): AuthResult {
+        return auth
+            .signInAnonymously()
+            .await()
     }
 
     override suspend fun sendEmailVerification() {
