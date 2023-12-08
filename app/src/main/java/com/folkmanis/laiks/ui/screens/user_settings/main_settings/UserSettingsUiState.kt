@@ -23,7 +23,7 @@ data class UserSettingsUiState(
             name = user.name,
             email = user.email,
             id = user.id,
-            marketZoneId = user?.marketZoneId ?: "LV",
+            marketZoneId = user.marketZoneId ?: "LV",
             npUser = true,
             includeVat = user.includeVat,
             vatAmount = user.vatAmount,
