@@ -81,7 +81,6 @@ class FakeLaiksUserService : LaiksUserService {
         )
 
         val laiksUser: LaiksUser = LaiksUser(
-            verified = true,
             name = "Simple User",
             id = "1234",
             vatAmount = 0.21,
@@ -93,7 +92,6 @@ class FakeLaiksUserService : LaiksUserService {
         private val laiksAdmin = LaiksUser(
             name = "Admin User",
             id = "4321",
-            verified = true,
             vatAmount = 0.25,
             includeVat = true,
             appliances = testAppliances,

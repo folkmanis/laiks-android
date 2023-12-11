@@ -71,6 +71,7 @@ class MarketZoneSelectViewModel @Inject constructor(
         viewModelScope.launch {
             laiksUserService.updateLaiksUser(update)
             busy = false
+            onSuccess()
         }
 
     }

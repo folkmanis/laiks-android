@@ -183,7 +183,7 @@ class UserSettingsViewModel @Inject constructor(
                 includeVat = user.includeVat,
                 name = user.name,
                 marketZoneId = marketZoneId,
-                vatAmount = user.vatAmount,
+                vatAmount = user.vatAmount ?: state.vatAmount ,
                 marketZoneName = "$marketZoneId, ${zone?.description ?: ""}",
             )
         }

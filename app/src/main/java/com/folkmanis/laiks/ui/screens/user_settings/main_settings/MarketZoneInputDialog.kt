@@ -1,14 +1,9 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -23,6 +18,7 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeMarketZonesService
 import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.utilities.composables.DialogWithSaveAndCancel
+import com.folkmanis.laiks.utilities.composables.LazyItemSelection
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,27 +82,15 @@ fun MarketZoneInput(
         headingText = R.string.market_zone_select,
     ) {
         if (uiState.loading) {
-            LoadingScreen()
+            LoadingScreen(
+                modifier = Modifier.fillMaxHeight(1/3f)
+            )
         } else {
-            LazyColumn {
-                items(uiState.zones, key = { it.id }) { zone ->
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = "${zone.id}, ${zone.description}",
-                                modifier = Modifier
-                                    .clickable { onZoneChange(zone.id) }
-                            )
-                        },
-                        leadingContent = {
-                            RadioButton(
-                                selected = zone.id == currentZoneId,
-                                onClick = { onZoneChange(zone.id) },
-                            )
-                        }
-                    )
-                }
-            }
+            LazyItemSelection(
+                data = uiState.zones,
+                onItemSelected = onZoneChange,
+                selectedId = currentZoneId,
+            )
         }
     }
 
