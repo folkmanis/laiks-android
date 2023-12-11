@@ -3,33 +3,38 @@ package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 import com.folkmanis.laiks.data.fake.FakeLaiksUserService
 import com.google.firebase.auth.FirebaseUser
 
-data class UserSettingsUiState(
-    val loading: Boolean = true,
-    val id: String? = null,
-    val email: String = "",
-    val emailVerified: Boolean = false,
-    val name: String = "",
-    val marketZoneId: String = "",
-    val includeVat: Boolean = true,
-    val vatAmount: Double = 0.0,
-    val npUser: Boolean = false,
-    val marketZoneName: String = "",
-    val userToReAuthenticateAndDelete: FirebaseUser? = null,
-) {
-    companion object {
-        private val user = FakeLaiksUserService.laiksUser
-        val testUiState = UserSettingsUiState(
-            loading = false,
-            name = user.name,
-            email = user.email,
-            id = user.id,
-            marketZoneId = user.marketZoneId ?: "LV",
-            npUser = true,
-            includeVat = user.includeVat,
-            vatAmount = user.vatAmount ?: 0.21,
-            marketZoneName = "LV, Latvija"
-        )
-        val emptyUser = UserSettingsUiState()
-    }
+sealed interface UserSettingsUiState {
+
+    data object Loading : UserSettingsUiState
+    data class Success(
+        val loading: Boolean = true,
+        val id: String = "",
+        val email: String = "",
+        val emailVerified: Boolean = false,
+        val name: String = "",
+        val marketZoneId: String? = null,
+        val includeVat: Boolean = true,
+        val vatAmount: Double? = null,
+        val npAllowed: Boolean = false,
+        val marketZoneName: String = "",
+        val userToReAuthenticateAndDelete: FirebaseUser? = null,
+        val anonymousUser:Boolean = true,
+    ) : UserSettingsUiState
+
+
+        companion object {
+            private val user = FakeLaiksUserService.laiksUser
+            val testUiState = Success(
+                loading = false,
+                name = user.name,
+                email = user.email,
+                id = user.id,
+                marketZoneId = user.marketZoneId ?: "LV",
+                npAllowed = true,
+                includeVat = user.includeVat,
+                vatAmount = user.vatAmount ?: 0.21,
+                marketZoneName = "LV, Latvija"
+            )
+        }
 
 }

@@ -51,7 +51,7 @@ fun LaiksAppScreen(
             UserMenu(
                 onPopToStart = navController::navigateToClockSingleTop,
                 onUserSettings = {
-                    appState.user?.also {
+                    appState.laiksUser?.also {
                         viewModel.setTitle(it.name)
                     }
                     navController.userSettings {
@@ -64,7 +64,7 @@ fun LaiksAppScreen(
                     }
                 },
                 onLogin = navController::navigateToLogin,
-                user = appState.user,
+                user = appState.laiksUser,
             )
         },
         onNavigateBack = navController::popBackStack,
@@ -95,6 +95,7 @@ fun LaiksAppScreen(
             userSettingsGraph(
                 navController = navController,
                 setTitle = viewModel::setTitle,
+                appState = appState,
             )
 
             loginGraph(

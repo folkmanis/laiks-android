@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navigation
 import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCosts
-import com.folkmanis.laiks.ui.screens.clock.navigateToClock
 import com.folkmanis.laiks.ui.screens.clock.navigateToClockSingleTop
+import com.folkmanis.laiks.ui.screens.laiks.LaiksAppState
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceEditScreen
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceNewRoute
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.editAppliance
@@ -20,6 +20,7 @@ const val ROUTE = "UserSettings"
 
 fun NavGraphBuilder.userSettingsGraph(
     navController: NavController,
+    appState: LaiksAppState,
     setTitle: (String) -> Unit,
 ) {
 
@@ -32,6 +33,9 @@ fun NavGraphBuilder.userSettingsGraph(
             setTitle = setTitle,
             onUserAppliances = navController::navigateToAppliances,
             onUserDeleted = navController::navigateToClockSingleTop,
+            laiksUser = appState.laiksUser,
+            npBlocked = appState.npBlocked,
+            user = appState.user,
         )
 
         appliancesScreen(

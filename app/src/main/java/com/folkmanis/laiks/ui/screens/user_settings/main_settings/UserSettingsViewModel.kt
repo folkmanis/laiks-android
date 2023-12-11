@@ -11,16 +11,22 @@ import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+fun UserSettingsUiState.successOrNull(): UserSettingsUiState.Success? {
+    return if (this is UserSettingsUiState.Success) this else null
+}
+
+fun UserSettingsUiState.ifSuccess(action: (UserSettingsUiState.Success) -> Unit) {
+    if (this is UserSettingsUiState.Success) action(this)
+}
 
 @HiltViewModel
 class UserSettingsViewModel @Inject constructor(
@@ -30,88 +36,89 @@ class UserSettingsViewModel @Inject constructor(
     private val accountService: AccountService,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UserSettingsUiState())
+    private val _uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private var loading: Boolean
+    private var busy: Boolean
         set(value) = _uiState.update { state ->
-            state.copy(loading = value)
+            state.successOrNull()?.copy(loading = value) ?: state
         }
-        get() = _uiState.value.loading
+        get() = _uiState.value.successOrNull()?.loading ?: false
 
-    fun initialize() {
+    suspend fun initialize(
+        laiksUser: LaiksUser?,
+        user: FirebaseUser?,
+        npBlocked: Boolean,
+    ) {
 
-        viewModelScope.launch {
+        if (laiksUser != null && user != null) {
 
-            laiksUserService.laiksUserFlow()
-                .filterNotNull()
-                .collect { user ->
-                    updateStateWithUser(user)
-                }
+            val marketZoneId = laiksUser.marketZoneId
+            val zone =
+                if (marketZoneId != null) zonesService.getMarketZone(marketZoneId)
+                else null
 
+            _uiState.value = UserSettingsUiState.Success(
+
+                loading = false,
+                id = laiksUser.id,
+                email = laiksUser.email,
+                includeVat = laiksUser.includeVat,
+                name = laiksUser.name,
+                marketZoneId = marketZoneId,
+                vatAmount = laiksUser.vatAmount,
+                marketZoneName = "$marketZoneId, ${zone?.description ?: ""}",
+
+                npAllowed = !npBlocked,
+                anonymousUser = user.isAnonymous,
+                emailVerified = user.isEmailVerified,
+
+                )
+        } else {
+            _uiState.value = UserSettingsUiState.Loading
         }
 
-        viewModelScope.launch {
 
-            laiksUserService.npAllowedFlow.collect { npAllowed ->
-                _uiState.update { state ->
-                    state.copy(npUser = npAllowed)
-                }
-            }
-
-        }
-
-        viewModelScope.launch {
-            accountService.firebaseUserFlow
-                .map { user ->
-                    user?.isEmailVerified ?: false
-                }
-                .collect { emailVerified ->
-                    _uiState.update { state ->
-                        state.copy(emailVerified = emailVerified)
-                    }
-                }
-        }
     }
 
     fun setName(value: String) {
         _uiState.update { state ->
-            state.id?.let {
+            state.successOrNull()?.let {
                 viewModelScope.launch {
                     laiksUserService.updateLaiksUser("name", value)
                 }
-                state.copy(name = value)
+                it.copy(name = value)
             } ?: state
         }
     }
 
     fun setIncludeVat(value: Boolean) {
         _uiState.update { state ->
-            state.id?.let {
+            state.successOrNull()?.let {
                 viewModelScope.launch {
                     laiksUserService.updateLaiksUser("includeVat", value)
                 }
-                state.copy(includeVat = value)
+                it.copy(includeVat = value)
             } ?: state
         }
     }
 
     fun setVatAmount(value: Double) {
         _uiState.update { state ->
-            state.id?.let {
+            state.successOrNull()?.let {
                 viewModelScope.launch {
                     laiksUserService.updateLaiksUser(
                         "vatAmount", value
                     )
                 }
-                state.copy(vatAmount = value)
+                it.copy(vatAmount = value)
             } ?: state
         }
     }
 
     fun setMarketZoneId(value: MarketZone) {
         _uiState.update { state ->
-            state.id?.let {
+            state.successOrNull()?.let {
                 viewModelScope.launch {
                     laiksUserService.updateLaiksUser(
                         hashMapOf(
@@ -120,7 +127,7 @@ class UserSettingsViewModel @Inject constructor(
                         )
                     )
                 }
-                state.copy(
+                it.copy(
                     marketZoneId = value.id,
                     marketZoneName = "${value.id}, ${value.description}",
                     vatAmount = value.tax,
@@ -131,63 +138,51 @@ class UserSettingsViewModel @Inject constructor(
 
     fun deleteAccount(onDeleted: () -> Unit) {
 
-        loading = true
+        busy = true
 
-        viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
-            if (throwable is FirebaseAuthRecentLoginRequiredException) {
-                Log.d(TAG, "Must re-login")
-                _uiState.update { state ->
-                    state.copy(userToReAuthenticateAndDelete = accountService.authUser)
-                }
-            } else throw throwable
-        }) {
+        val state = _uiState.value
 
-            accountService.deleteAccount()
-            Log.d(TAG, "User ${uiState.value.email} deleted")
-            snackbarManager
-                .showMessage(R.string.user_deleted_success, uiState.value.email)
-            _uiState
-                .update { state -> state.copy(userToReAuthenticateAndDelete = null) }
-            loading = false
-            onDeleted()
-        }
+        if (state is UserSettingsUiState.Success)
+            viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
+                if (throwable is FirebaseAuthRecentLoginRequiredException) {
+                    Log.d(TAG, "Must re-login")
+                    _uiState.value =
+                        state.copy(userToReAuthenticateAndDelete = accountService.authUser)
+                } else throw throwable
+            }) {
+
+                accountService.deleteAccount()
+                Log.d(TAG, "User ${state.email} deleted")
+                snackbarManager
+                    .showMessage(R.string.user_deleted_success, state.email)
+
+                _uiState.value = state.copy(userToReAuthenticateAndDelete = null)
+
+                busy = false
+
+                onDeleted()
+            }
     }
 
     fun cancelReLogin() {
-        loading = false
+        busy = false
         _uiState.update { state ->
-            state.copy(userToReAuthenticateAndDelete = null)
+            if (state is UserSettingsUiState.Success) {
+                snackbarManager.showMessage(R.string.user_not_deleted, state.email)
+                state.copy(userToReAuthenticateAndDelete = null)
+            } else state
         }
-        snackbarManager.showMessage(R.string.user_not_deleted, uiState.value.email)
     }
 
     fun sendEmailVerification() {
-        val email = _uiState.value.email
-        viewModelScope.launch {
-            accountService.sendEmailVerification()
-            snackbarManager.showMessage(R.string.email_verification_sent, email)
+        _uiState.value.ifSuccess { state ->
+            viewModelScope.launch {
+                accountService.sendEmailVerification()
+                snackbarManager.showMessage(R.string.email_verification_sent, state.email)
+            }
         }
     }
 
-    private suspend fun updateStateWithUser(user: LaiksUser) {
-
-        _uiState.update { state ->
-
-            val marketZoneId = user.marketZoneId ?: state.marketZoneId
-            val zone = zonesService.getMarketZone(marketZoneId)
-
-            state.copy(
-                loading = false,
-                id = user.id,
-                email = user.email,
-                includeVat = user.includeVat,
-                name = user.name,
-                marketZoneId = marketZoneId,
-                vatAmount = user.vatAmount ?: state.vatAmount ,
-                marketZoneName = "$marketZoneId, ${zone?.description ?: ""}",
-            )
-        }
-    }
 
     companion object {
         private const val TAG = "UserSettingsViewModel"

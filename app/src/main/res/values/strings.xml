@@ -86,6 +86,7 @@
     <string name="market_zone_name">Market zone</string>
     <string name="vat_amount">VAT amount</string>
     <string name="market_zone_select">Choose region</string>
+    <string name="market_zone_select_anonymous">Please select region to enable appliance power cost calculations and additional features</string>
     <string name="drag_handle">Drag</string>
     <string name="view_appliance">View Appliance</string>
     <string name="create_new">Create New</string>

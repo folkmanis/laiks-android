@@ -24,7 +24,7 @@ import com.folkmanis.laiks.utilities.composables.LoadingScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketZoneInputDialog(
-    initialZoneId: String,
+    initialZoneId: String?,
     onZoneAccept: (MarketZone) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -62,7 +62,7 @@ fun MarketZoneInputDialog(
 
 @Composable
 fun MarketZoneInput(
-    currentZoneId: String,
+    currentZoneId: String?,
     onDismiss: () -> Unit,
     onAccept: (MarketZone) -> Unit,
     onZoneChange: (String) -> Unit,

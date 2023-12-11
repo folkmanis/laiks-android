@@ -21,13 +21,13 @@ import com.folkmanis.laiks.utilities.composables.DialogWithSaveAndCancel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VatInputDialog(
-    initialValue: Long,
+    initialValue: Long?,
     onVatAccept: (Long) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var percents by remember {
-        mutableStateOf<Long?>(initialValue)
+        mutableStateOf(initialValue)
     }
 
     val saveEnabled by remember(percents, initialValue) {

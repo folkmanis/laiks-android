@@ -35,10 +35,6 @@ fun Double.toFormattedDecimals(
     return formatter.format(this)
 }
 
-fun Double.isValidVat(): Boolean =
-    this >= 0
-
-
 fun Collection<Double>.stDev(): Double =
     if (isNotEmpty()) {
         val avg = average()

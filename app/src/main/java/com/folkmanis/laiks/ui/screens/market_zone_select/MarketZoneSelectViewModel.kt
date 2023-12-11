@@ -12,6 +12,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+fun Double.toVatPercent(): Long =
+    (this * 100).toLong()
+
+fun Long.percentToDouble(): Double =
+    this / 100.0
+
 @HiltViewModel
 class MarketZoneSelectViewModel @Inject constructor(
     private val marketZonesService: MarketZonesService,
@@ -31,7 +37,7 @@ class MarketZoneSelectViewModel @Inject constructor(
 
         uiState = uiState.copy(
             zoneId = laiksUser.marketZoneId,
-            vatAmount = laiksUser.vatAmount,
+            vatAmount = laiksUser.vatAmount?.toVatPercent(),
             vatEnabled = laiksUser.includeVat,
         )
 
@@ -46,10 +52,10 @@ class MarketZoneSelectViewModel @Inject constructor(
         uiState = uiState.copy(zoneId = newZoneId)
         uiState.marketZones
             ?.find { zone -> zone.id == newZoneId }
-            ?.also { zone -> setVatAmount(zone.tax) }
+            ?.also { zone -> setVatAmount(zone.tax.toVatPercent()) }
     }
 
-    fun setVatAmount(newVat: Double) {
+    fun setVatAmount(newVat: Long) {
         uiState = uiState.copy(vatAmount = newVat)
     }
 
@@ -65,7 +71,7 @@ class MarketZoneSelectViewModel @Inject constructor(
         val update = hashMapOf<String, Any>(
             "marketZoneId" to uiState.zoneId!!,
             "includeVat" to uiState.vatEnabled,
-            "vatAmount" to uiState.vatAmount!!,
+            "vatAmount" to uiState.vatAmount!!.percentToDouble(),
         )
 
         viewModelScope.launch {

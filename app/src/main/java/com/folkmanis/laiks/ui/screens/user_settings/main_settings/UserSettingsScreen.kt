@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -35,20 +34,15 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.ui.screens.user_settings.main_settings.UserSettingsUiState.Companion.testUiState
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
+import com.folkmanis.laiks.utilities.modifiers.settingsRow
 
 fun Double.toPercentString(): String =
     "${(this * 100).toFormattedDecimals()}%"
 
-fun Modifier.settingsRow(): Modifier =
-    this
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp)
-        .height(80.dp)
-
 
 @Composable
 fun UserSettingsScreen(
-    uiState: UserSettingsUiState,
+    uiState: UserSettingsUiState.Success,
     onIncludeVatChange: (Boolean) -> Unit,
     onVatChange: (Double) -> Unit,
     onNameChange: (String) -> Unit,
@@ -59,7 +53,9 @@ fun UserSettingsScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    val npUser = uiState.npUser
+    val npUser = uiState.npAllowed
+
+    val registered = !uiState.anonymousUser
 
     Column(
         modifier = modifier
@@ -67,22 +63,25 @@ fun UserSettingsScreen(
             .verticalScroll(rememberScrollState())
     ) {
 
-        EmailRow(
-            email = uiState.email,
-            emailVerified = uiState.emailVerified,
-            onSendEmailVerification = onSendEmailVerification,
-            modifier = Modifier.settingsRow(),
-        )
+        if (registered) {
+            EmailRow(
+                email = uiState.email,
+                emailVerified = uiState.emailVerified,
+                onSendEmailVerification = onSendEmailVerification,
+                modifier = Modifier.settingsRow(),
+            )
 
-        HorizontalDivider()
+            HorizontalDivider()
 
-        NameEdit(
-            name = uiState.name,
-            onNameChange = onNameChange,
-            modifier = Modifier.settingsRow(),
-        )
+            NameEdit(
+                name = uiState.name,
+                onNameChange = onNameChange,
+                modifier = Modifier.settingsRow(),
+            )
 
-        HorizontalDivider()
+            HorizontalDivider()
+
+        }
 
         if (npUser) {
 
@@ -91,6 +90,7 @@ fun UserSettingsScreen(
                 marketZoneId = uiState.marketZoneId,
                 onMarketZoneChange = onMarketZoneChange,
                 modifier = Modifier.settingsRow(),
+                anonymous = !registered
             )
 
             HorizontalDivider()
@@ -110,8 +110,8 @@ fun UserSettingsScreen(
                 Text(
                     stringResource(R.string.include_vat),
                     style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = uiState.includeVat,
                     onCheckedChange = onIncludeVatChange
@@ -128,7 +128,8 @@ fun UserSettingsScreen(
             horizontalArrangement = Arrangement.End,
         ) {
 
-            DeleteAccountButton(onDelete = onDeleteUser)
+            if (registered)
+                DeleteAccountButton(onDelete = onDeleteUser)
 
             if (npUser) {
 
@@ -239,9 +240,10 @@ fun EmailRow(
 @Composable
 fun MarketZoneEdit(
     marketZoneName: String,
-    marketZoneId: String,
+    marketZoneId: String?,
     onMarketZoneChange: (MarketZone) -> Unit,
     modifier: Modifier = Modifier,
+    anonymous: Boolean,
 ) {
 
     var zoneInputOpen by remember { mutableStateOf(false) }
@@ -251,12 +253,21 @@ fun MarketZoneEdit(
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
-        Text(
-            text = stringResource(id = R.string.market_zone_name),
-            style = MaterialTheme.typography.labelLarge,
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
+        Column(
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .weight(1f)
+        ) {
+            Text(
+                text = stringResource(id = R.string.market_zone_name),
+                style = MaterialTheme.typography.labelLarge,
+            )
+            if (anonymous)
+                Text(
+                    text = stringResource(R.string.market_zone_select_anonymous),
+                    style = MaterialTheme.typography.labelSmall,
+                )
+        }
 
         Text(
             text = marketZoneName,
@@ -285,7 +296,7 @@ fun MarketZoneEdit(
 
 @Composable
 fun VatEdit(
-    vatAmount: Double,
+    vatAmount: Double?,
     onVatChange: (Double) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -303,7 +314,7 @@ fun VatEdit(
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = vatAmount.toPercentString(),
+            text = vatAmount?.toPercentString() ?: "",
             style = MaterialTheme.typography.labelLarge,
         )
         EditButton(
@@ -315,7 +326,9 @@ fun VatEdit(
 
     if (vatEditorOpen) {
         VatInputDialog(
-            initialValue = (vatAmount * 100.0).toLong(),
+            initialValue = vatAmount?.let {
+                (it * 100.0).toLong()
+            },
             onVatAccept = { vatUpdate ->
                 vatEditorOpen = false
                 onVatChange(vatUpdate / 100.0)

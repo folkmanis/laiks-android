@@ -51,7 +51,7 @@ class LaiksAppViewModel @Inject constructor(
         viewModelScope.launch {
             laiksUserService.laiksUserFlow().collect { user ->
                 _appState.update { state ->
-                    state.copy(user = user)
+                    state.copy(laiksUser = user)
                 }
             }
         }
@@ -59,8 +59,20 @@ class LaiksAppViewModel @Inject constructor(
         viewModelScope.launch {
             accountService.firebaseUserFlow.collect { user ->
                 if (user == null) createAnonymousUser()
+                _appState.update { state ->
+                    state.copy(user = user)
+                }
             }
         }
+
+        viewModelScope.launch {
+            laiksUserService.npAllowedFlow.collect { npAllowed ->
+                _appState.update { state ->
+                    state.copy(npBlocked = !npAllowed)
+                }
+            }
+        }
+
 
     }
 

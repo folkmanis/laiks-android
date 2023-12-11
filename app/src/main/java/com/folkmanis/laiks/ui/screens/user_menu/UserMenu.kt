@@ -18,6 +18,7 @@ fun UserMenu(
     user: LaiksUser?,
     modifier: Modifier = Modifier,
     viewModel: UserMenuViewModel = hiltViewModel(),
+    isAnonymous: Boolean,
 ) {
 
     val uiState = viewModel.uiState
