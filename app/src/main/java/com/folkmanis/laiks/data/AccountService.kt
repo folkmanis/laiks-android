@@ -15,7 +15,7 @@ interface AccountService {
 
     suspend fun loginWithCredential(credential: AuthCredential): AuthResult
 
-    suspend fun linkWithCredential(credential: AuthCredential): AuthResult
+    suspend fun linkWithCredential(credential: AuthCredential)
 
     suspend fun resetPassword(email: String): Void
 

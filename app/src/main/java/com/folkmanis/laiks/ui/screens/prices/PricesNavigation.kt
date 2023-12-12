@@ -15,18 +15,21 @@ const val ROUTE = "Prices"
 
 fun NavGraphBuilder.pricesScreen(
     setTitle: (String) -> Unit,
+    onSetMarketZone: () -> Unit,
 ) {
 
     composable(ROUTE) {
+
+        val viewModel: PricesViewModel = hiltViewModel()
+
+        LaunchedEffect(onSetMarketZone) {
+            viewModel.initialize(onSetMarketZone)
+        }
 
         val title = stringResource(id = R.string.prices_screen)
         LaunchedEffect(title, setTitle) {
             setTitle(title)
         }
-
-        val viewModel: PricesViewModel = hiltViewModel()
-
-//        viewModel.ObserveLifecycle(LocalLifecycleOwner.current.lifecycle)
 
         val uiState by viewModel.uiState
             .collectAsStateWithLifecycle(PricesUiState.Loading)
@@ -47,15 +50,3 @@ fun NavGraphBuilder.pricesScreen(
 fun NavController.navigateToPrices(navOptions: NavOptions? = null) {
     navigate(ROUTE, navOptions)
 }
-
-/*
-@Composable
-fun <LO : LifecycleObserver> LO.ObserveLifecycle(lifecycle: Lifecycle) {
-    DisposableEffect(lifecycle) {
-        lifecycle.addObserver(this@ObserveLifecycle)
-        onDispose {
-            lifecycle.removeObserver(this@ObserveLifecycle)
-        }
-    }
-}
-*/

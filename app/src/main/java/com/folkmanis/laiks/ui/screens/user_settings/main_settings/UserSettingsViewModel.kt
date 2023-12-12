@@ -57,6 +57,7 @@ class UserSettingsViewModel @Inject constructor(
             val zone =
                 if (marketZoneId != null) zonesService.getMarketZone(marketZoneId)
                 else null
+            val marketZoneName = zone?.let { "${it.id}, ${it.description}" } ?: ""
 
             _uiState.value = UserSettingsUiState.Success(
 
@@ -67,7 +68,7 @@ class UserSettingsViewModel @Inject constructor(
                 name = laiksUser.name,
                 marketZoneId = marketZoneId,
                 vatAmount = laiksUser.vatAmount,
-                marketZoneName = "$marketZoneId, ${zone?.description ?: ""}",
+                marketZoneName = marketZoneName,
 
                 npAllowed = !npBlocked,
                 anonymousUser = user.isAnonymous,

@@ -1,7 +1,9 @@
 package com.folkmanis.laiks.data.implementations
 
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.utilities.NotLoggedInException
+import com.folkmanis.laiks.utilities.UserNotAnonymousException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.EmailAuthProvider
@@ -42,9 +44,11 @@ class AccountServiceFirebase @Inject constructor(
         return auth.signInWithCredential(credential).await()
     }
 
-    override suspend fun linkWithCredential(credential: AuthCredential): AuthResult {
+    override suspend fun linkWithCredential(credential: AuthCredential) {
         val currentUser = authUser ?: throw NotLoggedInException()
-        return currentUser.linkWithCredential(credential).await()
+        if (!currentUser.isAnonymous) throw UserNotAnonymousException()
+        currentUser.linkWithCredential(credential).await()
+        currentUser.reload().await()
     }
 
     override suspend fun resetPassword(email: String): Void {

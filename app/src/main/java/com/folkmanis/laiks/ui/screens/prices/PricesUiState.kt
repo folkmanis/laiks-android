@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 sealed interface PricesUiState {
     object Loading : PricesUiState
     data class Error(
-        val reason: String,
+        val reason: String?,
         val exception: Throwable,
     ) : PricesUiState
 

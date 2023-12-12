@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.domain.ApplianceHourlyCostsUseCase
 import com.folkmanis.laiks.data.domain.ApplianceStatisticsUseCase
 import com.folkmanis.laiks.model.PricesStatistics
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
+import com.folkmanis.laiks.utilities.MarketZoneNotSetException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -31,11 +33,15 @@ class ApplianceCostsViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
     private val laiksUserService: LaiksUserService,
     savedStateHandle: SavedStateHandle,
-//    npUpdate: NpUpdateUseCase,
-//    delayToNextNpUpdate: DelayToNextNpUpdateUseCase,
-) : ViewModel() { // : PricesUpdateViewModel(npUpdate, delayToNextNpUpdate, snackbarManager)
+) : ViewModel() {
+
+    lateinit var setMarketZone: () -> Unit
 
     private val initialName: String? = savedStateHandle[APPLIANCE_NAME]
+
+    fun initialize(onSetMarketZone: () -> Unit) {
+        setMarketZone = onSetMarketZone
+    }
 
     private val applianceFlow = savedStateHandle
         .getStateFlow<String?>(APPLIANCE_IDX, null)
@@ -59,14 +65,18 @@ class ApplianceCostsViewModel @Inject constructor(
         .flatMapLatest { appliance ->
             applianceStatistics(appliance)
         }
-        .catch { err ->
-            Log.e(TAG, "Statistics error", err)
-            snackbarManager.showMessage(err.toSnackbarMessage())
-        }
 
     private val hourlyCostsFlow = applianceFlow
         .flatMapLatest { appliance ->
             applianceHourlyCosts(appliance)
+        }
+        .catch { err ->
+            if (err is MarketZoneNotSetException) {
+                setMarketZone()
+                snackbarManager.showMessage(R.string.market_zone_select_anonymous)
+            } else {
+                throw err
+            }
         }
 
     val uiState =
@@ -75,8 +85,12 @@ class ApplianceCostsViewModel @Inject constructor(
                 name = name,
                 hoursWithCosts = hourlyCosts,
                 statistics = statistics,
-            )
+            ) as ApplianceCostsUiState
         }
+            .catch { err ->
+                Log.e(TAG, "Error ${err.message}")
+                emit(ApplianceCostsUiState.Error(err.message, err))
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000L),

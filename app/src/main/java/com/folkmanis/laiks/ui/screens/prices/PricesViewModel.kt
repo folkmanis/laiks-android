@@ -1,12 +1,16 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.domain.AppliancesCostsUseCase
 import com.folkmanis.laiks.data.domain.HourlyPricesUseCase
 import com.folkmanis.laiks.data.domain.StatisticsUseCase
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PricesStatistics
+import com.folkmanis.laiks.ui.snackbar.SnackbarManager
+import com.folkmanis.laiks.utilities.MarketZoneNotSetException
 import com.folkmanis.laiks.utilities.ext.*
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
@@ -24,14 +28,25 @@ class PricesViewModel @Inject constructor(
     appliancesCosts: AppliancesCostsUseCase,
     statistics: StatisticsUseCase,
     hourlyPrices: HourlyPricesUseCase,
-) : ViewModel()  {
+    private val snackbarManager: SnackbarManager,
+) : ViewModel() {
 
+    lateinit var setMarketZone: ()-> Unit
 
-    val pricesStatistics: Flow<PricesStatistics> = statistics()
+    fun initialize(onSetMarketZone: ()->Unit) {
+        setMarketZone = onSetMarketZone
+    }
+
+    val pricesStatistics: Flow<PricesStatistics?> = statistics()
+        .catch { err ->
+            if (err !is MarketZoneNotSetException) {
+                Log.e(TAG, "pricesStatistics error ${err.message}")
+            }
+        }
 
     val uiState: Flow<PricesUiState> = hourTicks()
         .flatMapLatest { hour ->
-           hourlyPrices(
+            hourlyPrices(
                 hour
                     .truncatedTo(ChronoUnit.DAYS)
             )
@@ -50,6 +65,15 @@ class PricesViewModel @Inject constructor(
                     }
                 }
         }
+        .catch { err->
+            if (err is MarketZoneNotSetException) {
+                snackbarManager.showMessage(R.string.market_zone_select_anonymous)
+                setMarketZone()
+            } else {
+                Log.e(TAG, "uiState error ${err.message}")
+                emit(PricesUiState.Error(err.message, err))
+            }
+        }
 
     val appliancesState: Flow<Map<Int, List<PowerApplianceHour>>> = minuteTicks()
         .flatMapLatest { minute ->
@@ -58,6 +82,7 @@ class PricesViewModel @Inject constructor(
                     appliancesCosts(prices, minute)
                 }
         }
+        .catch { emit(emptyMap()) }
 
     companion object {
         @Suppress("unused")

@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.login.login_select
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.R
@@ -43,18 +44,22 @@ class LoginSelectViewModel @Inject constructor(
     }
 
     fun registerWithGoogle(tokenId: String, onLaiksUserCreated: () -> Unit) {
+
         val credential = GoogleAuthProvider.getCredential(tokenId, null)
+
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
                 snackbarManager.showMessage(throwable.toSnackbarMessage())
             }
         ) {
-            val result = accountService.linkWithCredential(credential)
-            result.user?.also { user ->
+            accountService.linkWithCredential(credential)
+            accountService.authUser?.also { user ->
+                Log.d(TAG, "Linked with user ${user.email}, ${user.displayName}")
                 val update = hashMapOf<String, Any>(
                     "email" to user.email!!,
-                    "name" to user.displayName!!,
+//                    "name" to user.displayName!!,
                 )
+                Log.d(TAG, "Update: $update")
                 laiksUserService.updateLaiksUser(update)
                 snackbarManager.showMessage(R.string.login_user_created)
                 onLaiksUserCreated()
@@ -62,5 +67,8 @@ class LoginSelectViewModel @Inject constructor(
         }
     }
 
+    companion object {
+        private const val TAG = "LoginSelectViewModel"
+    }
 
 }

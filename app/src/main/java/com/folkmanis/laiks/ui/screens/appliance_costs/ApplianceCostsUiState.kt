@@ -9,7 +9,7 @@ sealed interface ApplianceCostsUiState {
         val name: String?,
     ) : ApplianceCostsUiState
     data class Error(
-        val reason: String,
+        val reason: String?,
         val exception: Throwable,
     ) : ApplianceCostsUiState
     data class Success(

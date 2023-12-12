@@ -31,6 +31,8 @@ fun LaiksAppScreen(
     modifier: Modifier = Modifier,
 ) {
 
+    val context = LocalContext.current
+
     val viewModel: LaiksAppViewModel = hiltViewModel()
     val appState = viewModel.appState.collectAsStateWithLifecycle().value
 
@@ -49,7 +51,6 @@ fun LaiksAppScreen(
         snackbarHostState = viewModel.snackbarHostState,
         appMenu = {
             UserMenu(
-                onPopToStart = navController::navigateToClockSingleTop,
                 onUserSettings = {
                     appState.laiksUser?.also {
                         viewModel.setTitle(it.name)
@@ -64,7 +65,15 @@ fun LaiksAppScreen(
                     }
                 },
                 onLogin = navController::navigateToLogin,
-                user = appState.laiksUser,
+                onLogout = {
+                    viewModel.logOut(context)
+                    navController.navigateToClockSingleTop()
+                },
+                isAnonymous = appState.user?.isAnonymous ?: false,
+                onSetVatEnabled = viewModel::setVatEnabled,
+                isVatEnabled = appState.laiksUser?.includeVat ?: false,
+                npBlocked = appState.npBlocked,
+                photoUrl = appState.user?.photoUrl,
             )
         },
         onNavigateBack = navController::popBackStack,
@@ -86,10 +95,20 @@ fun LaiksAppScreen(
 
             pricesScreen(
                 setTitle = viewModel::setTitle,
+                onSetMarketZone = {
+                    navController.userSettings {
+                        popUpTo(CLOCK_ROUTE)
+                    }
+                }
             )
 
             applianceCostsScreen(
                 setTitle = viewModel::setTitle,
+                onSetMarketZone = {
+                    navController.userSettings {
+                        popUpTo(CLOCK_ROUTE)
+                    }
+                },
             )
 
             userSettingsGraph(

@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.laiks
 
+import android.content.Context
 import android.content.res.Resources
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
@@ -11,6 +12,7 @@ import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toMessage
 import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.folkmanis.laiks.utilities.AnonymousAuthenticationFailedException
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -58,6 +60,7 @@ class LaiksAppViewModel @Inject constructor(
 
         viewModelScope.launch {
             accountService.firebaseUserFlow.collect { user ->
+                Log.d(TAG, "User ${user?.uid}")
                 if (user == null) createAnonymousUser()
                 _appState.update { state ->
                     state.copy(user = user)
@@ -74,6 +77,25 @@ class LaiksAppViewModel @Inject constructor(
         }
 
 
+    }
+
+    fun logOut(context: Context) {
+        Identity.getSignInClient(context)
+            .signOut()
+        accountService
+            .signOut()
+    }
+
+    fun setVatEnabled(value: Boolean) {
+        viewModelScope.launch {
+            _appState.update { state ->
+                val laiksUser = state.laiksUser?.copy(includeVat = value)
+                state.copy(laiksUser = laiksUser)
+            }
+            _appState.value.laiksUser?.also {
+                    laiksUserService.updateLaiksUser("includeVat", value)
+            }
+        }
     }
 
     private suspend fun createAnonymousUser() {
