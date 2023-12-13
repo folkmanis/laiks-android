@@ -48,6 +48,7 @@ fun LaiksAppScreen(
     LaiksAppScaffold(
         title = appState.title,
         canNavigateBack = navController.previousBackStackEntry != null,
+        canNavigateToHome = navController.currentBackStackEntry?.destination?.route != CLOCK_ROUTE,
         snackbarHostState = viewModel.snackbarHostState,
         appMenu = {
             UserMenu(
@@ -77,6 +78,7 @@ fun LaiksAppScreen(
             )
         },
         onNavigateBack = navController::popBackStack,
+        onNavigateToHome = navController::navigateToClockSingleTop,
         modifier = modifier
     ) { innerPadding ->
 

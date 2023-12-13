@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +27,8 @@ import com.folkmanis.laiks.R
 fun LaiksAppScaffold(
     title: String,
     canNavigateBack: Boolean,
+    canNavigateToHome: Boolean,
+    onNavigateToHome : ()->Unit,
     snackbarHostState: SnackbarHostState,
     appMenu: @Composable RowScope.() -> Unit,
     onNavigateBack: () -> Unit,
@@ -61,6 +63,14 @@ fun LaiksAppScaffold(
                     }
                 },
                 actions = {
+                    if(canNavigateToHome) {
+                        IconButton(onClick = onNavigateToHome) {
+                            Icon(
+                                imageVector = Icons.Filled.Home,
+                                contentDescription = stringResource(R.string.back_to_home_button),
+                            )
+                        }
+                    }
                     appMenu()
                 }
             )

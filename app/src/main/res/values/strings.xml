@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">Delayed Time</string>
-    <string name="back_button">Back to start</string>
+    <string name="back_button">Back to previous screen</string>
+    <string name="back_to_home_button">Back to home</string>
     <string name="hour_plus_button">Hour Up</string>
     <string name="hour_minus_button">Hour Down</string>
     <string name="minutes_separator" translatable="false">:</string>
     <string name="login_button">Login</string>
     <string name="login_email_button">Login with e-mail</string>
-    <string name="login_google_button">Login with Google</string>
+    <string name="login_google_button">Sign in with Google</string>
     <string name="show_prices_button">Show Prices</string>
     <string name="prices_screen">Prices</string>
     <string name="loading">Loading&#8230;</string>

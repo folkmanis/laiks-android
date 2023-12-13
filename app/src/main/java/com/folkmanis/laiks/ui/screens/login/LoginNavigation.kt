@@ -39,7 +39,7 @@ fun NavGraphBuilder.loginGraph(
             onLaiksUserCreated = {
                 navController.userSettings {
                     launchSingleTop = true
-                    popUpTo(0) { inclusive = true }
+                    popUpTo(CLOCK_ROUTE)
                 }
             },
         )

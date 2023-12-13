@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Atliktais laiks</string>
-    <string name="back_button">Uz sākumu</string>
+    <string name="back_button">Uz iepriekšējo ekrānu</string>
+    <string name="back_to_home_button">Uz sākumu</string>
     <string name="hour_plus_button">Stundu uz priekšu</string>
     <string name="hour_minus_button">Stundu atpakaļ</string>
     <string name="login_button">Pieslēgties</string>

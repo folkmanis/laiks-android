@@ -8,15 +8,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,7 +31,6 @@ import com.folkmanis.laiks.utilities.composables.ListDivider
 
 fun Modifier.loginButtonModifier(): Modifier {
     return this
-        .fillMaxWidth()
         .padding(horizontal = 16.dp, vertical = 8.dp)
 }
 
@@ -37,7 +40,6 @@ fun LoginSelectScreen(
     onLoginWithEmail: () -> Unit,
     onLoginWithGoogle: () -> Unit,
     onRegisterWithEmail: () -> Unit,
-    onRegisterWithGoogle: () -> Unit,
     isHorizontal: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -62,7 +64,6 @@ fun LoginSelectScreen(
                 onLoginWithEmail = onLoginWithEmail,
                 onLoginWithGoogle = onLoginWithGoogle,
                 onRegisterWithEmail = onRegisterWithEmail,
-                onRegisterWithGoogle = onRegisterWithGoogle,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
@@ -94,7 +95,6 @@ fun LoginSelectScreen(
                 onLoginWithEmail = onLoginWithEmail,
                 onLoginWithGoogle = onLoginWithGoogle,
                 onRegisterWithEmail = onRegisterWithEmail,
-                onRegisterWithGoogle = onRegisterWithGoogle
             )
 
             Spacer(modifier = Modifier.weight(2f))
@@ -109,7 +109,6 @@ fun LoginSelectButtons(
     onLoginWithEmail: () -> Unit,
     onLoginWithGoogle: () -> Unit,
     onRegisterWithEmail: () -> Unit,
-    onRegisterWithGoogle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -118,18 +117,17 @@ fun LoginSelectButtons(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        FilledTonalButton(
-            onClick = onLoginWithEmail,
-            modifier = Modifier.loginButtonModifier(),
-        ) {
-            Text(text = stringResource(R.string.login_email_button))
-        }
+        GoogleButton(
+            onClick = onLoginWithGoogle,
+            modifier=Modifier.loginButtonModifier()
+        )
 
         FilledTonalButton(
-            onClick = onLoginWithGoogle,
-            modifier = Modifier.loginButtonModifier(),
+            onClick = onLoginWithEmail,
+            modifier = Modifier
+                .loginButtonModifier(),
         ) {
-            Text(text = stringResource(R.string.login_google_button))
+            Text(text = stringResource(R.string.login_email_button))
         }
 
         ListDivider(
@@ -138,17 +136,44 @@ fun LoginSelectButtons(
 
         TextButton(
             onClick = onRegisterWithEmail,
-        ) {
+            modifier = Modifier
+                .loginButtonModifier()
+                .fillMaxWidth(),
+
+            ) {
             Text(text = stringResource(R.string.login_register_with_email))
         }
 
-        TextButton(
-            onClick = onRegisterWithGoogle
-        ) {
-            Text(text = stringResource(R.string.login_register_with_google))
-        }
-
     }
+}
+
+@Composable
+fun GoogleButton(
+    onClick: ()-> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier
+            .loginButtonModifier(),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = Color(0xFFFFFFFF),
+            contentColor = Color(0xFF1F1F1F )
+        ),
+        enabled = enabled
+    ) {
+        Image(
+            painter = painterResource(R.drawable.google_logo),
+            contentDescription = null,
+            modifier = Modifier
+                .size(20.dp)
+                .padding(end = ButtonDefaults.IconSpacing)
+        )
+        Text(text = stringResource(R.string.login_google_button))
+    }
+
+
 }
 
 @Preview(device = "spec:parent=pixel_5")
@@ -159,13 +184,12 @@ fun LoginSelectScreenPreview() {
             onLoginWithEmail = { },
             onLoginWithGoogle = {},
             onRegisterWithEmail = {},
-            onRegisterWithGoogle = {},
             isHorizontal = false
         )
     }
 }
 
-@Preview(device = "spec:parent=pixel_5,orientation=landscape")
+@Preview(device = "spec:parent=pixel_5,orientation=landscape", showBackground = true)
 @Composable
 fun LoginSelectScreenHorizontalPreview() {
     MaterialTheme {
@@ -173,7 +197,6 @@ fun LoginSelectScreenHorizontalPreview() {
             onLoginWithEmail = {},
             onLoginWithGoogle = {},
             onRegisterWithEmail = {},
-            onRegisterWithGoogle = {},
             isHorizontal = true
         )
     }

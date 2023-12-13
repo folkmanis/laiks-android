@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
@@ -31,7 +32,7 @@ class LoginSelectViewModel @Inject constructor(
             .signOut()
     }
 
-    fun loginWithGoogle(tokenId: String, afterLogin: () -> Unit) {
+   private fun loginWithGoogle(tokenId: String, afterLogin: () -> Unit) {
         val credential = GoogleAuthProvider.getCredential(tokenId, null)
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
@@ -48,14 +49,20 @@ class LoginSelectViewModel @Inject constructor(
         tokenId: String,
         displayName: String?,
         profilePictureUri: Uri?,
-        onLaiksUserCreated: () -> Unit
+        onLaiksUserCreated: () -> Unit,
+        afterLogin: () -> Unit,
     ) {
 
         val credential = GoogleAuthProvider.getCredential(tokenId, null)
 
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
-                snackbarManager.showMessage(throwable.toSnackbarMessage())
+                if (throwable is FirebaseAuthUserCollisionException) {
+                    Log.d(TAG, "Existing user $displayName")
+                    loginWithGoogle(tokenId, afterLogin)
+                } else {
+                    snackbarManager.showMessage(throwable.toSnackbarMessage())
+                }
             }
         ) {
             accountService.linkWithCredential(credential, displayName, profilePictureUri)
@@ -65,7 +72,6 @@ class LoginSelectViewModel @Inject constructor(
                     "email" to user.email!!,
                     "name" to user.displayName!!,
                 )
-                Log.d(TAG, "Update: $update")
                 laiksUserService.updateLaiksUser(update)
                 snackbarManager.showMessage(R.string.login_user_created)
                 onLaiksUserCreated()
