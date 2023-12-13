@@ -73,9 +73,9 @@ class UserRegistrationViewModel @Inject constructor(
             accountService.createUserWithEmail(email, password, displayName)
             accountService.sendEmailVerification()
             accountService.authUser?.also { user ->
-                val update = hashMapOf<String, Any>(
-                    "email" to user.email!!,
-                    "name" to user.displayName!!,
+                val update = hashMapOf<String, Any?>(
+                    "email" to user.email,
+                    "name" to user.displayName,
                 )
                 laiksUserService.updateLaiksUser(update)
                 snackbarManager.showMessage(R.string.user_registered, user.email!!)

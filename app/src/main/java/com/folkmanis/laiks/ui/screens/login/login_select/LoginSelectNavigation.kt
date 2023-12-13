@@ -51,12 +51,20 @@ fun NavGraphBuilder.loginSelectScreen(
         OneTapSignInWithGoogle(
             state = googleLoginState,
             clientId = stringResource(R.string.one_tap_web_client_id),
-            onTokenIdReceived = { tokenId ->
-                Log.d(TAG, "Token: $tokenId")
-                if (existingUser)
-                    viewModel.loginWithGoogle(tokenId, onLogin)
-                else
-                    viewModel.registerWithGoogle(tokenId, onLaiksUserCreated)
+            onCredential = { credential ->
+                credential.googleIdToken?.also { tokenId ->
+                    Log.d(TAG, "Token: $tokenId")
+                    if (existingUser)
+                        viewModel.loginWithGoogle(tokenId, onLogin)
+                    else
+                        viewModel.registerWithGoogle(
+                            tokenId,
+                            credential.displayName,
+                            credential.profilePictureUri,
+                            onLaiksUserCreated
+                        )
+                }
+
             },
             onError = {
                 Log.e(TAG, "${it.message}")

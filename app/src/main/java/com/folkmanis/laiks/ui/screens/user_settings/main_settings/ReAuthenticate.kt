@@ -83,11 +83,13 @@ fun ReAuthenticate(
     OneTapSignInWithGoogle(
         state = googleLoginState,
         clientId = stringResource(R.string.one_tap_web_client_id),
-        onTokenIdReceived = { idToken ->
-            val credential = GoogleAuthProvider.getCredential(idToken, null)
-            scope.launch(exceptionHandler) {
-                user.reauthenticate(credential).await()
-                onReAuthenticated()
+        onCredential = { signInCredential ->
+            signInCredential.googleIdToken?.also { idToken ->
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                scope.launch(exceptionHandler) {
+                    user.reauthenticate(credential).await()
+                    onReAuthenticated()
+                }
             }
         },
         onError = {

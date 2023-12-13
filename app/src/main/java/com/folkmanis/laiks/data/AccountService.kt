@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.data
 
+import android.net.Uri
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
@@ -15,7 +16,11 @@ interface AccountService {
 
     suspend fun loginWithCredential(credential: AuthCredential): AuthResult
 
-    suspend fun linkWithCredential(credential: AuthCredential)
+    suspend fun linkWithCredential(
+        credential: AuthCredential,
+        displayName: String?,
+        uri: Uri?,
+    )
 
     suspend fun resetPassword(email: String): Void
 

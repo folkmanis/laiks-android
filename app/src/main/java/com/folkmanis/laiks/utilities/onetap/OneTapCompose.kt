@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.folkmanis.laiks.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInCredential
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 
@@ -31,9 +32,9 @@ fun OneTapSignInWithGoogle(
     clientId: String,
     rememberAccount: Boolean = true,
     nonce: String? = null,
-    onTokenIdReceived: (String) -> Unit,
     onDialogDismissed: (message: Int) -> Unit = {},
     onError: (Throwable) -> Unit,
+    onCredential: (SignInCredential) -> Unit,
 ) {
     val context: Context = LocalContext.current
     val activityLauncher = rememberLauncherForActivityResult(
@@ -43,11 +44,8 @@ fun OneTapSignInWithGoogle(
             if (result.resultCode == Activity.RESULT_OK) {
                 val oneTapClient = Identity.getSignInClient(context)
                 val credentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-                val tokenId = credentials.googleIdToken
-                if (tokenId != null) {
-                    onTokenIdReceived(tokenId)
-                    state.close()
-                }
+                state.close()
+                onCredential(credentials)
             }
         } catch (e: ApiException) {
             Log.e(TAG, "${e.message}")

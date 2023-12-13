@@ -91,7 +91,7 @@ class LaiksUserServiceFirebase @Inject constructor(
         collection.document(uId).set(user).await()
     }
 
-    override suspend fun updateLaiksUser(update: HashMap<String, Any>) {
+    override suspend fun updateLaiksUser(update: HashMap<String, Any?>) {
         collection.document(uId).update(update).await()
     }
 

@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.data.implementations
 
+import android.net.Uri
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.utilities.NotLoggedInException
@@ -44,11 +45,18 @@ class AccountServiceFirebase @Inject constructor(
         return auth.signInWithCredential(credential).await()
     }
 
-    override suspend fun linkWithCredential(credential: AuthCredential) {
+    override suspend fun linkWithCredential(
+        credential: AuthCredential,
+        displayName: String?,
+        uri: Uri?
+    ) {
         val currentUser = authUser ?: throw NotLoggedInException()
         if (!currentUser.isAnonymous) throw UserNotAnonymousException()
+
         currentUser.linkWithCredential(credential).await()
-        currentUser.reload().await()
+
+        updateProfile(name = displayName, uri = uri)
+
     }
 
     override suspend fun resetPassword(email: String): Void {
@@ -64,12 +72,10 @@ class AccountServiceFirebase @Inject constructor(
             authUser?.linkWithCredential(EmailAuthProvider.getCredential(email, password))
                 ?: auth.createUserWithEmailAndPassword(email, password)
 
-        task.await().user?.also { user ->
-            val profileUpdate = userProfileChangeRequest {
-                displayName = name
-            }
-            user.updateProfile(profileUpdate).await()
-        }
+        task.await()
+
+        updateProfile(name = name)
+
     }
 
     override suspend fun createAnonymous(): AuthResult {
@@ -98,6 +104,20 @@ class AccountServiceFirebase @Inject constructor(
     private fun setLanguage() {
         val locale = Locale.getDefault().language
         auth.setLanguageCode(locale)
+    }
+
+    private suspend fun updateProfile(
+        name: String? = null,
+        uri: Uri? = null,
+    ) {
+        authUser?.also { user ->
+            val profileUpdate = userProfileChangeRequest {
+                displayName = name
+                photoUri = uri
+            }
+            user.updateProfile(profileUpdate).await()
+        }
+
     }
 
     companion object {
