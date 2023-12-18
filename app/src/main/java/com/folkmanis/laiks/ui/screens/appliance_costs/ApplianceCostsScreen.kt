@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +26,7 @@ fun ApplianceCostsScreen(
     state: ApplianceCostsUiState,
     modifier: Modifier = Modifier,
     setTitle: (String) -> Unit = {},
+    onSetMarketZone: () -> Unit = {},
 ) {
 
 
@@ -42,6 +44,11 @@ fun ApplianceCostsScreen(
                     costs = state.hoursWithCosts,
                     statistics = state.statistics
                 )
+            }
+            is ApplianceCostsUiState.MarketZoneMissing -> {
+                LaunchedEffect(state, onSetMarketZone) {
+                    onSetMarketZone()
+                }
             }
         }
 

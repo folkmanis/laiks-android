@@ -28,8 +28,6 @@ fun NavGraphBuilder.applianceCostsScreen(
         val viewModel: ApplianceCostsViewModel = hiltViewModel()
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-        viewModel.initialize(onSetMarketZone)
-
         val title = applianceTitle(state = state)
         LaunchedEffect(title, setTitle) {
             setTitle(title)
@@ -38,6 +36,7 @@ fun NavGraphBuilder.applianceCostsScreen(
         ApplianceCostsScreen(
             state = state,
             setTitle = setTitle,
+            onSetMarketZone = onSetMarketZone,
         )
 
     }

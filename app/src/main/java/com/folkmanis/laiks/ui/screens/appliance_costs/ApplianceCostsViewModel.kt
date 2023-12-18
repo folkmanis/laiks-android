@@ -35,13 +35,7 @@ class ApplianceCostsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    lateinit var setMarketZone: () -> Unit
-
     private val initialName: String? = savedStateHandle[APPLIANCE_NAME]
-
-    fun initialize(onSetMarketZone: () -> Unit) {
-        setMarketZone = onSetMarketZone
-    }
 
     private val applianceFlow = savedStateHandle
         .getStateFlow<String?>(APPLIANCE_IDX, null)
@@ -70,14 +64,6 @@ class ApplianceCostsViewModel @Inject constructor(
         .flatMapLatest { appliance ->
             applianceHourlyCosts(appliance)
         }
-        .catch { err ->
-            if (err is MarketZoneNotSetException) {
-                setMarketZone()
-                snackbarManager.showMessage(R.string.market_zone_select_anonymous)
-            } else {
-                throw err
-            }
-        }
 
     val uiState =
         combine(hourlyCostsFlow, statisticsFlow, nameFlow) { hourlyCosts, statistics, name ->
@@ -88,8 +74,13 @@ class ApplianceCostsViewModel @Inject constructor(
             ) as ApplianceCostsUiState
         }
             .catch { err ->
-                Log.e(TAG, "Error ${err.message}")
-                emit(ApplianceCostsUiState.Error(err.message, err))
+                if (err is MarketZoneNotSetException) {
+                    snackbarManager.showMessage(R.string.market_zone_select_anonymous)
+                    emit(ApplianceCostsUiState.MarketZoneMissing)
+                } else {
+                    Log.e(TAG, "Error ${err.message}")
+                    emit(ApplianceCostsUiState.Error(err.message, err))
+                }
             }
             .stateIn(
                 scope = viewModelScope,

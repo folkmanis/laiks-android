@@ -90,7 +90,6 @@ fun UserSettingsScreen(
                 marketZoneId = uiState.marketZoneId,
                 onMarketZoneChange = onMarketZoneChange,
                 modifier = Modifier.settingsRow(),
-                anonymous = !registered
             )
 
             HorizontalDivider()
@@ -243,7 +242,6 @@ fun MarketZoneEdit(
     marketZoneId: String?,
     onMarketZoneChange: (MarketZone) -> Unit,
     modifier: Modifier = Modifier,
-    anonymous: Boolean,
 ) {
 
     var zoneInputOpen by remember { mutableStateOf(false) }
@@ -262,7 +260,7 @@ fun MarketZoneEdit(
                 text = stringResource(id = R.string.market_zone_name),
                 style = MaterialTheme.typography.labelLarge,
             )
-            if (anonymous)
+            if (marketZoneId == null)
                 Text(
                     text = stringResource(R.string.market_zone_select_anonymous),
                     style = MaterialTheme.typography.labelSmall,
