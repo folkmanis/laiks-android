@@ -32,6 +32,7 @@ fun PricesScreen(
     state: PricesUiState,
     statistics: PricesStatistics?,
     appliances: Map<Int, List<PowerApplianceHour>>,
+    onSetMarketZone: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -51,6 +52,12 @@ fun PricesScreen(
             is PricesUiState.Error -> ErrorScreen(
                 reason = state.reason,
             )
+
+            is PricesUiState.MarketZoneMissing -> {
+                LaunchedEffect(onSetMarketZone) {
+                    onSetMarketZone()
+                }
+            }
         }
 
     }

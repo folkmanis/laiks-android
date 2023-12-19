@@ -20,7 +20,6 @@ const val ROUTE = "UserSettings"
 
 fun NavGraphBuilder.userSettingsGraph(
     navController: NavController,
-    appState: LaiksAppState,
     setTitle: (String) -> Unit,
 ) {
 
@@ -33,9 +32,6 @@ fun NavGraphBuilder.userSettingsGraph(
             setTitle = setTitle,
             onUserAppliances = navController::navigateToAppliances,
             onUserDeleted = navController::navigateToClockSingleTop,
-            laiksUser = appState.laiksUser,
-            npBlocked = appState.npBlocked,
-            user = appState.user,
         )
 
         appliancesScreen(

@@ -50,9 +50,6 @@ data class ApplianceUiState(
 
     ) {
 
-    val isNew: Boolean
-        get() = idx === null
-
     val isEnabled: Boolean
         get() = !isSaving && !isLoading
 

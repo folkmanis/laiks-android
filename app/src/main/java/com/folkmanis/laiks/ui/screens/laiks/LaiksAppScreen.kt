@@ -52,10 +52,8 @@ fun LaiksAppScreen(
         snackbarHostState = viewModel.snackbarHostState,
         appMenu = {
             UserMenu(
-                onUserSettings = {
-                    appState.laiksUser?.also {
-                        viewModel.setTitle(it.name)
-                    }
+                onUserSettings = { name ->
+                    viewModel.setTitle(name.orEmpty())
                     navController.userSettings {
                         popUpTo(CLOCK_ROUTE)
                     }
@@ -70,11 +68,6 @@ fun LaiksAppScreen(
                     viewModel.logOut(context)
                     navController.navigateToClockSingleTop()
                 },
-                isAnonymous = appState.user?.isAnonymous ?: false,
-                onSetVatEnabled = viewModel::setVatEnabled,
-                isVatEnabled = appState.laiksUser?.includeVat ?: false,
-                npBlocked = appState.npBlocked,
-                photoUrl = appState.user?.photoUrl,
             )
         },
         onNavigateBack = navController::popBackStack,
@@ -116,7 +109,6 @@ fun LaiksAppScreen(
             userSettingsGraph(
                 navController = navController,
                 setTitle = viewModel::setTitle,
-                appState = appState,
             )
 
             loginGraph(

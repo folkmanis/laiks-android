@@ -19,9 +19,6 @@ fun NavGraphBuilder.mainSettingsScreen(
     setTitle: (String) -> Unit,
     onUserAppliances: () -> Unit,
     onUserDeleted: () -> Unit,
-    laiksUser: LaiksUser?,
-    user: FirebaseUser?,
-    npBlocked: Boolean,
 ) {
 
     composable(
@@ -30,12 +27,8 @@ fun NavGraphBuilder.mainSettingsScreen(
 
         val viewModel: UserSettingsViewModel = hiltViewModel()
 
-        LaunchedEffect(laiksUser, user, npBlocked) {
-            viewModel.initialize(
-                laiksUser = laiksUser,
-                user = user,
-                npBlocked = npBlocked,
-            )
+        LaunchedEffect(Unit) {
+            viewModel.initialize()
         }
 
         val uiState by viewModel

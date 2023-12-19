@@ -31,12 +31,6 @@ class PricesViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
-    lateinit var setMarketZone: ()-> Unit
-
-    fun initialize(onSetMarketZone: ()->Unit) {
-        setMarketZone = onSetMarketZone
-    }
-
     val pricesStatistics: Flow<PricesStatistics?> = statistics()
         .catch { err ->
             if (err !is MarketZoneNotSetException) {
@@ -68,7 +62,7 @@ class PricesViewModel @Inject constructor(
         .catch { err->
             if (err is MarketZoneNotSetException) {
                 snackbarManager.showMessage(R.string.market_zone_select_anonymous)
-                setMarketZone()
+                emit(PricesUiState.MarketZoneMissing)
             } else {
                 Log.e(TAG, "uiState error ${err.message}")
                 emit(PricesUiState.Error(err.message, err))

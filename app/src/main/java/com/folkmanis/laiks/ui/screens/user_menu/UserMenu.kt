@@ -19,59 +19,58 @@ import com.google.firebase.auth.FirebaseUser
 
 @Composable
 fun UserMenu(
-    onUserSettings: () -> Unit,
+    onUserSettings: (String?) -> Unit,
     onEditAppliances: () -> Unit,
     onLogin: () -> Unit,
     onLogout: () -> Unit,
-    onSetVatEnabled: (Boolean) -> Unit,
-    isVatEnabled: Boolean,
-    isAnonymous: Boolean,
-    npBlocked: Boolean,
-    photoUrl: Uri?,
     modifier: Modifier = Modifier,
+    viewModel: UserMenuViewModel = hiltViewModel()
 ) {
 
-    var menuExpanded by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState
+        .collectAsStateWithLifecycle(UserMenuState())
+
+    val close = viewModel::close
 
     Box(modifier = modifier) {
         UserMenuIconButton(
-            photoUrl = photoUrl,
-            onClick = { menuExpanded = !menuExpanded }
+            photoUrl = uiState.photoUrl,
+            onClick = viewModel::toggle
         )
 
         DropdownMenu(
-            expanded = menuExpanded,
-            onDismissRequest = { menuExpanded = false }
+            expanded = uiState.expanded,
+            onDismissRequest = close
         ) {
 
-            if (isAnonymous)
+            if (uiState.isAnonymous)
                 LoginMenuItem(onClick = {
-                    menuExpanded = false
+                    close()
                     onLogin()
                 })
             else
                 LogoutMenuItem(onClick = {
-                    menuExpanded = false
+                    close()
                     onLogout()
                 })
 
             SettingsMenuItem(onClick = {
-                menuExpanded = false
-                onUserSettings()
+                close()
+                onUserSettings(uiState.name)
             })
 
-            if (!npBlocked) {
+            if (!uiState.npBlocked) {
 
                 AppliancesMenuItem(onClick = {
-                    menuExpanded = false
+                    close()
                     onEditAppliances()
                 })
 
                 VatEnabledMenuItem(
-                    isVatEnabled = isVatEnabled,
+                    isVatEnabled = uiState.isVatEnabled,
                     onClick = {
-                        menuExpanded = false
-                        onSetVatEnabled(it)
+                        close()
+                        viewModel.setVatEnabled(it)
                     })
             }
 

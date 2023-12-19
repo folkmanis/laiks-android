@@ -22,10 +22,6 @@ fun NavGraphBuilder.pricesScreen(
 
         val viewModel: PricesViewModel = hiltViewModel()
 
-        LaunchedEffect(onSetMarketZone) {
-            viewModel.initialize(onSetMarketZone)
-        }
-
         val title = stringResource(id = R.string.prices_screen)
         LaunchedEffect(title, setTitle) {
             setTitle(title)
@@ -41,7 +37,8 @@ fun NavGraphBuilder.pricesScreen(
         PricesScreen(
             state = uiState,
             statistics = statistics,
-            appliances = appliances
+            appliances = appliances,
+            onSetMarketZone = onSetMarketZone,
         )
 
     }

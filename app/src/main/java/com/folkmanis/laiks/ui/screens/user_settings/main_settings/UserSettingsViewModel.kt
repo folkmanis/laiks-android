@@ -7,6 +7,8 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
+import com.folkmanis.laiks.data.PermissionsService
+import com.folkmanis.laiks.data.domain.NpBlockedUseCase
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
@@ -16,6 +18,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +38,7 @@ class UserSettingsViewModel @Inject constructor(
     private val laiksUserService: LaiksUserService,
     private val snackbarManager: SnackbarManager,
     private val accountService: AccountService,
+    private val npBlocked: NpBlockedUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
@@ -45,40 +50,52 @@ class UserSettingsViewModel @Inject constructor(
         }
         get() = _uiState.value.successOrNull()?.loading ?: false
 
-    suspend fun initialize(
-        laiksUser: LaiksUser?,
-        user: FirebaseUser?,
-        npBlocked: Boolean,
-    ) {
-
-        if (laiksUser != null && user != null) {
-
-            val marketZoneId = laiksUser.marketZoneId
-            val zone =
-                if (marketZoneId != null) zonesService.getMarketZone(marketZoneId)
-                else null
-            val marketZoneName = zone?.let { "${it.id}, ${it.description}" } ?: ""
-
-            _uiState.value = UserSettingsUiState.Success(
-
-                loading = false,
-                id = laiksUser.id,
-                email = laiksUser.email,
-                includeVat = laiksUser.includeVat,
-                name = laiksUser.name,
-                marketZoneId = marketZoneId,
-                vatAmount = laiksUser.vatAmount,
-                marketZoneName = marketZoneName,
-
-                npAllowed = !npBlocked,
-                anonymousUser = user.isAnonymous,
-                emailVerified = user.isEmailVerified,
-
-                )
-        } else {
-            _uiState.value = UserSettingsUiState.Loading
+    fun initialize() {
+        viewModelScope.launch {
+            combine(
+                laiksUserService.laiksUserFlow(),
+                accountService.firebaseUserFlow,
+                npBlocked()
+            ) { laiksUser, user, isNpBlocked ->
+                if (laiksUser != null && user != null) {
+                    settingsUiState(laiksUser, user, isNpBlocked)
+                } else
+                    UserSettingsUiState.Loading
+            }
+                .collect { state ->
+                    _uiState.value = state
+                }
         }
+    }
 
+    private suspend fun settingsUiState(
+        laiksUser: LaiksUser,
+        user: FirebaseUser,
+        npBlocked: Boolean,
+    ): UserSettingsUiState {
+
+        val marketZoneId = laiksUser.marketZoneId
+        val zone =
+            if (marketZoneId != null) zonesService.getMarketZone(marketZoneId)
+            else null
+        val marketZoneName = zone?.let { "${it.id}, ${it.description}" } ?: ""
+
+        return UserSettingsUiState.Success(
+
+            loading = false,
+            id = laiksUser.id,
+            email = laiksUser.email,
+            includeVat = laiksUser.includeVat,
+            name = laiksUser.name,
+            marketZoneId = marketZoneId,
+            vatAmount = laiksUser.vatAmount,
+            marketZoneName = marketZoneName,
+
+            npAllowed = !npBlocked,
+            anonymousUser = user.isAnonymous,
+            emailVerified = user.isEmailVerified,
+
+            )
 
     }
 

@@ -51,31 +51,11 @@ class LaiksAppViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            laiksUserService.laiksUserFlow().collect { user ->
-                _appState.update { state ->
-                    state.copy(laiksUser = user)
-                }
-            }
-        }
-
-        viewModelScope.launch {
             accountService.firebaseUserFlow.collect { user ->
                 Log.d(TAG, "User ${user?.uid}")
                 if (user == null) createAnonymousUser()
-                _appState.update { state ->
-                    state.copy(user = user)
-                }
             }
         }
-
-        viewModelScope.launch {
-            laiksUserService.npAllowedFlow.collect { npAllowed ->
-                _appState.update { state ->
-                    state.copy(npBlocked = !npAllowed)
-                }
-            }
-        }
-
 
     }
 
@@ -84,18 +64,6 @@ class LaiksAppViewModel @Inject constructor(
             .signOut()
         accountService
             .signOut()
-    }
-
-    fun setVatEnabled(value: Boolean) {
-        viewModelScope.launch {
-            _appState.update { state ->
-                val laiksUser = state.laiksUser?.copy(includeVat = value)
-                state.copy(laiksUser = laiksUser)
-            }
-            _appState.value.laiksUser?.also {
-                    laiksUserService.updateLaiksUser("includeVat", value)
-            }
-        }
     }
 
     private suspend fun createAnonymousUser() {

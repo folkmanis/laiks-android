@@ -1,9 +1,10 @@
 package com.folkmanis.laiks.ui.screens.appliance_costs
 
+import androidx.compose.runtime.Stable
 import com.folkmanis.laiks.model.ApplianceHourWithCosts
 import com.folkmanis.laiks.model.PricesStatistics
 
-
+@Stable
 sealed interface ApplianceCostsUiState {
     data class Loading(
         val name: String?,
