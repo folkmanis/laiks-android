@@ -10,7 +10,6 @@ import com.folkmanis.laiks.data.domain.ApplianceHourlyCostsUseCase
 import com.folkmanis.laiks.data.domain.ApplianceStatisticsUseCase
 import com.folkmanis.laiks.model.PricesStatistics
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
-import com.folkmanis.laiks.ui.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.folkmanis.laiks.utilities.MarketZoneNotSetException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
