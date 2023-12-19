@@ -18,7 +18,7 @@
     <string name="include_vat">PVN iekļauts</string>
     <string name="users_screen">Lietotāji</string>
     <string name="users_menu">Lietotāji</string>
-    <string name="user_editor">Lietotāja iestatījumi</string>
+    <string name="user_editor">Iestatījumi</string>
     <string name="user_not_found">Lietotājs \"%1$s\" nav atrasts</string>
     <string name="user_deleted_success">Lietotājs %1$s izdzēsts</string>
     <string name="np_allowed_checkbox">Ir pieeja elektrības cenām</string>

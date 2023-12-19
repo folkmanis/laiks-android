@@ -43,7 +43,7 @@
     <string name="include_vat">Include VAT</string>
     <string name="users_screen">Users</string>
     <string name="users_menu">Edit Users</string>
-    <string name="user_editor">User Setup</string>
+    <string name="user_editor">Settings</string>
     <string name="user_not_found">User "%1$s" not found in database!</string>
     <string name="user_delete_account_button">Delete account</string>
     <string name="user_delete_confirmation">Do you really want delete your account and all settings? You can be asked to login again to confirm your account deletion.</string>

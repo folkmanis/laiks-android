@@ -73,7 +73,7 @@ fun UserSettingsScreen(
 
             HorizontalDivider()
 
-            NameEdit(
+            NameRow(
                 name = uiState.name,
                 onNameChange = onNameChange,
                 modifier = Modifier.settingsRow(),
@@ -148,7 +148,7 @@ fun UserSettingsScreen(
 }
 
 @Composable
-fun NameEdit(
+fun NameRow(
     modifier: Modifier = Modifier,
     name: String,
     onNameChange: (String) -> Unit,
@@ -162,14 +162,24 @@ fun NameEdit(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+
+        Text(
+            text = stringResource(R.string.display_name_input_label),
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .weight(1f)
+        )
+
         Text(
             text = name,
             style = MaterialTheme.typography.labelLarge,
         )
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        EditButton(onClick = { nameInputOpen = true })
+        EditButton(
+            onClick = { nameInputOpen = true },
+            modifier = Modifier.padding(start = 8.dp),
+        )
     }
 
     if (nameInputOpen) {
@@ -220,7 +230,7 @@ fun EmailRow(
         }
 
         if (!emailVerified) {
-            OutlinedIconButton(
+            EditButton(
                 onClick = onSendEmailVerification,
                 modifier = Modifier
                     .padding(start = 8.dp),
@@ -341,7 +351,7 @@ fun EditButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    OutlinedIconButton(
+    EditButton(
         onClick = onClick,
         modifier = modifier,
     ) {
@@ -351,6 +361,20 @@ fun EditButton(
             tint = MaterialTheme.colorScheme.primary,
         )
     }
+}
+
+@Composable
+fun EditButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit
+) {
+
+    OutlinedIconButton(
+        onClick = onClick,
+        modifier = modifier,
+        content = icon,
+    )
 
 }
 

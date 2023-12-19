@@ -43,7 +43,7 @@ fun LoginMenuItem(
 ) {
     DropdownMenuItem(
         text = {
-            Text(text = stringResource(id = R.string.login_button))
+            Text(text = stringResource(R.string.login_button))
         },
         onClick = onClick,
         leadingIcon = {
@@ -104,7 +104,7 @@ fun AppliancesMenuItem(
 
 @Composable
 fun VatEnabledMenuItem(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     isVatEnabled: Boolean,
     onClick: (Boolean) -> Unit,
 ) {

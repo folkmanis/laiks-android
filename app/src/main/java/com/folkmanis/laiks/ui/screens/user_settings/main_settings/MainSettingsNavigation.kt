@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -9,7 +8,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.google.firebase.auth.FirebaseUser
 
@@ -35,8 +33,8 @@ fun NavGraphBuilder.mainSettingsScreen(
             .uiState
             .collectAsStateWithLifecycle()
 
-        val title = composableTitle(state = uiState)
-        LaunchedEffect(title) {
+        val title = stringResource(id = R.string.user_editor)
+        LaunchedEffect(title, setTitle) {
             setTitle(title)
         }
 
@@ -80,12 +78,4 @@ fun NavGraphBuilder.mainSettingsScreen(
 
 
     }
-}
-
-@Composable
-fun composableTitle(state: UserSettingsUiState): String {
-    return if (state is UserSettingsUiState.Success)
-        state.name
-    else
-        stringResource(id = R.string.user_editor)
 }

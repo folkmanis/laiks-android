@@ -13,7 +13,7 @@ import com.folkmanis.laiks.utilities.onetap.OneTapSignInWithGoogle
 import com.folkmanis.laiks.utilities.onetap.rememberOneTapSignInState
 
 const val LOGIN_SELECT_ROUTE = "LoginSelect"
-private const val TAG = "loginSelectScreen"
+internal const val TAG = "loginSelectScreen"
 
 fun NavGraphBuilder.loginSelectScreen(
     setTitle: (String) -> Unit,
