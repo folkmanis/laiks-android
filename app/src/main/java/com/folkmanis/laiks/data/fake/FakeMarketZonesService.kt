@@ -27,7 +27,7 @@ class FakeMarketZonesService : MarketZonesService {
             url = "https://www.nordpoolgroup.com/api/marketdata/page/59?currency=,EUR,EUR,EUR",
             tax = 0.21,
         )
-        val zoneSE1 = MarketZone(
+        private val zoneSE1 = MarketZone(
             id = "SE1",
             description = "Luleå",
             locale = "se",

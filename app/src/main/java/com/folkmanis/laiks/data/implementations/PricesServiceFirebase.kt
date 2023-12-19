@@ -128,7 +128,6 @@ class PricesServiceFirebase @Inject constructor(
 
 
     companion object {
-        @Suppress("unused")
         private const val TAG = "Prices Service"
     }
 }

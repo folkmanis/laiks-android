@@ -1,7 +1,6 @@
 package com.folkmanis.laiks.data.implementations
 
 import android.net.Uri
-import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.utilities.NotLoggedInException
 import com.folkmanis.laiks.utilities.UserNotAnonymousException

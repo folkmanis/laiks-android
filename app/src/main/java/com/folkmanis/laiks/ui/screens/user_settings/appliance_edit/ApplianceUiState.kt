@@ -60,7 +60,7 @@ data class ApplianceUiState(
         get() = minimumDelay != null && minimumDelay >= 0
 
     private val isDelayValid: Boolean
-        get() = PowerApplianceDelay.values().map { it.name }.contains(delay)
+        get() = PowerApplianceDelay.entries.map { it.name }.contains(delay)
 
     private val isCyclesValid: Boolean
         get() = cycles.isValid

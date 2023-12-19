@@ -7,7 +7,6 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.AccountService
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
-import com.folkmanis.laiks.data.PermissionsService
 import com.folkmanis.laiks.data.domain.NpBlockedUseCase
 import com.folkmanis.laiks.model.LaiksUser
 import com.folkmanis.laiks.model.MarketZone
@@ -18,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

@@ -79,7 +79,7 @@ class PricesViewModel @Inject constructor(
         .catch { emit(emptyMap()) }
 
     companion object {
-        @Suppress("unused")
+
         private const val TAG = "PricesViewModel"
 
         fun currentOffsetIndex(

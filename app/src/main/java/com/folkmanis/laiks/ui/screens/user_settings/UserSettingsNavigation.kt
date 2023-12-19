@@ -6,7 +6,6 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navigation
 import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCosts
 import com.folkmanis.laiks.ui.screens.clock.navigateToClockSingleTop
-import com.folkmanis.laiks.ui.screens.laiks.LaiksAppState
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceEditScreen
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.applianceNewRoute
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.editAppliance

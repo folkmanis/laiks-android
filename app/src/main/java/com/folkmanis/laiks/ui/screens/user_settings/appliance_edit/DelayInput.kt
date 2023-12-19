@@ -31,7 +31,7 @@ fun DelayInput(
         modifier = modifier
             .selectableGroup()
     ) {
-        PowerApplianceDelay.values().forEach { option ->
+        PowerApplianceDelay.entries.forEach { option ->
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
