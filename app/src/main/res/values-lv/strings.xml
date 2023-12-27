@@ -97,4 +97,8 @@
     <string name="password_input_dialog_title">Parole</string>
     <string name="password_input_dialog_text">Vēlreiz jāievada lietotāja %1$s parole, lai veiktu nākamo darbību</string>
     <string name="user_not_deleted">Lietotājs %1$s netika dzēsts</string>
+    <string name="about_title">Par lietotni</string>
+    <string name="about_menu_item">Par…</string>
+    <string name="about_version_name">Versija: %1$s</string>
+    <string name="about_version_code">Laidiens: %1$s</string>
 </resources>

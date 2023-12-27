@@ -3,6 +3,7 @@ package com.folkmanis.laiks.ui.screens.user_menu
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -123,4 +124,21 @@ fun VatEnabledMenuItem(
         modifier = modifier,
     )
 
+}
+
+@Composable
+fun AboutMenuItem(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    DropdownMenuItem(
+        text = {
+            Text(text = stringResource(R.string.about_menu_item))
+        },
+        onClick = onClick,
+        modifier = modifier,
+        leadingIcon = {
+            Icon(imageVector = Icons.Filled.Info, contentDescription = null)
+        }
+    )
 }

@@ -10,6 +10,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.folkmanis.laiks.ui.screens.about.aboutScreen
+import com.folkmanis.laiks.ui.screens.about.navigateToAbout
 import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCosts
 import com.folkmanis.laiks.ui.screens.appliance_costs.applianceCostsScreen
 import com.folkmanis.laiks.ui.screens.clock.CLOCK_ROUTE
@@ -68,6 +70,9 @@ fun LaiksAppScreen(
                     viewModel.logOut(context)
                     navController.navigateToClockSingleTop()
                 },
+                onAbout = {
+                    navController.navigateToAbout()
+                }
             )
         },
         onNavigateBack = navController::popBackStack,
@@ -104,6 +109,10 @@ fun LaiksAppScreen(
                         popUpTo(CLOCK_ROUTE)
                     }
                 },
+            )
+
+            aboutScreen(
+                setTitle = viewModel::setTitle,
             )
 
             userSettingsGraph(

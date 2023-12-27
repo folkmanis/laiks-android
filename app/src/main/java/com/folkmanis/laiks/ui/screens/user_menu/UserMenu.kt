@@ -15,6 +15,7 @@ fun UserMenu(
     onEditAppliances: () -> Unit,
     onLogin: () -> Unit,
     onLogout: () -> Unit,
+    onAbout: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UserMenuViewModel = hiltViewModel()
 ) {
@@ -60,6 +61,12 @@ fun UserMenu(
                     }
                 )
             }
+
+            AboutMenuItem(
+                onClick = {
+                    close(onAbout)
+                }
+            )
 
         }
     }
