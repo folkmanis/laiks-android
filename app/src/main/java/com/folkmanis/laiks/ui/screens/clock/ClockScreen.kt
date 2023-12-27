@@ -37,7 +37,7 @@ internal fun ClockScreen(
     val isNarrow = windowWidth == WindowWidthSizeClass.Compact
 
     val allowedAppliances = remember(pricesAllowed, appliances) {
-        if(pricesAllowed) appliances else emptyList()
+        if (pricesAllowed) appliances else emptyList()
     }
 
     Box(
@@ -45,15 +45,25 @@ internal fun ClockScreen(
             .fillMaxSize()
     ) {
 
-        ClockSelector(
-            offset = offset,
-            time = time,
-            onOffsetChange = updateOffset,
-            appliances = allowedAppliances,
-            onSelected = onShowAppliance,
-            isNarrow = isNarrow,
-            modifier = Modifier.align(Alignment.Center),
-        )
+        when {
+            isNarrow -> VerticalClockSelector(
+                offset = offset,
+                time = time,
+                onOffsetChange = updateOffset,
+                appliances = allowedAppliances,
+                onSelected = onShowAppliance,
+                modifier = Modifier.align(Alignment.Center),
+            )
+
+            else -> HorizontalClockSelector(
+                offset = offset,
+                time = time,
+                onOffsetChange = updateOffset,
+                appliances = allowedAppliances,
+                onSelected = onShowAppliance,
+                modifier = Modifier.align(Alignment.Center),
+            )
+        }
 
         if (pricesAllowed) {
             FloatingActionButton(
@@ -74,7 +84,10 @@ internal fun ClockScreen(
 }
 
 
-@Preview(showBackground = true)
+@Preview(
+    showBackground = true,
+    device = "spec:width=320dp,height=480dp,dpi=320"
+)
 @Composable
 fun ClockScreenPreview() {
     LaiksTheme {
