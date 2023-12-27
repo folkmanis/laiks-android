@@ -19,7 +19,7 @@ fun DialogSurface(
             .wrapContentHeight(),
         shape = MaterialTheme.shapes.large,
         tonalElevation = AlertDialogDefaults.TonalElevation,
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
         content = content,
     )
 }
