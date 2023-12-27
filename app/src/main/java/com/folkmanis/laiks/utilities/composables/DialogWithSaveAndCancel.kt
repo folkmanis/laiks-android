@@ -32,9 +32,9 @@ fun DialogWithSaveAndCancel(
 
             Text(
                 text = stringResource(id = headingText),
-                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(16.dp),
+                style = MaterialTheme.typography.titleLarge,
             )
 
             HorizontalDivider()
