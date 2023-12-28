@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.prices
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -10,6 +11,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
+import kotlinx.coroutines.flow.Flow
 
 const val ROUTE = "Prices"
 
@@ -22,9 +24,9 @@ fun NavGraphBuilder.pricesScreen(
 
         val viewModel: PricesViewModel = hiltViewModel()
 
-        val title = stringResource(id = R.string.prices_screen)
+        val title = getTitle(marketZoneIdFlow = viewModel.currentMarketZoneId)
         LaunchedEffect(title, setTitle) {
-            setTitle(title)
+                setTitle(title)
         }
 
         val uiState by viewModel.uiState
@@ -46,4 +48,15 @@ fun NavGraphBuilder.pricesScreen(
 
 fun NavController.navigateToPrices(navOptions: NavOptions? = null) {
     navigate(ROUTE, navOptions)
+}
+
+@Composable
+fun getTitle(marketZoneIdFlow: Flow<String>): String {
+    val heading = stringResource(id = R.string.prices_screen)
+    val marketZoneId by marketZoneIdFlow
+        .collectAsStateWithLifecycle(initialValue = "")
+    return if (marketZoneId.isNotEmpty())
+        "$marketZoneId $heading"
+    else
+        heading
 }

@@ -35,7 +35,6 @@ fun NavGraphBuilder.applianceCostsScreen(
 
         ApplianceCostsScreen(
             state = state,
-            setTitle = setTitle,
             onSetMarketZone = onSetMarketZone,
         )
 
@@ -60,7 +59,8 @@ fun applianceTitle(state: ApplianceCostsUiState): String {
         is ApplianceCostsUiState.Loading -> state.name
             ?: stringResource(id = R.string.appliance_screen)
 
-        is ApplianceCostsUiState.Success -> state.name
+        is ApplianceCostsUiState.Success ->
+            "(${state.marketZoneId}) ${state.name}"
 
         else -> stringResource(id = R.string.appliance_screen)
     }

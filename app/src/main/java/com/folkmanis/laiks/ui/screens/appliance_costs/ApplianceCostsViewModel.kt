@@ -8,6 +8,7 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.domain.ApplianceHourlyCostsUseCase
 import com.folkmanis.laiks.data.domain.ApplianceStatisticsUseCase
+import com.folkmanis.laiks.data.domain.CurrentMarketZoneUseCase
 import com.folkmanis.laiks.model.PricesStatistics
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.folkmanis.laiks.utilities.MarketZoneNotSetException
@@ -32,6 +33,7 @@ class ApplianceCostsViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
     private val laiksUserService: LaiksUserService,
     savedStateHandle: SavedStateHandle,
+    marketZone: CurrentMarketZoneUseCase,
 ) : ViewModel() {
 
     private val initialName: String? = savedStateHandle[APPLIANCE_NAME]
@@ -65,11 +67,17 @@ class ApplianceCostsViewModel @Inject constructor(
         }
 
     val uiState =
-        combine(hourlyCostsFlow, statisticsFlow, nameFlow) { hourlyCosts, statistics, name ->
+        combine(
+            hourlyCostsFlow,
+            statisticsFlow,
+            nameFlow,
+            marketZone()
+        ) { hourlyCosts, statistics, name, marketZone ->
             ApplianceCostsUiState.Success(
                 name = name,
                 hoursWithCosts = hourlyCosts,
                 statistics = statistics,
+                marketZoneId = marketZone.id
             ) as ApplianceCostsUiState
         }
             .catch { err ->

@@ -19,6 +19,7 @@ sealed interface ApplianceCostsUiState {
         val name: String,
         val hoursWithCosts: List<ApplianceHourWithCosts>,
         val statistics: PricesStatistics?,
+        val marketZoneId: String,
     ) : ApplianceCostsUiState
 
     data object MarketZoneMissing : ApplianceCostsUiState

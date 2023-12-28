@@ -9,10 +9,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.ApplianceHourWithCosts
 import com.folkmanis.laiks.model.PricesStatistics
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
@@ -25,7 +23,6 @@ import kotlin.random.Random
 fun ApplianceCostsScreen(
     state: ApplianceCostsUiState,
     modifier: Modifier = Modifier,
-    setTitle: (String) -> Unit = {},
     onSetMarketZone: () -> Unit = {},
 ) {
 
@@ -34,17 +31,17 @@ fun ApplianceCostsScreen(
 
         when (state) {
             is ApplianceCostsUiState.Loading -> {
-                setTitle(state.name ?: stringResource(id = R.string.appliance_screen))
                 LoadingScreen()
             }
+
             is ApplianceCostsUiState.Error -> ErrorScreen()
             is ApplianceCostsUiState.Success -> {
-                setTitle(state.name)
                 ApplianceCostsList(
                     costs = state.hoursWithCosts,
                     statistics = state.statistics
                 )
             }
+
             is ApplianceCostsUiState.MarketZoneMissing -> {
                 LaunchedEffect(state, onSetMarketZone) {
                     onSetMarketZone()
@@ -102,7 +99,7 @@ fun ApplianceCostsScreenPreview() {
 
     ApplianceCostsScreen(
         state = ApplianceCostsUiState.Success(
-            hoursWithCosts = hours, statistics = statistics, name = ""
+            hoursWithCosts = hours, statistics = statistics, name = "", marketZoneId = "LV"
         ),
     )
 }
