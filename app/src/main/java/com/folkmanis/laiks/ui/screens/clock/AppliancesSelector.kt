@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.clock
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -15,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import com.folkmanis.laiks.data.fake.FakeAppliancesService
 import com.folkmanis.laiks.model.PowerAppliance
-import com.folkmanis.laiks.ui.screens.prices.contrasting
+import com.folkmanis.laiks.utilities.ext.contrasting
 
 @Composable
 fun AppliancesSelector(
