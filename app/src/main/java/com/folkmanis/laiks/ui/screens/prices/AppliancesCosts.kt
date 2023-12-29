@@ -24,11 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.ui.theme.LaiksTheme
-import com.folkmanis.laiks.utilities.ext.isDark
+import com.folkmanis.laiks.utilities.ext.contrasting
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
-
-fun Color.contrasting(): Color =
-    if (isDark()) Color.White else Color.Black
 
 @Composable
 fun AppliancesCosts(
