@@ -15,27 +15,27 @@ import com.folkmanis.laiks.model.DataWithIdAndDescription
 
 @Composable
 fun LazyItemSelection(
-    data: List<DataWithIdAndDescription>,
+    dataList: List<DataWithIdAndDescription>,
     modifier: Modifier = Modifier,
     onItemSelected: (String) -> Unit,
     selectedId: String? = null,
 ) {
     LazyColumn(modifier = modifier) {
-        items(data, key = { it.id }) { zone ->
+        items(dataList, key = { it.id }) { data ->
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "${zone.id}, ${zone.description}",
-                        modifier = Modifier
-                            .clickable { onItemSelected(zone.id) }
+                        text = "${data.id}, ${data.description}",
                     )
                 },
                 leadingContent = {
                     RadioButton(
-                        selected = zone.id == selectedId,
-                        onClick = { onItemSelected(zone.id) },
+                        selected = data.id == selectedId,
+                        onClick = null,
                     )
-                }
+                },
+                modifier = Modifier
+                    .clickable { onItemSelected(data.id) }
             )
         }
     }
@@ -48,7 +48,7 @@ fun LazyItemSelectionPreview() {
     val data = FakeMarketZonesService.zonesList
     MaterialTheme {
         LazyItemSelection(
-            data = data,
+            dataList = data,
             onItemSelected = {}
         )
     }

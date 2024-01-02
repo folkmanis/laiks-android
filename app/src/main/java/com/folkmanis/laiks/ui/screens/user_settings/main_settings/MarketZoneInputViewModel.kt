@@ -1,35 +1,57 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.model.MarketZone
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class MarketZoneInputViewModel @Inject constructor(
-    zonesService: MarketZonesService,
+    private val zonesService: MarketZonesService,
 ) : ViewModel() {
 
-    val uiState: StateFlow<MarketZonesState> =
-        zonesService.marketZonesFlow
-            .map { zones ->
-                MarketZonesState(loading = false, zones = zones)
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = MarketZonesState(),
-            )
+    private val _uiState = MutableStateFlow<MarketZonesState>(MarketZonesState.Loading)
+    val uiState = _uiState.asStateFlow()
+
+    suspend fun initialize(initialZoneId: String?) {
+        val zones = zonesService.getMarketZones()
+            .filter { zone -> zone.enabled }
+
+        _uiState.value = MarketZonesState.Success(
+            zones = zones,
+            currentZoneId = initialZoneId,
+            initialZoneId = initialZoneId,
+        )
+    }
+
+    fun setZoneId(newZoneId: String) {
+        _uiState.update { state ->
+            if (state is MarketZonesState.Success) {
+                state.copy(currentZoneId = newZoneId)
+            } else state
+        }
+    }
 
 }
 
-data class MarketZonesState(
-    val loading: Boolean = true,
-    val zones: List<MarketZone> = emptyList(),
-)
+
+sealed interface MarketZonesState {
+    data class Success(
+        val zones: List<MarketZone> = emptyList(),
+        val currentZoneId: String?,
+        val initialZoneId: String?,
+    ) : MarketZonesState {
+        val saveEnabled: Boolean
+            get() = currentZoneId != null
+                    && currentZoneId != initialZoneId
+
+        fun getCurrentZone(): MarketZone? = zones.find { it.id == currentZoneId }
+    }
+
+    data object Loading : MarketZonesState
+
+}

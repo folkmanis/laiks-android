@@ -5,11 +5,8 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,14 +30,8 @@ fun MarketZoneInputDialog(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var currentZoneId by remember {
-        mutableStateOf(initialZoneId)
-    }
-
-    val saveEnabled by remember(currentZoneId) {
-        derivedStateOf {
-            currentZoneId != initialZoneId
-        }
+    LaunchedEffect(initialZoneId) {
+        viewModel.initialize(initialZoneId)
     }
 
     BasicAlertDialog(
@@ -49,11 +40,9 @@ fun MarketZoneInputDialog(
     ) {
 
         MarketZoneInput(
-            currentZoneId = currentZoneId,
             onDismiss = onDismiss,
-            onZoneChange = { currentZoneId = it },
+            onZoneChange = viewModel::setZoneId,
             onAccept = onZoneAccept,
-            saveEnabled = saveEnabled,
             uiState = uiState,
         )
     }
@@ -62,37 +51,44 @@ fun MarketZoneInputDialog(
 
 @Composable
 fun MarketZoneInput(
-    currentZoneId: String?,
     onDismiss: () -> Unit,
     onAccept: (MarketZone) -> Unit,
     onZoneChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    saveEnabled: Boolean = false,
     uiState: MarketZonesState,
 ) {
+    when (uiState) {
+        is MarketZonesState.Success -> {
+            DialogWithSaveAndCancel(
+                onCancel = onDismiss,
+                onSave = {
+                    uiState.getCurrentZone()?.let { onAccept(it) }
+                },
+                saveEnabled = uiState.saveEnabled,
+                modifier = modifier,
+                headingText = R.string.market_zone_select,
+            ) {
+                LazyItemSelection(
+                    dataList = uiState.zones,
+                    onItemSelected = onZoneChange,
+                    selectedId = uiState.currentZoneId,
+                )
+            }
+        }
 
-    DialogWithSaveAndCancel(
-        onCancel = onDismiss,
-        onSave = {
-            val zone = uiState.zones.find { it.id == currentZoneId }
-            zone?.let { onAccept(it) }
-        },
-        saveEnabled = saveEnabled,
-        modifier = modifier,
-        headingText = R.string.market_zone_select,
-    ) {
-        if (uiState.loading) {
-            LoadingScreen(
-                modifier = Modifier.fillMaxHeight(1/3f)
-            )
-        } else {
-            LazyItemSelection(
-                data = uiState.zones,
-                onItemSelected = onZoneChange,
-                selectedId = currentZoneId,
-            )
+        is MarketZonesState.Loading -> {
+            DialogWithSaveAndCancel(
+                onCancel = onDismiss,
+                onSave = { },
+                headingText = R.string.market_zone_select,
+            ) {
+                LoadingScreen(
+                    modifier = Modifier.fillMaxHeight(1 / 3f)
+                )
+            }
         }
     }
+
 
 }
 

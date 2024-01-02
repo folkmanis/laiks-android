@@ -12,4 +12,5 @@ data class MarketZone(
     val locale: String = "lv",
     val tax: Double = 0.21,
     val url: String = "",
+    val enabled: Boolean = false,
 ) : DataWithIdAndDescription
