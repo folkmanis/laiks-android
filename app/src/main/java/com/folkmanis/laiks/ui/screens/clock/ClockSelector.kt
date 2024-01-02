@@ -20,8 +20,9 @@ import java.time.LocalTime
 
 @Composable
 fun VerticalClockSelector(
+    hours: String,
+    minutes: String,
     offset: Int,
-    time: LocalTime,
     onOffsetChange: (Int) -> Unit,
     appliances: List<UserPowerAppliance>,
     onSelected: (idx: Int, name: String) -> Unit,
@@ -37,8 +38,8 @@ fun VerticalClockSelector(
         },
         bottom = {
             TimeComponent(
-                hours = time.hoursString,
-                minutes = time.minutesString,
+                hours = hours,
+                minutes = minutes,
             )
         },
         large = {
@@ -61,7 +62,8 @@ fun VerticalClockSelector(
 @Composable
 fun HorizontalClockSelector(
     offset: Int,
-    time: LocalTime,
+    hours: String,
+    minutes: String,
     onOffsetChange: (Int) -> Unit,
     appliances: List<UserPowerAppliance>,
     onSelected: (idx: Int, name: String) -> Unit,
@@ -78,8 +80,8 @@ fun HorizontalClockSelector(
         ) {
 
             TimeComponent(
-                hours = time.hoursString,
-                minutes = time.minutesString,
+                hours = hours,
+                minutes = minutes,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
             )
@@ -103,26 +105,14 @@ fun HorizontalClockSelector(
 }
 
 @Preview(device = "spec:width=392.7dp,height=400dp,dpi=320")
+@Preview(device = "spec:width=411dp,height=891dp")
 @Composable
 fun VerticalClockSelectorPreview() {
     MaterialTheme {
         VerticalClockSelector(
             offset = 2,
-            time = LocalTime.now(),
-            onOffsetChange = {},
-            appliances = FakeLaiksUserService.laiksUser.appliances,
-            onSelected = { _, _ -> },
-        )
-    }
-}
-
-@Preview(device = "spec:width=411dp,height=891dp")
-@Composable
-fun LargeVerticalClockSelectorPreview() {
-    MaterialTheme {
-        VerticalClockSelector(
-            offset = 2,
-            time = LocalTime.now(),
+            hours = LocalTime.now().hoursString,
+            minutes = LocalTime.now().minutesString,
             onOffsetChange = {},
             appliances = FakeLaiksUserService.laiksUser.appliances,
             onSelected = { _, _ -> },

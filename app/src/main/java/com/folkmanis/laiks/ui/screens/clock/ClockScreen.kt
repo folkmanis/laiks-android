@@ -19,11 +19,14 @@ import com.folkmanis.laiks.R
 import com.folkmanis.laiks.data.fake.FakeLaiksUserService
 import com.folkmanis.laiks.model.UserPowerAppliance
 import com.folkmanis.laiks.ui.theme.LaiksTheme
+import com.folkmanis.laiks.utilities.ext.hoursString
+import com.folkmanis.laiks.utilities.ext.minutesString
 import java.time.LocalTime
 
 @Composable
 internal fun ClockScreen(
-    time: LocalTime,
+    hours: String,
+    minutes: String,
     offset: Int,
     pricesAllowed: Boolean,
     appliances: List<UserPowerAppliance>,
@@ -48,7 +51,8 @@ internal fun ClockScreen(
         when {
             isNarrow -> VerticalClockSelector(
                 offset = offset,
-                time = time,
+                hours = hours,
+                minutes = minutes,
                 onOffsetChange = updateOffset,
                 appliances = allowedAppliances,
                 onSelected = onShowAppliance,
@@ -57,7 +61,8 @@ internal fun ClockScreen(
 
             else -> HorizontalClockSelector(
                 offset = offset,
-                time = time,
+                hours = hours,
+                minutes = minutes,
                 onOffsetChange = updateOffset,
                 appliances = allowedAppliances,
                 onSelected = onShowAppliance,
@@ -92,7 +97,8 @@ internal fun ClockScreen(
 fun ClockScreenPreview() {
     LaiksTheme {
         ClockScreen(
-            time = LocalTime.now(),
+            hours = LocalTime.now().hoursString,
+            minutes = LocalTime.now().minutesString,
             offset = 2,
             pricesAllowed = true,
             appliances = FakeLaiksUserService.laiksUser.appliances,
@@ -113,7 +119,8 @@ fun ClockScreenPreview() {
 fun ClockScreenPreviewLandscape() {
     LaiksTheme {
         ClockScreen(
-            time = LocalTime.now(),
+            hours = LocalTime.now().hoursString,
+            minutes = LocalTime.now().minutesString,
             offset = 2,
             pricesAllowed = true,
             appliances = FakeLaiksUserService.laiksUser.appliances,
