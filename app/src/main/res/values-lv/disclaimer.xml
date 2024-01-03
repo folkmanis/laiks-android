@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="disclaimer">Lietotnē uzrādītie datiem, - elektrības cena, iekārtu enerģijas patēriņš u.c. - ir tikai ilustratīva nozīme. Netiek garantēts, ka tie atspoguļo patieso stāvokli, lai gan, iespējams, ir ļoti tuvu tam.</string>
+    <string name="disclaimer_title">Atsauce</string>
+</resources>

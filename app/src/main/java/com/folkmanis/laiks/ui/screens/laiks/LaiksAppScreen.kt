@@ -113,6 +113,7 @@ fun LaiksAppScreen(
 
             aboutScreen(
                 setTitle = viewModel::setTitle,
+                windowSize = windowSize,
             )
 
             userSettingsGraph(

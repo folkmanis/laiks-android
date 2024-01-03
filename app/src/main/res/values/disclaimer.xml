@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="disclaimer">The data presented in the application - electricity price, equipment energy consumption, etc. - is for illustrative purposes only. They are not guaranteed to represent the true state, although they may be very close.</string>
+    <string name="disclaimer_title">Disclaimer</string>
+</resources>
