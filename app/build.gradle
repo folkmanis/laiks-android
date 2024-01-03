@@ -16,8 +16,8 @@ android {
         applicationId "com.folkmanis.laiks"
         minSdk 24
         targetSdk 34
-        versionCode 13
-        versionName "1.0.13"
+        versionCode 14
+        versionName "1.0.14"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -39,8 +39,7 @@ android {
         }
         internalTesting {
             applicationIdSuffix ".internal"
-            buildConfigField "String", "AD_UNIT_ID", "\"ca-app-pub-3940256099942544/9214589741\""
-            debuggable false
+            buildConfigField "String", "AD_UNIT_ID", "\"ca-app-pub-6916596059834518/7085250737\""
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
