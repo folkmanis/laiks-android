@@ -1,6 +1,6 @@
 package com.folkmanis.laiks.ui.screens.clock
 
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,7 +15,7 @@ const val CLOCK_ROUTE = "Clock"
 fun NavGraphBuilder.clockScreen(
     onNavigateToPrices: () -> Unit,
     onNavigateToAppliance: (Int, String) -> Unit,
-    windowWidth: WindowWidthSizeClass,
+    windowSize: WindowSizeClass,
     setTitle: (String) -> Unit
 ) {
 
@@ -43,7 +43,7 @@ fun NavGraphBuilder.clockScreen(
             onShowPrices = onNavigateToPrices,
             updateOffset = viewModel::updateOffset,
             onShowAppliance = onNavigateToAppliance,
-            windowWidth = windowWidth,
+            windowSize = windowSize,
         )
 
     }

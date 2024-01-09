@@ -90,7 +90,7 @@ fun LaiksAppScreen(
                 onNavigateToPrices = navController::navigateToPrices,
                 onNavigateToAppliance = navController::applianceCosts,
                 setTitle = viewModel::setTitle,
-                windowWidth = windowSize.widthSizeClass,
+                windowSize = windowSize,
             )
 
             pricesScreen(
