@@ -5,7 +5,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
@@ -205,6 +207,32 @@ fun TimeSymbols(
         fontSize = 48.sp,
         modifier = modifier,
     )
+}
+
+@Composable
+fun PricesButton(
+    onClick: () -> Unit,
+    isLarge: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    ExtendedFloatingActionButton(
+        onClick = onClick,
+        modifier = modifier,
+        expanded = isLarge,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.euro_symbol_48px),
+                contentDescription = stringResource(R.string.show_prices_button),
+                modifier = Modifier.size(24.dp),
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.show_prices_button),
+            )
+        }
+    )
+
 }
 
 @Preview
