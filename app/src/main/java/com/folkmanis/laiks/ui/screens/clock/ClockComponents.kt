@@ -2,6 +2,13 @@ package com.folkmanis.laiks.ui.screens.clock
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -13,6 +20,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.STEP_DOWN_VALUE
 import com.folkmanis.laiks.STEP_UP_VALUE
@@ -43,6 +55,7 @@ fun LargeVerticalUpDownButtons(
             onClick = { onOffsetChange(STEP_UP_VALUE) },
             iconId = R.drawable.add,
             descriptionId = R.string.hour_plus_button,
+            modifier = modifier.zIndex(1f),
         )
 
         OffsetHours(
@@ -55,6 +68,7 @@ fun LargeVerticalUpDownButtons(
             onClick = { onOffsetChange(STEP_DOWN_VALUE) },
             iconId = R.drawable.remove,
             descriptionId = R.string.hour_minus_button,
+            modifier = modifier.zIndex(1f),
         )
 
     }
@@ -75,6 +89,7 @@ fun VerticalUpDownButtons(
             onClick = { onOffsetChange(STEP_UP_VALUE) },
             iconId = R.drawable.add,
             descriptionId = R.string.hour_plus_button,
+            modifier = Modifier.zIndex(1f),
         )
 
         OffsetHours(
@@ -87,6 +102,7 @@ fun VerticalUpDownButtons(
             onClick = { onOffsetChange(STEP_DOWN_VALUE) },
             iconId = R.drawable.remove,
             descriptionId = R.string.hour_minus_button,
+            modifier = Modifier.zIndex(1f),
         )
 
     }
@@ -132,12 +148,28 @@ fun OffsetHours(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = TextUnit.Unspecified,
 ) {
-    Text(
-        text = offset.toSignedString(),
-        fontSize = fontSize,
-        fontWeight = FontWeight.ExtraBold,
-        modifier = modifier
-    )
+    AnimatedContent(
+        targetState = offset,
+        modifier = modifier,
+        label = "Offset Hours",
+        transitionSpec = {
+            if (targetState > initialState) {
+                slideInVertically { height -> height } + fadeIn() togetherWith
+                        slideOutVertically { height -> -height } + fadeOut()
+            } else {
+                slideInVertically { height -> -height } + fadeIn() togetherWith
+                        slideOutVertically { height -> height } + fadeOut()
+            }.using(
+                SizeTransform(clip = false)
+            )
+        }
+    ) { targetOffset ->
+        Text(
+            text = targetOffset.toSignedString(),
+            fontSize = fontSize,
+            fontWeight = FontWeight.ExtraBold,
+        )
+    }
 }
 
 @Composable
@@ -167,7 +199,7 @@ fun OffsetChangeButton(
 ) {
     FloatingActionButton(
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Icon(
             painter = painterResource(iconId),
@@ -238,10 +270,13 @@ fun PricesButton(
 @Preview
 @Composable
 fun UpDownButtonsPreviewVertical() {
+    var offset by remember {
+        mutableIntStateOf(2)
+    }
     LaiksTheme {
         LargeVerticalUpDownButtons(
-            offset = 2,
-            onOffsetChange = {}
+            offset = offset,
+            onOffsetChange = { offset += it }
         )
     }
 }
@@ -249,10 +284,13 @@ fun UpDownButtonsPreviewVertical() {
 @Preview
 @Composable
 fun UpDownButtonsPreviewHorizontal() {
+    var offset by remember {
+        mutableIntStateOf(2)
+    }
     LaiksTheme {
         HorizontalUpDownButtons(
-            offset = 2,
-            onOffsetChange = {},
+            offset = offset,
+            onOffsetChange = { offset += it }
         )
     }
 }

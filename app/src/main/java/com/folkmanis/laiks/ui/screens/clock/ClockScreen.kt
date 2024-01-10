@@ -10,7 +10,10 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,8 +27,8 @@ import com.folkmanis.laiks.utilities.ext.minutesString
 import java.time.LocalTime
 
 fun Modifier.pricesButtonOffset(isLarge: Boolean): Modifier {
-        val off = if(isLarge) (-32).dp else (-16).dp
-        return this then Modifier.offset(off,off)
+    val off = if (isLarge) (-32).dp else (-16).dp
+    return this then Modifier.offset(off, off)
 }
 
 @Composable
@@ -99,15 +102,18 @@ internal fun ClockScreen(
 )
 @Composable
 fun ClockScreenPreview() {
+    var offset by remember {
+        mutableIntStateOf(2)
+    }
     LaiksTheme {
         ClockScreen(
-            hours = LocalTime.now().hoursString,
+            hours = LocalTime.now().plusHours(offset.toLong()).hoursString,
             minutes = LocalTime.now().minutesString,
-            offset = 2,
+            offset = offset,
             pricesAllowed = true,
             appliances = FakeLaiksUserService.laiksUser.appliances,
             onShowPrices = {},
-            updateOffset = {},
+            updateOffset = { offset += it },
             onShowAppliance = { _, _ -> },
             windowSize = WindowSizeClass.calculateFromSize(
                 size = DpSize(width = 320.dp, height = 480.dp)
@@ -122,15 +128,18 @@ fun ClockScreenPreview() {
 )
 @Composable
 fun ClockScreenPreviewLandscape() {
+    var offset by remember {
+        mutableIntStateOf(2)
+    }
     LaiksTheme {
         ClockScreen(
-            hours = LocalTime.now().hoursString,
+            hours = LocalTime.now().plusHours(offset.toLong()).hoursString,
             minutes = LocalTime.now().minutesString,
-            offset = 2,
+            offset = offset,
             pricesAllowed = true,
             appliances = FakeLaiksUserService.laiksUser.appliances,
             onShowPrices = {},
-            updateOffset = {},
+            updateOffset = { offset += it },
             onShowAppliance = { _, _ -> },
             windowSize = WindowSizeClass.calculateFromSize(
                 size = DpSize(width = 860.dp, height = 400.dp)
