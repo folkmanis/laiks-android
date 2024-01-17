@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -25,7 +25,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Suppress("unused")
-private const val TAG="PricesScreen"
+private const val TAG = "PricesScreen"
 
 @Composable
 fun PricesScreen(
@@ -77,7 +77,7 @@ fun PricesList(
 
     LaunchedEffect(groupedPrices, currentOffsetIndex) {
         delay(500)
-        listState.animateScrollToItem(currentOffsetIndex, -10)
+        listState.animateScrollToItem(currentOffsetIndex, -15)
     }
 
     LazyColumn(
@@ -87,31 +87,27 @@ fun PricesList(
         groupedPrices.forEach { (date, npPrices) ->
             item {
                 DateHeaderScreen(date = date)
-                HorizontalDivider(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    thickness = 2.dp
-                )
             }
-            items(npPrices, key = { it.id }) { npPrice ->
+            itemsIndexed(npPrices, key = { _, price -> price.id }) { idx, npPrice ->
                 val offset = npPrice.startTime.hoursFrom(hour)
+                if (idx != 0)
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
                 PriceRow(
                     startTime = npPrice.startTime.toLocalTime(),
                     endTime = npPrice.endTime.toLocalTime(),
                     value = npPrice.value,
                     statistics = statistics,
                     modifier = Modifier
+                        .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
                     offset = offset,
                     disabled = offset < 0,
                     list = {
                         AppliancesCosts(appliances = appliances.getOrDefault(offset, emptyList()))
                     }
-                )
-                HorizontalDivider(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    thickness = 2.dp
                 )
             }
         }

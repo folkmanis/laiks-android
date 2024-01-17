@@ -74,7 +74,6 @@ fun PriceRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .height(64.dp)
             .alpha(alpha),
     ) {
