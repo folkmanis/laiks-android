@@ -34,7 +34,7 @@ fun NavGraphBuilder.mainSettingsScreen(
             },
             navArgument(NEXT_ROUTE) {
                 type = NavType.StringType
-                defaultValue = null
+                nullable = true
             }
         )
     ) { backStackEntry ->

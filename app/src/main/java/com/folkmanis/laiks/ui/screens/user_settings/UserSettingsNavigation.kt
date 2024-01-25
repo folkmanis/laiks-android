@@ -69,7 +69,7 @@ fun NavController.setMarketZone(
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
     navigate(
-        "$ROUTE?$SHOULD_SET_ZONE=true&$NEXT_ROUTE=$nextRoute",
+        "$ROUTE?$SHOULD_SET_ZONE={true}&$NEXT_ROUTE={$nextRoute}",
         builder
     )
 }
