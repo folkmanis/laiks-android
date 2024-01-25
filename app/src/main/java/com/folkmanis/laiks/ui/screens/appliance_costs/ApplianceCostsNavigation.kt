@@ -18,12 +18,12 @@ internal const val APPLIANCE_NAME = "name"
 
 fun NavGraphBuilder.applianceCostsScreen(
     setTitle: (String) -> Unit,
-    onSetMarketZone: () -> Unit,
+    onSetMarketZone: (String) -> Unit,
 ) {
 
     composable(
         route = "$ROUTE/{$APPLIANCE_IDX}?$APPLIANCE_NAME={$APPLIANCE_NAME}",
-    ) {
+    ) { navBackStackEntry ->
 
         val viewModel: ApplianceCostsViewModel = hiltViewModel()
         val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -35,7 +35,11 @@ fun NavGraphBuilder.applianceCostsScreen(
 
         ApplianceCostsScreen(
             state = state,
-            onSetMarketZone = onSetMarketZone,
+            onSetMarketZone = {
+                navBackStackEntry.destination.route?.also {
+                    onSetMarketZone(it)
+                }
+            },
         )
 
     }

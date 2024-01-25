@@ -6,27 +6,46 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.google.firebase.auth.FirebaseUser
 
 const val ROUTE = "MainSettings"
+const val SHOULD_SET_ZONE = "zone_required"
+const val NEXT_ROUTE = "next_route"
 
 fun NavGraphBuilder.mainSettingsScreen(
     setTitle: (String) -> Unit,
     onUserAppliances: () -> Unit,
     onUserDeleted: () -> Unit,
+    onMarketZoneSet: (String) -> Unit,
+    onMarketZoneNotSet: () -> Unit,
 ) {
 
     composable(
         route = ROUTE,
-    ) {
+        arguments = listOf(
+            navArgument(SHOULD_SET_ZONE) {
+                type = NavType.BoolType
+                defaultValue = false
+            },
+            navArgument(NEXT_ROUTE) {
+                type = NavType.StringType
+                defaultValue = null
+            }
+        )
+    ) { backStackEntry ->
 
         val viewModel: UserSettingsViewModel = hiltViewModel()
 
         LaunchedEffect(Unit) {
-            viewModel.initialize()
+            viewModel.initialize(
+                shouldSetZone = backStackEntry.arguments?.getBoolean(SHOULD_SET_ZONE) ?: false,
+                nextRoute = backStackEntry.arguments?.getString(NEXT_ROUTE),
+            )
         }
 
         val uiState by viewModel
@@ -47,7 +66,13 @@ fun NavGraphBuilder.mainSettingsScreen(
                     uiState = state,
                     onIncludeVatChange = viewModel::setIncludeVat,
                     onVatChange = viewModel::setVatAmount,
-                    onMarketZoneChange = viewModel::setMarketZoneId,
+                    onMarketZoneChange = {
+                        viewModel.setMarketZoneId(
+                            value = it,
+                            onMarketZoneSet = onMarketZoneSet,
+                            onMarketZoneNotSet = onMarketZoneNotSet
+                        )
+                    },
                     onEditAppliances = onUserAppliances,
                     onNameChange = viewModel::setName,
                     onSendEmailVerification = viewModel::sendEmailVerification,
@@ -56,6 +81,7 @@ fun NavGraphBuilder.mainSettingsScreen(
                             onDeleted = onUserDeleted,
                         )
                     },
+                    onEditMarketZone = { viewModel.setMarketZoneEditState(true) }
                 )
 
                 state.userToReAuthenticateAndDelete.also { user ->

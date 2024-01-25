@@ -46,7 +46,8 @@ fun UserSettingsScreen(
     onIncludeVatChange: (Boolean) -> Unit,
     onVatChange: (Double) -> Unit,
     onNameChange: (String) -> Unit,
-    onMarketZoneChange: (MarketZone) -> Unit,
+    onMarketZoneChange: (MarketZone?) -> Unit,
+    onEditMarketZone: () -> Unit,
     onEditAppliances: () -> Unit,
     onDeleteUser: () -> Unit,
     onSendEmailVerification: () -> Unit,
@@ -89,6 +90,9 @@ fun UserSettingsScreen(
                 marketZoneName = uiState.marketZoneName,
                 marketZoneId = uiState.marketZoneId,
                 onMarketZoneChange = onMarketZoneChange,
+                onOpen = onEditMarketZone,
+                onDismiss = { onMarketZoneChange(null) },
+                zoneInputOpen = uiState.marketZoneEditOpen,
                 modifier = Modifier.settingsRow(),
             )
 
@@ -251,10 +255,11 @@ fun MarketZoneEdit(
     marketZoneName: String,
     marketZoneId: String?,
     onMarketZoneChange: (MarketZone) -> Unit,
+    zoneInputOpen: Boolean,
+    onOpen: () -> Unit,
+    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    var zoneInputOpen by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier,
@@ -283,7 +288,7 @@ fun MarketZoneEdit(
         )
 
         EditButton(
-            onClick = { zoneInputOpen = true },
+            onClick = onOpen,
             modifier = Modifier.padding(start = 8.dp),
         )
 
@@ -292,11 +297,8 @@ fun MarketZoneEdit(
     if (zoneInputOpen) {
         MarketZoneInputDialog(
             initialZoneId = marketZoneId,
-            onZoneAccept = {
-                zoneInputOpen = false
-                onMarketZoneChange(it)
-            },
-            onDismiss = { zoneInputOpen = false }
+            onZoneAccept = onMarketZoneChange,
+            onDismiss = onDismiss,
         )
     }
 
@@ -395,11 +397,12 @@ fun UserSettingsScreenPreview() {
             },
             onNameChange = {},
             onMarketZoneChange = {
-                uiState = uiState.copy(marketZoneId = it.id)
+                it?.also { uiState = uiState.copy(marketZoneId = it.id) }
             },
             onEditAppliances = {},
             onDeleteUser = {},
             onSendEmailVerification = {},
+            onEditMarketZone = {},
         )
     }
 }

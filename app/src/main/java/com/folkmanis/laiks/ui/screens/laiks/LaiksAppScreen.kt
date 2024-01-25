@@ -23,6 +23,7 @@ import com.folkmanis.laiks.ui.screens.prices.navigateToPrices
 import com.folkmanis.laiks.ui.screens.prices.pricesScreen
 import com.folkmanis.laiks.ui.screens.user_menu.UserMenu
 import com.folkmanis.laiks.ui.screens.user_settings.appliances.navigateToAppliances
+import com.folkmanis.laiks.ui.screens.user_settings.setMarketZone
 import com.folkmanis.laiks.ui.screens.user_settings.userSettings
 import com.folkmanis.laiks.ui.screens.user_settings.userSettingsGraph
 
@@ -96,16 +97,16 @@ fun LaiksAppScreen(
             pricesScreen(
                 setTitle = viewModel::setTitle,
                 onSetMarketZone = {
-                    navController.userSettings {
+                    navController.setMarketZone(it) {
                         popUpTo(CLOCK_ROUTE)
                     }
-                }
+                },
             )
 
             applianceCostsScreen(
                 setTitle = viewModel::setTitle,
                 onSetMarketZone = {
-                    navController.userSettings {
+                    navController.setMarketZone(it) {
                         popUpTo(CLOCK_ROUTE)
                     }
                 },

@@ -26,8 +26,15 @@ fun UserSettingsUiState.successOrNull(): UserSettingsUiState.Success? {
     return if (this is UserSettingsUiState.Success) this else null
 }
 
-fun UserSettingsUiState.ifSuccess(action: (UserSettingsUiState.Success) -> Unit) {
-    if (this is UserSettingsUiState.Success) action(this)
+fun UserSettingsUiState.ifSuccess(action: (UserSettingsUiState.Success) -> UserSettingsUiState.Success): UserSettingsUiState =
+    if (this is UserSettingsUiState.Success) action(this) else this
+
+inline fun MutableStateFlow<UserSettingsUiState>.updateSuccess(action: (UserSettingsUiState.Success) -> UserSettingsUiState.Success) {
+    this.update { state ->
+        if (state is UserSettingsUiState.Success) {
+            action(state)
+        } else state
+    }
 }
 
 @HiltViewModel
@@ -43,12 +50,13 @@ class UserSettingsViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private var busy: Boolean
-        set(value) = _uiState.update { state ->
-            state.successOrNull()?.copy(loading = value) ?: state
-        }
+        set(value) = _uiState.updateSuccess { it.copy(loading = value) }
         get() = _uiState.value.successOrNull()?.loading ?: false
 
-    fun initialize() {
+    fun initialize(
+        shouldSetZone: Boolean,
+        nextRoute: String?,
+    ) {
         viewModelScope.launch {
             combine(
                 laiksUserService.laiksUserFlow(),
@@ -56,7 +64,7 @@ class UserSettingsViewModel @Inject constructor(
                 npBlocked()
             ) { laiksUser, user, isNpBlocked ->
                 if (laiksUser != null && user != null) {
-                    settingsUiState(laiksUser, user, isNpBlocked)
+                    settingsUiState(laiksUser, user, isNpBlocked, shouldSetZone, nextRoute)
                 } else
                     UserSettingsUiState.Loading
             }
@@ -70,6 +78,8 @@ class UserSettingsViewModel @Inject constructor(
         laiksUser: LaiksUser,
         user: FirebaseUser,
         npBlocked: Boolean,
+        shouldSetZone: Boolean,
+        nextRoute: String?,
     ): UserSettingsUiState {
 
         val marketZoneId = laiksUser.marketZoneId
@@ -92,63 +102,75 @@ class UserSettingsViewModel @Inject constructor(
             npAllowed = !npBlocked,
             anonymousUser = user.isAnonymous,
             emailVerified = user.isEmailVerified,
-
-            )
+            shouldSetZone = shouldSetZone,
+            nextRoute = nextRoute,
+        )
 
     }
 
     fun setName(value: String) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser("name", value)
-                }
-                it.copy(name = value)
-            } ?: state
+        _uiState.updateSuccess { state ->
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser("name", value)
+            }
+            state.copy(name = value)
         }
     }
 
     fun setIncludeVat(value: Boolean) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser("includeVat", value)
-                }
-                it.copy(includeVat = value)
-            } ?: state
+        _uiState.updateSuccess { state ->
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser("includeVat", value)
+            }
+            state.copy(includeVat = value)
         }
     }
 
     fun setVatAmount(value: Double) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser(
-                        "vatAmount", value
-                    )
-                }
-                it.copy(vatAmount = value)
-            } ?: state
+        _uiState.updateSuccess { state ->
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser(
+                    "vatAmount", value
+                )
+            }
+            state.copy(vatAmount = value)
         }
     }
 
-    fun setMarketZoneId(value: MarketZone) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser(
-                        hashMapOf(
-                            "marketZoneId" to value.id,
-                            "vatAmount" to value.tax,
-                        )
+    fun setMarketZoneEditState(isOpen: Boolean) {
+        _uiState.updateSuccess { state ->
+            state.copy(marketZoneEditOpen = isOpen)
+        }
+    }
+
+    fun setMarketZoneId(
+        value: MarketZone?,
+        onMarketZoneSet: (String) -> Unit,
+        onMarketZoneNotSet: () -> Unit,
+    ) {
+        _uiState.updateSuccess { state ->
+            if (value == null) {
+                if (state.shouldSetZone)
+                    onMarketZoneNotSet()
+                return@updateSuccess state.copy(marketZoneEditOpen = false)
+            }
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser(
+                    hashMapOf(
+                        "marketZoneId" to value.id,
+                        "vatAmount" to value.tax,
                     )
-                }
-                it.copy(
-                    marketZoneId = value.id,
-                    marketZoneName = "${value.id}, ${value.description}",
-                    vatAmount = value.tax,
                 )
-            } ?: state
+                if (state.shouldSetZone && state.nextRoute != null) {
+                    onMarketZoneSet(state.nextRoute)
+                }
+            }
+            state.copy(
+                marketZoneId = value.id,
+                marketZoneName = "${value.id}, ${value.description}",
+                vatAmount = value.tax,
+                marketZoneEditOpen = false,
+            )
         }
     }
 
@@ -191,10 +213,12 @@ class UserSettingsViewModel @Inject constructor(
     }
 
     fun sendEmailVerification() {
-        _uiState.value.ifSuccess { state ->
-            viewModelScope.launch {
-                accountService.sendEmailVerification()
-                snackbarManager.showMessage(R.string.email_verification_sent, state.email)
+        _uiState.value.also { state ->
+            if (state is UserSettingsUiState.Success) {
+                viewModelScope.launch {
+                    accountService.sendEmailVerification()
+                    snackbarManager.showMessage(R.string.email_verification_sent, state.email)
+                }
             }
         }
     }

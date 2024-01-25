@@ -17,7 +17,7 @@ const val ROUTE = "Prices"
 
 fun NavGraphBuilder.pricesScreen(
     setTitle: (String) -> Unit,
-    onSetMarketZone: () -> Unit,
+    onSetMarketZone: (String) -> Unit,
 ) {
 
     composable(ROUTE) {
@@ -40,7 +40,7 @@ fun NavGraphBuilder.pricesScreen(
             state = uiState,
             statistics = statistics,
             appliances = appliances,
-            onSetMarketZone = onSetMarketZone,
+            onSetMarketZone = { onSetMarketZone(ROUTE) },
         )
 
     }
