@@ -1,6 +1,7 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.R
@@ -26,9 +27,6 @@ fun UserSettingsUiState.successOrNull(): UserSettingsUiState.Success? {
     return if (this is UserSettingsUiState.Success) this else null
 }
 
-fun UserSettingsUiState.ifSuccess(action: (UserSettingsUiState.Success) -> UserSettingsUiState.Success): UserSettingsUiState =
-    if (this is UserSettingsUiState.Success) action(this) else this
-
 inline fun MutableStateFlow<UserSettingsUiState>.updateSuccess(action: (UserSettingsUiState.Success) -> UserSettingsUiState.Success) {
     this.update { state ->
         if (state is UserSettingsUiState.Success) {
@@ -43,28 +41,35 @@ class UserSettingsViewModel @Inject constructor(
     private val laiksUserService: LaiksUserService,
     private val snackbarManager: SnackbarManager,
     private val accountService: AccountService,
-    private val npBlocked: NpBlockedUseCase
-) : ViewModel() {
+    private val npBlocked: NpBlockedUseCase,
+   private val savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _nextRoute =
+        savedStateHandle.getStateFlow<String?>(NEXT_ROUTE_ON_ZONE_SET,null)
     private var busy: Boolean
-        set(value) = _uiState.updateSuccess { it.copy(loading = value) }
-        get() = _uiState.value.successOrNull()?.loading ?: false
+        set(value) = _uiState.updateSuccess { it.copy(busy = value) }
+        get() = _uiState.value.successOrNull()?.busy ?: false
 
-    fun initialize(
-        shouldSetZone: Boolean,
-        nextRoute: String?,
-    ) {
+    fun initialize() {
+        Log.d(TAG, "${savedStateHandle.get<String?>(NEXT_ROUTE_ON_ZONE_SET)}")
         viewModelScope.launch {
             combine(
                 laiksUserService.laiksUserFlow(),
                 accountService.firebaseUserFlow,
-                npBlocked()
-            ) { laiksUser, user, isNpBlocked ->
+                npBlocked(),
+                _nextRoute,
+            ) { laiksUser, user, isNpBlocked, nextRoute ->
                 if (laiksUser != null && user != null) {
-                    settingsUiState(laiksUser, user, isNpBlocked, shouldSetZone, nextRoute)
+                    settingsUiState(
+                        laiksUser,
+                        user,
+                        isNpBlocked,
+                        nextRoute,
+                    )
                 } else
                     UserSettingsUiState.Loading
             }
@@ -78,7 +83,6 @@ class UserSettingsViewModel @Inject constructor(
         laiksUser: LaiksUser,
         user: FirebaseUser,
         npBlocked: Boolean,
-        shouldSetZone: Boolean,
         nextRoute: String?,
     ): UserSettingsUiState {
 
@@ -90,7 +94,7 @@ class UserSettingsViewModel @Inject constructor(
 
         return UserSettingsUiState.Success(
 
-            loading = false,
+            busy = false,
             id = laiksUser.id,
             email = laiksUser.email,
             includeVat = laiksUser.includeVat,
@@ -102,36 +106,42 @@ class UserSettingsViewModel @Inject constructor(
             npAllowed = !npBlocked,
             anonymousUser = user.isAnonymous,
             emailVerified = user.isEmailVerified,
-            shouldSetZone = shouldSetZone,
             nextRoute = nextRoute,
+            marketZoneEditOpen = nextRoute != null,
         )
 
     }
 
     fun setName(value: String) {
+        busy = true
         _uiState.updateSuccess { state ->
             viewModelScope.launch {
                 laiksUserService.updateLaiksUser("name", value)
+                busy = false
             }
             state.copy(name = value)
         }
     }
 
     fun setIncludeVat(value: Boolean) {
+        busy = true
         _uiState.updateSuccess { state ->
             viewModelScope.launch {
                 laiksUserService.updateLaiksUser("includeVat", value)
+                busy = false
             }
             state.copy(includeVat = value)
         }
     }
 
     fun setVatAmount(value: Double) {
+        busy = true
         _uiState.updateSuccess { state ->
             viewModelScope.launch {
                 laiksUserService.updateLaiksUser(
                     "vatAmount", value
                 )
+                busy = false
             }
             state.copy(vatAmount = value)
         }
@@ -148,29 +158,35 @@ class UserSettingsViewModel @Inject constructor(
         onMarketZoneSet: (String) -> Unit,
         onMarketZoneNotSet: () -> Unit,
     ) {
+        busy = true
         _uiState.updateSuccess { state ->
             if (value == null) {
                 if (state.shouldSetZone)
                     onMarketZoneNotSet()
-                return@updateSuccess state.copy(marketZoneEditOpen = false)
-            }
-            viewModelScope.launch {
-                laiksUserService.updateLaiksUser(
-                    hashMapOf(
-                        "marketZoneId" to value.id,
-                        "vatAmount" to value.tax,
-                    )
+                state.copy(
+                    marketZoneEditOpen = false,
+                    busy = false
                 )
-                if (state.shouldSetZone && state.nextRoute != null) {
-                    onMarketZoneSet(state.nextRoute)
+            } else {
+                viewModelScope.launch {
+                    laiksUserService.updateLaiksUser(
+                        hashMapOf(
+                            "marketZoneId" to value.id,
+                            "vatAmount" to value.tax,
+                        )
+                    )
+                    busy = false
+                    if (state.nextRoute != null) {
+                        onMarketZoneSet(state.nextRoute)
+                    }
                 }
+                state.copy(
+                    marketZoneId = value.id,
+                    marketZoneName = "${value.id}, ${value.description}",
+                    vatAmount = value.tax,
+                    marketZoneEditOpen = false,
+                )
             }
-            state.copy(
-                marketZoneId = value.id,
-                marketZoneName = "${value.id}, ${value.description}",
-                vatAmount = value.tax,
-                marketZoneEditOpen = false,
-            )
         }
     }
 

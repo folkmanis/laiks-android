@@ -1,5 +1,6 @@
 package com.folkmanis.laiks.ui.screens.user_settings
 
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
@@ -12,8 +13,7 @@ import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.editAppliance
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.newAppliance
 import com.folkmanis.laiks.ui.screens.user_settings.appliances.appliancesScreen
 import com.folkmanis.laiks.ui.screens.user_settings.appliances.navigateToAppliances
-import com.folkmanis.laiks.ui.screens.user_settings.main_settings.NEXT_ROUTE
-import com.folkmanis.laiks.ui.screens.user_settings.main_settings.SHOULD_SET_ZONE
+import com.folkmanis.laiks.ui.screens.user_settings.main_settings.NEXT_ROUTE_ON_ZONE_SET
 import com.folkmanis.laiks.ui.screens.user_settings.main_settings.mainSettingsScreen
 import com.folkmanis.laiks.ui.screens.user_settings.main_settings.ROUTE as MAIN_SETTINGS_ROUTE
 
@@ -64,12 +64,3 @@ fun NavController.userSettings(
     navigate(ROUTE, builder)
 }
 
-fun NavController.setMarketZone(
-    nextRoute: String,
-    builder: NavOptionsBuilder.() -> Unit = {}
-) {
-    navigate(
-        "$ROUTE?$SHOULD_SET_ZONE={true}&$NEXT_ROUTE={$nextRoute}",
-        builder
-    )
-}

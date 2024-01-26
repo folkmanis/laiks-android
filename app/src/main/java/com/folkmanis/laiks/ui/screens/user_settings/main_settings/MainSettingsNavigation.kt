@@ -1,11 +1,14 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
+import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -14,8 +17,7 @@ import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.google.firebase.auth.FirebaseUser
 
 const val ROUTE = "MainSettings"
-const val SHOULD_SET_ZONE = "zone_required"
-const val NEXT_ROUTE = "next_route"
+const val NEXT_ROUTE_ON_ZONE_SET = "nextRoute"
 
 fun NavGraphBuilder.mainSettingsScreen(
     setTitle: (String) -> Unit,
@@ -26,26 +28,27 @@ fun NavGraphBuilder.mainSettingsScreen(
 ) {
 
     composable(
-        route = ROUTE,
+        route = "${ROUTE}?$NEXT_ROUTE_ON_ZONE_SET={$NEXT_ROUTE_ON_ZONE_SET}",
         arguments = listOf(
-            navArgument(SHOULD_SET_ZONE) {
-                type = NavType.BoolType
-                defaultValue = false
-            },
-            navArgument(NEXT_ROUTE) {
+            navArgument(NEXT_ROUTE_ON_ZONE_SET) {
                 type = NavType.StringType
                 nullable = true
+//                defaultValue=null
             }
         )
     ) { backStackEntry ->
 
         val viewModel: UserSettingsViewModel = hiltViewModel()
 
+//        val nextRoute = backStackEntry.arguments?.getString(NEXT_ROUTE_ON_ZONE_SET)
+//        Log.d("NavController", "setMarketZone: $nextRoute")
+
+//        LaunchedEffect(nextRoute) {
+//            viewModel.setNextRoute(nextRoute)
+//        }
+//
         LaunchedEffect(Unit) {
-            viewModel.initialize(
-                shouldSetZone = backStackEntry.arguments?.getBoolean(SHOULD_SET_ZONE) ?: false,
-                nextRoute = backStackEntry.arguments?.getString(NEXT_ROUTE),
-            )
+            viewModel.initialize()
         }
 
         val uiState by viewModel
@@ -104,4 +107,17 @@ fun NavGraphBuilder.mainSettingsScreen(
 
 
     }
+}
+
+fun NavController.setMarketZone(
+    nextRoute: String,
+    builder: NavOptionsBuilder.() -> Unit = {}
+) {
+    val route = "${ROUTE}?$NEXT_ROUTE_ON_ZONE_SET=$nextRoute"
+    Log.d("UserSettingsViewModel", "setMarketZone: $route")
+
+    navigate(
+        route,
+        builder
+    )
 }
