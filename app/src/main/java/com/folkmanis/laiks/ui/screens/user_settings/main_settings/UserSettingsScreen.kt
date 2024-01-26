@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.model.MarketZone
+import com.folkmanis.laiks.ui.components.market_zone_dialog.MarketZoneDialog
 import com.folkmanis.laiks.ui.screens.user_settings.main_settings.UserSettingsUiState.Companion.testUiState
 import com.folkmanis.laiks.utilities.ext.toFormattedDecimals
 import com.folkmanis.laiks.utilities.modifiers.settingsRow
@@ -46,7 +46,6 @@ fun UserSettingsScreen(
     onIncludeVatChange: (Boolean) -> Unit,
     onVatChange: (Double) -> Unit,
     onNameChange: (String) -> Unit,
-    onMarketZoneChange: (MarketZone) -> Unit,
     onEditAppliances: () -> Unit,
     onDeleteUser: () -> Unit,
     onSendEmailVerification: () -> Unit,
@@ -88,7 +87,6 @@ fun UserSettingsScreen(
             MarketZoneEdit(
                 marketZoneName = uiState.marketZoneName,
                 marketZoneId = uiState.marketZoneId,
-                onMarketZoneChange = onMarketZoneChange,
                 modifier = Modifier.settingsRow(),
             )
 
@@ -250,11 +248,12 @@ fun EmailRow(
 fun MarketZoneEdit(
     marketZoneName: String,
     marketZoneId: String?,
-    onMarketZoneChange: (MarketZone) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
-    var zoneInputOpen by remember { mutableStateOf(false) }
+    var zoneEditActive by remember {
+        mutableStateOf(false)
+    }
 
     Row(
         modifier = modifier,
@@ -283,20 +282,16 @@ fun MarketZoneEdit(
         )
 
         EditButton(
-            onClick = { zoneInputOpen = true },
+            onClick = {zoneEditActive = true},
             modifier = Modifier.padding(start = 8.dp),
         )
 
     }
 
-    if (zoneInputOpen) {
-        MarketZoneInputDialog(
-            initialZoneId = marketZoneId,
-            onZoneAccept = {
-                zoneInputOpen = false
-                onMarketZoneChange(it)
-            },
-            onDismiss = { zoneInputOpen = false }
+    if (zoneEditActive) {
+        MarketZoneDialog(
+            onDismiss = {zoneEditActive = false},
+            onZoneSet = { zoneEditActive = false },
         )
     }
 
@@ -394,9 +389,6 @@ fun UserSettingsScreenPreview() {
                 uiState = uiState.copy(vatAmount = it)
             },
             onNameChange = {},
-            onMarketZoneChange = {
-                uiState = uiState.copy(marketZoneId = it.id)
-            },
             onEditAppliances = {},
             onDeleteUser = {},
             onSendEmailVerification = {},

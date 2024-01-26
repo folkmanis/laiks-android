@@ -9,9 +9,14 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import com.folkmanis.laiks.data.fake.FakeMarketZonesService
 import com.folkmanis.laiks.model.DataWithIdAndDescription
+
+fun Modifier.dimmed(isDimmed: Boolean): Modifier =
+    if (isDimmed) this then Modifier.alpha(0.5f) else this
+
 
 @Composable
 fun LazyItemSelection(
@@ -19,6 +24,7 @@ fun LazyItemSelection(
     modifier: Modifier = Modifier,
     onItemSelected: (String) -> Unit,
     selectedId: String? = null,
+    enabled: Boolean = true,
 ) {
     LazyColumn(modifier = modifier) {
         items(dataList, key = { it.id }) { data ->
@@ -26,16 +32,20 @@ fun LazyItemSelection(
                 headlineContent = {
                     Text(
                         text = "${data.id}, ${data.description}",
+                        modifier = Modifier.dimmed(!enabled)
                     )
                 },
                 leadingContent = {
                     RadioButton(
                         selected = data.id == selectedId,
                         onClick = null,
+                        enabled = enabled,
                     )
                 },
                 modifier = Modifier
-                    .clickable { onItemSelected(data.id) }
+                    .clickable {
+                        if (enabled) onItemSelected(data.id)
+                    }
             )
         }
     }
@@ -49,7 +59,8 @@ fun LazyItemSelectionPreview() {
     MaterialTheme {
         LazyItemSelection(
             dataList = data,
-            onItemSelected = {}
+            onItemSelected = {},
+            enabled = false,
         )
     }
 }

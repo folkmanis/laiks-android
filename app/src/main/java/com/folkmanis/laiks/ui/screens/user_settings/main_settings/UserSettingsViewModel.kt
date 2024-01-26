@@ -9,7 +9,6 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.data.domain.NpBlockedUseCase
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
@@ -26,8 +25,12 @@ fun UserSettingsUiState.successOrNull(): UserSettingsUiState.Success? {
     return if (this is UserSettingsUiState.Success) this else null
 }
 
-fun UserSettingsUiState.ifSuccess(action: (UserSettingsUiState.Success) -> Unit) {
-    if (this is UserSettingsUiState.Success) action(this)
+inline fun MutableStateFlow<UserSettingsUiState>.updateSuccess(action: (UserSettingsUiState.Success) -> UserSettingsUiState.Success) {
+    this.update { state ->
+        if (state is UserSettingsUiState.Success) {
+            action(state)
+        } else state
+    }
 }
 
 @HiltViewModel
@@ -36,27 +39,30 @@ class UserSettingsViewModel @Inject constructor(
     private val laiksUserService: LaiksUserService,
     private val snackbarManager: SnackbarManager,
     private val accountService: AccountService,
-    private val npBlocked: NpBlockedUseCase
+    private val npBlocked: NpBlockedUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private var busy: Boolean
-        set(value) = _uiState.update { state ->
-            state.successOrNull()?.copy(loading = value) ?: state
-        }
-        get() = _uiState.value.successOrNull()?.loading ?: false
+        set(value) = _uiState.updateSuccess { it.copy(busy = value) }
+        get() = _uiState.value.successOrNull()?.busy ?: false
+
 
     fun initialize() {
         viewModelScope.launch {
             combine(
                 laiksUserService.laiksUserFlow(),
                 accountService.firebaseUserFlow,
-                npBlocked()
+                npBlocked(),
             ) { laiksUser, user, isNpBlocked ->
                 if (laiksUser != null && user != null) {
-                    settingsUiState(laiksUser, user, isNpBlocked)
+                    settingsUiState(
+                        laiksUser,
+                        user,
+                        isNpBlocked,
+                    )
                 } else
                     UserSettingsUiState.Loading
             }
@@ -80,7 +86,7 @@ class UserSettingsViewModel @Inject constructor(
 
         return UserSettingsUiState.Success(
 
-            loading = false,
+            busy = false,
             id = laiksUser.id,
             email = laiksUser.email,
             includeVat = laiksUser.includeVat,
@@ -92,63 +98,42 @@ class UserSettingsViewModel @Inject constructor(
             npAllowed = !npBlocked,
             anonymousUser = user.isAnonymous,
             emailVerified = user.isEmailVerified,
-
-            )
+        )
 
     }
 
     fun setName(value: String) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser("name", value)
-                }
-                it.copy(name = value)
-            } ?: state
+        busy = true
+        _uiState.updateSuccess { state ->
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser("name", value)
+                busy = false
+            }
+            state.copy(name = value)
         }
     }
 
     fun setIncludeVat(value: Boolean) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser("includeVat", value)
-                }
-                it.copy(includeVat = value)
-            } ?: state
+        busy = true
+        _uiState.updateSuccess { state ->
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser("includeVat", value)
+                busy = false
+            }
+            state.copy(includeVat = value)
         }
     }
 
     fun setVatAmount(value: Double) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser(
-                        "vatAmount", value
-                    )
-                }
-                it.copy(vatAmount = value)
-            } ?: state
-        }
-    }
-
-    fun setMarketZoneId(value: MarketZone) {
-        _uiState.update { state ->
-            state.successOrNull()?.let {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser(
-                        hashMapOf(
-                            "marketZoneId" to value.id,
-                            "vatAmount" to value.tax,
-                        )
-                    )
-                }
-                it.copy(
-                    marketZoneId = value.id,
-                    marketZoneName = "${value.id}, ${value.description}",
-                    vatAmount = value.tax,
+        busy = true
+        _uiState.updateSuccess { state ->
+            viewModelScope.launch {
+                laiksUserService.updateLaiksUser(
+                    "vatAmount", value
                 )
-            } ?: state
+                busy = false
+            }
+            state.copy(vatAmount = value)
         }
     }
 
@@ -191,10 +176,12 @@ class UserSettingsViewModel @Inject constructor(
     }
 
     fun sendEmailVerification() {
-        _uiState.value.ifSuccess { state ->
-            viewModelScope.launch {
-                accountService.sendEmailVerification()
-                snackbarManager.showMessage(R.string.email_verification_sent, state.email)
+        _uiState.value.also { state ->
+            if (state is UserSettingsUiState.Success) {
+                viewModelScope.launch {
+                    accountService.sendEmailVerification()
+                    snackbarManager.showMessage(R.string.email_verification_sent, state.email)
+                }
             }
         }
     }

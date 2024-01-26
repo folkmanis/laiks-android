@@ -28,7 +28,7 @@ import com.folkmanis.laiks.ui.screens.user_settings.userSettingsGraph
 
 
 @Composable
-fun LaiksAppScreen(
+fun LaiksAppNavigation(
     windowSize: WindowSizeClass,
     modifier: Modifier = Modifier,
 ) {
@@ -95,20 +95,12 @@ fun LaiksAppScreen(
 
             pricesScreen(
                 setTitle = viewModel::setTitle,
-                onSetMarketZone = {
-                    navController.userSettings {
-                        popUpTo(CLOCK_ROUTE)
-                    }
-                }
+                onMarketZoneNotSet = navController::navigateToClockSingleTop,
             )
 
             applianceCostsScreen(
                 setTitle = viewModel::setTitle,
-                onSetMarketZone = {
-                    navController.userSettings {
-                        popUpTo(CLOCK_ROUTE)
-                    }
-                },
+                onMarketZoneNotSet = navController::navigateToClockSingleTop,
             )
 
             aboutScreen(

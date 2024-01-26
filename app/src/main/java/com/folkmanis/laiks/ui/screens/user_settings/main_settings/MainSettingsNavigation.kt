@@ -19,9 +19,7 @@ fun NavGraphBuilder.mainSettingsScreen(
     onUserDeleted: () -> Unit,
 ) {
 
-    composable(
-        route = ROUTE,
-    ) {
+    composable(ROUTE) {
 
         val viewModel: UserSettingsViewModel = hiltViewModel()
 
@@ -47,7 +45,6 @@ fun NavGraphBuilder.mainSettingsScreen(
                     uiState = state,
                     onIncludeVatChange = viewModel::setIncludeVat,
                     onVatChange = viewModel::setVatAmount,
-                    onMarketZoneChange = viewModel::setMarketZoneId,
                     onEditAppliances = onUserAppliances,
                     onNameChange = viewModel::setName,
                     onSendEmailVerification = viewModel::sendEmailVerification,

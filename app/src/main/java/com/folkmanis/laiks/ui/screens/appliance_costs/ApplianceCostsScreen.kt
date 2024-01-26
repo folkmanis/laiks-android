@@ -7,12 +7,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.model.ApplianceHourWithCosts
 import com.folkmanis.laiks.model.PricesStatistics
+import com.folkmanis.laiks.ui.components.market_zone_dialog.MarketZoneDialog
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.folkmanis.laiks.utilities.composables.PriceRow
@@ -23,7 +23,8 @@ import kotlin.random.Random
 fun ApplianceCostsScreen(
     state: ApplianceCostsUiState,
     modifier: Modifier = Modifier,
-    onSetMarketZone: () -> Unit = {},
+    onMarketZoneNotSet: () -> Unit,
+    onMarketZoneSet: () -> Unit,
 ) {
 
 
@@ -43,9 +44,9 @@ fun ApplianceCostsScreen(
             }
 
             is ApplianceCostsUiState.MarketZoneMissing -> {
-                LaunchedEffect(state, onSetMarketZone) {
-                    onSetMarketZone()
-                }
+                MarketZoneDialog(
+                    onDismiss = onMarketZoneNotSet,
+                    onZoneSet = { onMarketZoneSet() })
             }
         }
 
@@ -68,7 +69,8 @@ fun ApplianceCostsList(
                 value = cost.value,
                 statistics = statistics,
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 offset = offset,
             )
             HorizontalDivider(
@@ -101,5 +103,7 @@ fun ApplianceCostsScreenPreview() {
         state = ApplianceCostsUiState.Success(
             hoursWithCosts = hours, statistics = statistics, name = "", marketZoneId = "LV"
         ),
+        onMarketZoneNotSet = {},
+        onMarketZoneSet = {},
     )
 }
