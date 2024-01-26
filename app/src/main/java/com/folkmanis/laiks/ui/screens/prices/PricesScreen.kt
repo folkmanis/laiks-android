@@ -12,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.model.NpPrice
 import com.folkmanis.laiks.model.PowerApplianceHour
 import com.folkmanis.laiks.model.PricesStatistics
+import com.folkmanis.laiks.ui.components.market_zone_dialog.MarketZoneDialog
 import com.folkmanis.laiks.utilities.composables.ErrorScreen
 import com.folkmanis.laiks.utilities.composables.LoadingScreen
 import com.folkmanis.laiks.utilities.composables.PriceRow
@@ -32,7 +34,8 @@ fun PricesScreen(
     state: PricesUiState,
     statistics: PricesStatistics?,
     appliances: Map<Int, List<PowerApplianceHour>>,
-    onSetMarketZone: () -> Unit,
+    onMarketZoneSet: (MarketZone) -> Unit,
+    onMarketZoneNotSet: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -54,9 +57,11 @@ fun PricesScreen(
             )
 
             is PricesUiState.MarketZoneMissing -> {
-                LaunchedEffect(onSetMarketZone) {
-                    onSetMarketZone()
-                }
+                LoadingScreen()
+                MarketZoneDialog(
+                    onDismiss = onMarketZoneNotSet,
+                    onZoneSet = onMarketZoneSet
+                )
             }
         }
 

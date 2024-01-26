@@ -1,7 +1,6 @@
 package com.folkmanis.laiks.ui.screens.user_settings.main_settings
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.folkmanis.laiks.R
@@ -10,7 +9,6 @@ import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.MarketZonesService
 import com.folkmanis.laiks.data.domain.NpBlockedUseCase
 import com.folkmanis.laiks.model.LaiksUser
-import com.folkmanis.laiks.model.MarketZone
 import com.folkmanis.laiks.ui.snackbar.SnackbarManager
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
@@ -42,33 +40,28 @@ class UserSettingsViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
     private val accountService: AccountService,
     private val npBlocked: NpBlockedUseCase,
-   private val savedStateHandle: SavedStateHandle,
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserSettingsUiState>(UserSettingsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _nextRoute =
-        savedStateHandle.getStateFlow<String?>(NEXT_ROUTE_ON_ZONE_SET,null)
     private var busy: Boolean
         set(value) = _uiState.updateSuccess { it.copy(busy = value) }
         get() = _uiState.value.successOrNull()?.busy ?: false
 
+
     fun initialize() {
-        Log.d(TAG, "${savedStateHandle.get<String?>(NEXT_ROUTE_ON_ZONE_SET)}")
         viewModelScope.launch {
             combine(
                 laiksUserService.laiksUserFlow(),
                 accountService.firebaseUserFlow,
                 npBlocked(),
-                _nextRoute,
-            ) { laiksUser, user, isNpBlocked, nextRoute ->
+            ) { laiksUser, user, isNpBlocked ->
                 if (laiksUser != null && user != null) {
                     settingsUiState(
                         laiksUser,
                         user,
                         isNpBlocked,
-                        nextRoute,
                     )
                 } else
                     UserSettingsUiState.Loading
@@ -83,7 +76,6 @@ class UserSettingsViewModel @Inject constructor(
         laiksUser: LaiksUser,
         user: FirebaseUser,
         npBlocked: Boolean,
-        nextRoute: String?,
     ): UserSettingsUiState {
 
         val marketZoneId = laiksUser.marketZoneId
@@ -106,8 +98,6 @@ class UserSettingsViewModel @Inject constructor(
             npAllowed = !npBlocked,
             anonymousUser = user.isAnonymous,
             emailVerified = user.isEmailVerified,
-            nextRoute = nextRoute,
-            marketZoneEditOpen = nextRoute != null,
         )
 
     }
@@ -144,49 +134,6 @@ class UserSettingsViewModel @Inject constructor(
                 busy = false
             }
             state.copy(vatAmount = value)
-        }
-    }
-
-    fun setMarketZoneEditState(isOpen: Boolean) {
-        _uiState.updateSuccess { state ->
-            state.copy(marketZoneEditOpen = isOpen)
-        }
-    }
-
-    fun setMarketZoneId(
-        value: MarketZone?,
-        onMarketZoneSet: (String) -> Unit,
-        onMarketZoneNotSet: () -> Unit,
-    ) {
-        busy = true
-        _uiState.updateSuccess { state ->
-            if (value == null) {
-                if (state.shouldSetZone)
-                    onMarketZoneNotSet()
-                state.copy(
-                    marketZoneEditOpen = false,
-                    busy = false
-                )
-            } else {
-                viewModelScope.launch {
-                    laiksUserService.updateLaiksUser(
-                        hashMapOf(
-                            "marketZoneId" to value.id,
-                            "vatAmount" to value.tax,
-                        )
-                    )
-                    busy = false
-                    if (state.nextRoute != null) {
-                        onMarketZoneSet(state.nextRoute)
-                    }
-                }
-                state.copy(
-                    marketZoneId = value.id,
-                    marketZoneName = "${value.id}, ${value.description}",
-                    vatAmount = value.tax,
-                    marketZoneEditOpen = false,
-                )
-            }
         }
     }
 

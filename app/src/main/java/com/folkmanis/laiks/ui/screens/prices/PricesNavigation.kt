@@ -11,36 +11,39 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.folkmanis.laiks.R
-import kotlinx.coroutines.flow.Flow
 
 const val ROUTE = "Prices"
 
 fun NavGraphBuilder.pricesScreen(
     setTitle: (String) -> Unit,
-    onSetMarketZone: (String) -> Unit,
+    onMarketZoneNotSet: () -> Unit,
 ) {
 
     composable(ROUTE) {
 
         val viewModel: PricesViewModel = hiltViewModel()
 
-        val title = getTitle(marketZoneIdFlow = viewModel.currentMarketZoneId)
+        val marketZoneId by viewModel.currentMarketZoneId
+            .collectAsStateWithLifecycle(initialValue = "")
+
+        val title = getTitle(marketZoneId = marketZoneId)
         LaunchedEffect(title, setTitle) {
-                setTitle(title)
+            setTitle(title)
         }
 
-        val uiState by viewModel.uiState
-            .collectAsStateWithLifecycle(PricesUiState.Loading)
-        val statistics by viewModel.pricesStatistics
-            .collectAsStateWithLifecycle(initialValue = null)
         val appliances by viewModel.appliancesState
             .collectAsStateWithLifecycle(initialValue = emptyMap())
 
+        LaunchedEffect(Unit) {
+            viewModel.initialize()
+        }
+
         PricesScreen(
-            state = uiState,
-            statistics = statistics,
+            state = viewModel.uiState,
+            statistics = viewModel.pricesStatistics,
             appliances = appliances,
-            onSetMarketZone = { onSetMarketZone(ROUTE) },
+            onMarketZoneSet = { viewModel.initialize() },
+            onMarketZoneNotSet = onMarketZoneNotSet,
         )
 
     }
@@ -51,10 +54,8 @@ fun NavController.navigateToPrices(navOptions: NavOptions? = null) {
 }
 
 @Composable
-fun getTitle(marketZoneIdFlow: Flow<String>): String {
+fun getTitle(marketZoneId: String): String {
     val heading = stringResource(id = R.string.prices_screen)
-    val marketZoneId by marketZoneIdFlow
-        .collectAsStateWithLifecycle(initialValue = "")
     return if (marketZoneId.isNotEmpty())
         "$marketZoneId $heading"
     else

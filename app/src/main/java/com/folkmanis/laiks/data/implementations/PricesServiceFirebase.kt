@@ -128,6 +128,6 @@ class PricesServiceFirebase @Inject constructor(
 
 
     companion object {
-        private const val TAG = "Prices Service"
+        private const val TAG = "PricesService"
     }
 }

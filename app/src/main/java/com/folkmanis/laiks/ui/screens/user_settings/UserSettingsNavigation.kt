@@ -1,6 +1,5 @@
 package com.folkmanis.laiks.ui.screens.user_settings
 
-import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
@@ -13,7 +12,6 @@ import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.editAppliance
 import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.newAppliance
 import com.folkmanis.laiks.ui.screens.user_settings.appliances.appliancesScreen
 import com.folkmanis.laiks.ui.screens.user_settings.appliances.navigateToAppliances
-import com.folkmanis.laiks.ui.screens.user_settings.main_settings.NEXT_ROUTE_ON_ZONE_SET
 import com.folkmanis.laiks.ui.screens.user_settings.main_settings.mainSettingsScreen
 import com.folkmanis.laiks.ui.screens.user_settings.main_settings.ROUTE as MAIN_SETTINGS_ROUTE
 
@@ -33,8 +31,6 @@ fun NavGraphBuilder.userSettingsGraph(
             setTitle = setTitle,
             onUserAppliances = navController::navigateToAppliances,
             onUserDeleted = navController::navigateToClockSingleTop,
-            onMarketZoneSet = { route -> navController.navigate(route) },
-            onMarketZoneNotSet = navController::navigateToClockSingleTop,
         )
 
         appliancesScreen(

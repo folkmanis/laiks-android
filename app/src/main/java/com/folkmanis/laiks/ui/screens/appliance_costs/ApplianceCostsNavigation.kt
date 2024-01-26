@@ -2,10 +2,8 @@ package com.folkmanis.laiks.ui.screens.appliance_costs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
@@ -18,28 +16,32 @@ internal const val APPLIANCE_NAME = "name"
 
 fun NavGraphBuilder.applianceCostsScreen(
     setTitle: (String) -> Unit,
-    onSetMarketZone: (String) -> Unit,
+    onMarketZoneNotSet: () -> Unit,
 ) {
 
     composable(
         route = "$ROUTE/{$APPLIANCE_IDX}?$APPLIANCE_NAME={$APPLIANCE_NAME}",
-    ) { navBackStackEntry ->
+    ) {
 
         val viewModel: ApplianceCostsViewModel = hiltViewModel()
-        val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+        val state = viewModel.uiState
 
         val title = applianceTitle(state = state)
         LaunchedEffect(title, setTitle) {
             setTitle(title)
         }
 
+        LaunchedEffect(Unit) {
+            viewModel.initialize()
+        }
+
         ApplianceCostsScreen(
             state = state,
-            onSetMarketZone = {
-                navBackStackEntry.destination.route?.also {
-                    onSetMarketZone(it)
-                }
+            onMarketZoneSet = {
+                viewModel.initialize()
             },
+            onMarketZoneNotSet = onMarketZoneNotSet,
         )
 
     }

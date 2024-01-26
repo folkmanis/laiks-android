@@ -19,12 +19,7 @@ sealed interface UserSettingsUiState {
         val marketZoneName: String = "",
         val userToReAuthenticateAndDelete: FirebaseUser? = null,
         val anonymousUser: Boolean = true,
-        val marketZoneEditOpen: Boolean = false,
-        val nextRoute: String? = null,
-    ) : UserSettingsUiState {
-        val shouldSetZone
-            get(): Boolean = nextRoute != null
-    }
+    ) : UserSettingsUiState
 
 
     companion object {
