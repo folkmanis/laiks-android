@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.folkmanis.laiks.MAX_APPLIANCES_ON_CLOCK_SCREEN
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.UserPreferencesRepository
 import com.folkmanis.laiks.utilities.minuteTicks
@@ -25,7 +26,10 @@ class ClockViewModel @Inject constructor(
         viewModelScope.launch {
             laiksUserService.laiksUserFlow().collect { laiksUser ->
                 uiState = uiState.copy(
-                    appliances = laiksUser?.appliances ?: emptyList()
+                    appliances = laiksUser?.run {
+                        appliances
+                            .take(MAX_APPLIANCES_ON_CLOCK_SCREEN)
+                    } ?: emptyList()
                 )
             }
         }

@@ -5,6 +5,7 @@ const val STEP_DOWN_VALUE = -1
 const val CURRENCY_DECIMALS = 2
 const val LAIKS_PREFERENCE_NAME = "laiks_preferences"
 const val INCLUDE_AVERAGE_DAYS = 5L
+const val MAX_APPLIANCES_ON_CLOCK_SCREEN = 2
 
 const val USER_COLLECTION = "users"
 const val NP_PRICES_COLLECTION = "prices"
