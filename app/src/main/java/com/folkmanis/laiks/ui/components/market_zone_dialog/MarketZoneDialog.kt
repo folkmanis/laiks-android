@@ -79,6 +79,7 @@ fun MarketZoneInput(
                     dataList = uiState.zones,
                     onItemSelected = onZoneChange,
                     selectedId = uiState.currentZoneId,
+                    enabled = !uiState.busy,
                 )
             } else
                 LoadingScreen(
