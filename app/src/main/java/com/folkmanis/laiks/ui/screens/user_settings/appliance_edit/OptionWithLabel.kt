@@ -19,13 +19,13 @@ fun OptionWithLabel(
 ) {
 
     Column(
-        modifier = modifier.
-                padding(start = 8.dp)
+        modifier = modifier
     ) {
 
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
+            modifier=Modifier.padding(start = 8.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))

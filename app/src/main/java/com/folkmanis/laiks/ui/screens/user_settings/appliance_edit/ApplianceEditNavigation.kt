@@ -12,10 +12,21 @@ private const val APPLIANCE_IDX = "applianceIdx"
 private const val NEW_APPLIANCE = "new"
 
 
-fun NavGraphBuilder.applianceEditScreen(
+fun NavGraphBuilder.applianceEdit(
     setTitle: (String) -> Unit,
     onNavigateBack: () -> Unit,
 ) {
+
+    composable(
+        route = "$ROUTE/$NEW_APPLIANCE"
+    ) {
+
+        ApplianceEditScreen(
+            onNavigateBack = onNavigateBack,
+            idx = null,
+            setTitle = setTitle,
+        )
+    }
 
     composable(
         route = "$ROUTE/{$APPLIANCE_IDX}",
@@ -35,22 +46,6 @@ fun NavGraphBuilder.applianceEditScreen(
             setTitle = setTitle,
         )
 
-    }
-}
-
-fun NavGraphBuilder.applianceNewRoute(
-    onNavigateBack: () -> Unit,
-    setTitle: (String) -> Unit,
-) {
-    composable(
-        route = "$ROUTE/$NEW_APPLIANCE"
-    ) {
-
-        ApplianceEditScreen(
-            onNavigateBack = onNavigateBack,
-            idx = null,
-            setTitle = setTitle,
-        )
     }
 }
 

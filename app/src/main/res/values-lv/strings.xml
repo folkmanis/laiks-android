@@ -64,7 +64,7 @@
     <string name="create_new">Izveidot jaunu</string>
     <string name="choose_appliance_title">Izvēlieties aparātu!</string>
     <string name="user_defined">Lietotāja</string>
-    <string name="predefined">No gatavajiem</string>
+    <string name="copy_from">Kopēt no…</string>
     <string name="appliance_color_selection_dialog_open">Atvērt aparāta izceltās krāsas izvēlni</string>
     <string name="login_success">Pieslēgšanās veiksmīga!</string>
     <string name="email_input_error">Nederīga e-pasta adrese</string>

@@ -38,8 +38,7 @@ fun List<PowerApplianceCycle>.toNullablePowerApplianceCycles() =
 
 data class ApplianceUiState(
 
-    val isLoading: Boolean = false,
-    val isSaving: Boolean = false,
+    val isBusy: Boolean = false,
 
     val idx: Int? = null,
     val name: String = "",
@@ -51,7 +50,7 @@ data class ApplianceUiState(
     ) {
 
     val isEnabled: Boolean
-        get() = !isSaving && !isLoading
+        get() = !isBusy
 
     val isNameValid: Boolean
         get() = name.isNotBlank()

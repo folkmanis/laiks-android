@@ -93,7 +93,7 @@
     <string name="create_new">Create New</string>
     <string name="choose_appliance_title">Choose Appliance!</string>
     <string name="user_defined">User defined</string>
-    <string name="predefined">Predefined</string>
+    <string name="copy_from">Copy from…</string>
     <string name="about_title">About</string>
     <string name="about_menu_item">About</string>
     <string name="about_version_name">Version: %1$s</string>

@@ -14,11 +14,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.PowerApplianceDelay
 
 
 @Composable
 fun DelayInput(
+    delayType: String,
+    onDelayTypeChange: (String) -> Unit,
+    minimumDelay: Long?,
+    onSetMinimumDelay: (Long?) -> Unit,
+    minimumDelayValid: Boolean,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+
+    Row(
+        modifier = modifier
+    ) {
+
+        DelayTypeSelection(
+            value = delayType,
+            onValueChange = onDelayTypeChange,
+            enabled = enabled,
+            modifier = Modifier.weight(1f),
+        )
+
+        NumberInput(
+            value = minimumDelay,
+            onValueChange = onSetMinimumDelay,
+            modifier = Modifier.weight(1f),
+            label = {
+                Text(text = stringResource(id = R.string.appliance_minimumDelay_label))
+            },
+            isError = !minimumDelayValid,
+            enabled = enabled,
+            suffix = { Text(text = "h") }
+        )
+
+    }
+
+
+}
+
+@Composable
+fun DelayTypeSelection(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
@@ -50,6 +90,7 @@ fun DelayInput(
             }
         }
     }
+
 }
 
 
@@ -58,8 +99,12 @@ fun DelayInput(
 fun DelayInputPreview() {
     MaterialTheme {
         DelayInput(
-            value = PowerApplianceDelay.start.name,
-            onValueChange = {},
+            delayType = PowerApplianceDelay.start.name,
+            onDelayTypeChange = {},
+            minimumDelay = 3,
+            onSetMinimumDelay = {},
+            minimumDelayValid = true,
+            enabled = true,
         )
     }
 }

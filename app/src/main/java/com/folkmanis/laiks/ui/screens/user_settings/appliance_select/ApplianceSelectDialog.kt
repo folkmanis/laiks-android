@@ -130,7 +130,7 @@ fun AppliancesList(
         }
         if (systemAppliances.isNotEmpty()) {
             item {
-                SectionHeader(text = R.string.predefined)
+                SectionHeader(text = R.string.copy_from)
             }
             items(systemAppliances) { appliance ->
                 ApplianceItem(
