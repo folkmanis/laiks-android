@@ -1,11 +1,12 @@
 plugins {
-    id "com.android.application"
-    id "org.jetbrains.kotlin.android"
-    id "org.jetbrains.kotlin.plugin.serialization"
-    id "com.google.gms.google-services"
-    id "kotlin-kapt"
-    id "com.google.dagger.hilt.android"
-    id "com.google.firebase.crashlytics"
+    alias(libs.plugins.application)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.devtools.ksp)
 }
 
 android {
@@ -41,17 +42,18 @@ android {
     }
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_19
+        targetCompatibility JavaVersion.VERSION_19
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "19"
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.5.4"
+        kotlinCompilerExtensionVersion "1.5.15"
     }
     packagingOptions {
         resources {
@@ -61,52 +63,57 @@ android {
 }
 
 dependencies {
-    implementation platform("androidx.compose:compose-bom:2024.01.00")
-    implementation platform('com.google.firebase:firebase-bom:32.7.1')
+    implementation platform(libs.androidx.compose.bom)
+    implementation platform(libs.firebase.bom)
 
-    implementation "com.google.firebase:firebase-analytics"
-    implementation "com.google.firebase:firebase-auth"
-    implementation "com.google.firebase:firebase-firestore"
-    implementation "com.google.firebase:firebase-crashlytics-ktx"
-    implementation "com.google.firebase:firebase-analytics-ktx"
-    implementation "com.google.android.gms:play-services-auth:20.7.0"
+    implementation libs.firebase.analytics
+    implementation libs.firebase.auth
+    implementation libs.firebase.firestore
+    implementation libs.firebase.crashlytics.ktx
+    implementation libs.firebase.analytics.ktx
+    implementation libs.play.services.auth
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    coreLibraryDesugaring libs.desugar.jdk.libs
 
-    implementation "androidx.core:core-ktx:1.12.0"
-    implementation "androidx.activity:activity-compose:1.8.2"
-    implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.ui:ui-tooling-preview"
-    implementation "androidx.compose.material3:material3:1.2.0-rc01"
-    implementation "androidx.compose.material3:material3-window-size-class:1.2.0-rc01"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation 'io.coil-kt:coil-compose:2.5.0'
-    implementation "androidx.navigation:navigation-compose:2.7.6"
-    implementation 'com.google.android.gms:play-services-ads:22.6.0'
+    implementation libs.androidx.annotation
 
-    implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.ui
+    implementation libs.androidx.ui.tooling.preview
+    implementation libs.androidx.material3
+    implementation libs.androidx.material3.window.size
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.lifecycle.viewmodel.savedstate
+    implementation libs.androidx.lifecycle.viewmodel.compose
+    implementation libs.androidx.lifecycle.runtime.compose
+    implementation libs.androidx.datastore.preferences
+    implementation libs.coil.compose
+    implementation libs.coil.network.okhttp
+    implementation libs.androidx.navigation.compose
+    implementation libs.play.services.ads
 
-    implementation 'com.google.dagger:hilt-android:2.50'
-    implementation "androidx.hilt:hilt-navigation-compose:1.1.0"
-    kapt 'com.google.dagger:hilt-compiler:2.50'
+    implementation libs.androidx.core.splashscreen
 
-    implementation "org.burnoutcrew.composereorderable:reorderable:0.9.6"
+    implementation libs.hilt.android
+    implementation libs.androidx.hilt.navigation.compose
+    ksp(libs.hilt.compiler)
 
-    testImplementation "junit:junit:4.13.2"
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.6.0"
-    debugImplementation "androidx.compose.ui:ui-tooling"
-    debugImplementation "androidx.compose.ui:ui-test-manifest"
+    implementation libs.reorderable
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation libs.androidx.ui.test.junit4
+    debugImplementation libs.androidx.ui.tooling
+    debugImplementation libs.androidx.ui.test.manifest
 
 }
 
-kapt {
-    correctErrorTypes true
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
 }
+

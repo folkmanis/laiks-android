@@ -64,8 +64,8 @@ fun TextInputDialog(
                     .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
-                    autoCorrect = false,
-                    imeAction = ImeAction.Done,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {

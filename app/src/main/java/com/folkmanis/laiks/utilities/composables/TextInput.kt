@@ -31,7 +31,7 @@ fun EmailField(
     enabled: Boolean = true,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    errorId: (@StringRes Int)? = null,
+    @StringRes errorId: Int? = null,
 ) {
 
     val label = stringResource(R.string.email_input_label)
@@ -59,7 +59,7 @@ fun PasswordField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     enabled: Boolean = true,
-    errorId: (@StringRes Int)? = null,
+    @StringRes errorId: Int? = null,
 ) {
     PasswordField(
         value = value,
@@ -82,7 +82,7 @@ fun PasswordField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     enabled: Boolean = true,
-    errorId: (@StringRes Int)? = null,
+    @StringRes errorId: Int? = null,
 ) {
     val labelString = stringResource(label)
 

@@ -24,15 +24,15 @@ data class UserRegistrationUiState(
                 && password == passwordRepeat
                 && displayName.isNotEmpty()
 
-    val emailError: (@StringRes Int)?
-        get() = if (emailPristine || email.isValidEmail()) null else R.string.email_input_error
+    val  emailError:  Int?
+        @StringRes get() = if (emailPristine || email.isValidEmail()) null else R.string.email_input_error
 
-    val passwordError: (@StringRes Int)?
-        get() = if (passwordPristine || password.isStrongPassword()) null else R.string.password_input_error
+    val passwordError:  Int?
+        @StringRes get() = if (passwordPristine || password.isStrongPassword()) null else R.string.password_input_error
 
-    val passwordRepeatError: (@StringRes Int)?
-        get() = if (passwordRepeatPristine || passwordRepeat == password) null else R.string.password_repeat_not_matching
+    val passwordRepeatError:  Int?
+        @StringRes get() = if (passwordRepeatPristine || passwordRepeat == password) null else R.string.password_repeat_not_matching
 
-    val displayNameError: (@StringRes Int)?
-        get() = if (displayNamePristine || displayName.isNotEmpty()) null else R.string.display_name_input_error
+    val displayNameError: Int?
+        @StringRes get() = if (displayNamePristine || displayName.isNotEmpty()) null else R.string.display_name_input_error
 }
