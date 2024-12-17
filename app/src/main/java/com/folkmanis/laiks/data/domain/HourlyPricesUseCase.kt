@@ -3,6 +3,7 @@ package com.folkmanis.laiks.data.domain
 import com.folkmanis.laiks.data.LaiksUserService
 import com.folkmanis.laiks.data.PricesService
 import com.folkmanis.laiks.model.NpPrice
+import com.folkmanis.laiks.utilities.ext.addExtraCost
 import com.folkmanis.laiks.utilities.ext.addVat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -22,6 +23,9 @@ class HourlyPricesUseCase @Inject constructor(
             .toInstant()
 
         return pricesRepository.pricesFromDateTimeFlow(instant)
+            .combine(laiksUserService.priceExtrasFlow) { prices, extra ->
+                prices.addExtraCost(extra)
+            }
             .combine(laiksUserService.vatAmountFlow) { prices, vat ->
                 prices.addVat(vat)
             }

@@ -40,7 +40,6 @@
     <string name="navigate_to_password_reset">Password forgotten?</string>
     <string name="logout_menu_item">Logout</string>
     <string name="expand_user_menu_button">Open user menu</string>
-    <string name="include_vat">Include VAT</string>
     <string name="users_screen">Users</string>
     <string name="users_menu">Edit Users</string>
     <string name="user_editor">Settings</string>
@@ -85,7 +84,12 @@
     <string name="load_np_data">Update prices</string>
     <string name="retrieving_prices">Looking for new records on server</string>
     <string name="market_zone_name">Market zone</string>
+    <string name="include_vat">Include VAT</string>
     <string name="vat_amount">VAT amount</string>
+    <string name="include_trade_markup">Include trade markup</string>
+    <string name="trade_markup_amount">Trade markup EUR/kWh</string>
+    <string name="include_fixed_component">Include fixed component</string>
+    <string name="fixed_component_amount">Fixed component EUR/kWh</string>
     <string name="market_zone_select">Choose region</string>
     <string name="market_zone_select_anonymous">Please select region to enable appliance power cost calculations and additional features</string>
     <string name="drag_handle">Drag</string>

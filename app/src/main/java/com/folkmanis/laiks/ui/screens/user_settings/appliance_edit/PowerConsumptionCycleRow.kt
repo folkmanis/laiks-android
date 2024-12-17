@@ -54,7 +54,7 @@ fun PowerConsumptionCycleRow(
                 .width(32.dp)
         )
 
-        NumberInput(
+        NumberLongInput(
             value = cycle.length?.toMinutes(),
             onValueChange = {
                 onCycleChange(
@@ -70,7 +70,7 @@ fun PowerConsumptionCycleRow(
             enabled = enabled,
         )
 
-        NumberInput(
+        NumberLongInput(
             value = cycle.consumption,
             onValueChange = {
                 onCycleChange(

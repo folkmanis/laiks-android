@@ -18,7 +18,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.printToLog
 import androidx.compose.ui.text.input.ImeAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.NumberInput
+import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.NumberLongInput
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,7 +34,7 @@ class NumberInputTest {
         var testNumber: Long? = 5L
         composeTestRule.setContent {
             MaterialTheme {
-                NumberInput(
+                NumberLongInput(
                     value = testNumber,
                     onValueChange = { testNumber = it }
                 )
@@ -58,7 +58,7 @@ class NumberInputTest {
             }
             MaterialTheme {
                 Column {
-                    NumberInput(
+                    NumberLongInput(
                         value = value,
                         onValueChange = {
                             value = it

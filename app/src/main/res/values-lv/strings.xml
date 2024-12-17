@@ -57,6 +57,12 @@
     <string name="retrieving_prices">Tiek meklēti jauni dati serverī</string>
     <string name="market_zone_name">Cenu reģions</string>
     <string name="vat_amount">PVN likme</string>
+    <string name="include_trade_markup">Pievienot tirdzniecības uzcenojumu</string>
+    <string name="trade_markup_amount">Tirdzniecības uzcenojums EUR/kWh</string>
+    <string name="include_fixed_component">Pievienot sadales uzcenojumu</string>
+    <string name="include_fixed_component">P</string>
+    <string name="fixed_component_amount">Sadales uzcenojums EUR/kWh</string>
+    <string name="fixed_component_amount">S</string>
     <string name="market_zone_select">Izvēlieties reģionu</string>
     <string name="market_zone_select_anonymous">Izvēlēties reģionu, lai iespējotu elektrības izmaksu aprēķinu</string>
     <string name="drag_handle">Pārvietot</string>

@@ -93,6 +93,11 @@ class UserSettingsViewModel @Inject constructor(
             name = laiksUser.name,
             marketZoneId = marketZoneId,
             vatAmount = laiksUser.vatAmount,
+            fixedComponentEnabled = laiksUser.fixedComponentEnabled,
+            fixedComponentKwh = laiksUser.fixedComponentKwh,
+            tradeMarkupEnabled = laiksUser.tradeMarkupEnabled,
+            tradeMarkupKwh = laiksUser.tradeMarkup,
+
             marketZoneName = marketZoneName,
 
             npAllowed = !npBlocked,
@@ -103,37 +108,58 @@ class UserSettingsViewModel @Inject constructor(
     }
 
     fun setName(value: String) {
-        busy = true
-        _uiState.updateSuccess { state ->
-            viewModelScope.launch {
-                laiksUserService.updateLaiksUser("name", value)
-                busy = false
-            }
-            state.copy(name = value)
+        setProperty({ copy(name = value) }) {
+            laiksUserService.updateLaiksUser("name", value)
         }
     }
 
     fun setIncludeVat(value: Boolean) {
-        busy = true
-        _uiState.updateSuccess { state ->
-            viewModelScope.launch {
-                laiksUserService.updateLaiksUser("includeVat", value)
-                busy = false
-            }
-            state.copy(includeVat = value)
+        setProperty({ copy(includeVat = value) }) {
+            laiksUserService.updateLaiksUser("includeVat", value)
         }
     }
 
     fun setVatAmount(value: Double) {
+        setProperty({ copy(vatAmount = value) }) {
+            laiksUserService.updateLaiksUser("vatAmount", value)
+        }
+    }
+
+    fun setFixedComponentEnabled(value: Boolean) {
+        setProperty({ copy(fixedComponentEnabled = value) }) {
+            laiksUserService.updateLaiksUser("fixedComponentEnabled", value)
+        }
+    }
+
+    fun setTradeMarkupEnabled(value: Boolean) {
+        setProperty({ copy(tradeMarkupEnabled = value) }) {
+            laiksUserService.updateLaiksUser("tradeMarkupEnabled", value)
+        }
+    }
+
+    fun setTradeMarkupKwh(value: Double) {
+        setProperty({ copy(tradeMarkupKwh = value) }) {
+            laiksUserService.updateLaiksUser("tradeMarkupKwh", value)
+        }
+    }
+
+    fun setFixedComponentKwh(value: Double) {
+        setProperty({ copy(fixedComponentKwh = value) }) {
+            laiksUserService.updateLaiksUser("fixedComponentKwh", value)
+        }
+    }
+
+    private fun setProperty(
+        stateSetFn: UserSettingsUiState.Success.() -> UserSettingsUiState.Success,
+        propertySetFn: suspend () -> Unit
+    ) {
         busy = true
         _uiState.updateSuccess { state ->
             viewModelScope.launch {
-                laiksUserService.updateLaiksUser(
-                    "vatAmount", value
-                )
+                propertySetFn()
                 busy = false
             }
-            state.copy(vatAmount = value)
+            stateSetFn(state)
         }
     }
 

@@ -7,12 +7,16 @@ import com.folkmanis.laiks.model.UserPowerAppliance
 import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 class FakeLaiksUserService : LaiksUserService {
 
     override val vatAmountFlow: Flow<Double>
         get() = flowOf(1.21)
 
+    override val priceExtrasFlow: Flow<Double>
+        get() = laiksUserFlow()
+            .map { it?.extraCost ?: 0.0 }
     override val npAllowedFlow: Flow<Boolean>
         get() = flowOf(true)
 
@@ -86,7 +90,11 @@ class FakeLaiksUserService : LaiksUserService {
             vatAmount = 0.21,
             includeVat = true,
             appliances = testAppliances,
-            email = "example@example.com"
+            email = "example@example.com",
+            fixedComponentEnabled = true,
+            fixedComponentKwh = 0.04,
+            tradeMarkupEnabled = true,
+            tradeMarkupKwh = 0.009,
         )
 
         private val laiksAdmin = LaiksUser(

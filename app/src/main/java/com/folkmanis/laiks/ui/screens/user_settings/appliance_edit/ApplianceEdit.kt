@@ -141,7 +141,7 @@ internal fun ApplianceEdit(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            NumberInput(
+            NumberLongInput(
                 value = state.minimumDelay,
                 onValueChange = setMinimumDelay,
                 modifier = Modifier

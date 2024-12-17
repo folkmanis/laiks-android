@@ -38,6 +38,9 @@ class LaiksUserServiceFirebase @Inject constructor(
     override val vatAmountFlow: Flow<Double>
         get() = laiksUserFlow().map { it?.tax ?: 1.0 }
 
+    override val priceExtrasFlow: Flow<Double>
+        get() = laiksUserFlow().map { it?.extraCost ?: 0.0 }
+
     override val npAllowedFlow: Flow<Boolean>
         get() = accountService.firebaseUserFlow
             .flatMapLatest { user ->

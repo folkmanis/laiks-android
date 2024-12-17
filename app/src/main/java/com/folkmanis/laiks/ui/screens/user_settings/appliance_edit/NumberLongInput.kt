@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 private const val TAG = "NumberInput"
 
 @Composable
-fun NumberInput(
+fun NumberLongInput(
     value: Long?,
     onValueChange: (Long?) -> Unit,
     modifier: Modifier = Modifier,
@@ -32,8 +32,6 @@ fun NumberInput(
     var inputState by remember {
         mutableStateOf(TextFieldValue(""))
     }
-
-    Log.d(TAG, "Composition: $value")
 
     val valueStr = value?.toString() ?: ""
 
@@ -88,7 +86,7 @@ fun NumberInputPreview() {
 
     MaterialTheme {
         Box {
-            NumberInput(
+            NumberLongInput(
                 value = value,
                 onValueChange = { value = it },
                 label = { Text("Test") }

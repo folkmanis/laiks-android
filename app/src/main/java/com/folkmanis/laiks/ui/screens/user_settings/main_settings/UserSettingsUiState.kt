@@ -15,6 +15,10 @@ sealed interface UserSettingsUiState {
         val marketZoneId: String? = null,
         val includeVat: Boolean = true,
         val vatAmount: Double? = null,
+        val fixedComponentEnabled: Boolean = false,
+        val fixedComponentKwh: Double? = null,
+        val tradeMarkupEnabled: Boolean = false,
+        val tradeMarkupKwh: Double? = null,
         val npAllowed: Boolean = false,
         val marketZoneName: String = "",
         val userToReAuthenticateAndDelete: FirebaseUser? = null,
@@ -32,6 +36,10 @@ sealed interface UserSettingsUiState {
             marketZoneId = user.marketZoneId ?: "LV",
             npAllowed = true,
             includeVat = user.includeVat,
+            fixedComponentEnabled = user.fixedComponentEnabled,
+            fixedComponentKwh = user.fixedComponentKwh,
+            tradeMarkupEnabled = user.tradeMarkupEnabled,
+            tradeMarkupKwh = user.tradeMarkup,
             vatAmount = user.vatAmount ?: 0.21,
             marketZoneName = "LV, Latvija"
         )
