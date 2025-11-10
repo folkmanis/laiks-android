@@ -37,40 +37,23 @@ class FakePricesService : PricesService {
 
     companion object {
 
-
-        fun testPrices(pricesStart: Instant): List<NpPrice> = listOf(
-            NpPrice(
-                startTime = pricesStart.toTimestamp(),
-                endTime = pricesStart.plusHours(1).toTimestamp(),
-                value = 20.0,
-            ),
-            NpPrice(
-                startTime = pricesStart.plusHours(1).toTimestamp(),
-                endTime = pricesStart.plusHours(2).toTimestamp(),
-                value = 10.0,
-            ),
-            NpPrice(
-                startTime = pricesStart.plusHours(2).toTimestamp(),
-                endTime = pricesStart.plusHours(3).toTimestamp(),
-                value = 5.0,
-            ),
-            NpPrice(
-                startTime = pricesStart.plusHours(3).toTimestamp(),
-                endTime = pricesStart.plusHours(4).toTimestamp(),
-                value = 2.0,
-            ),
-            NpPrice(
-                startTime = pricesStart.plusHours(4).toTimestamp(),
-                endTime = pricesStart.plusHours(5).toTimestamp(),
-                value = 1.5,
-            ),
+        private val TEST_PRICES_LIST = listOf(
+            20.0, 10.0, 5.0, 2.0, 1.5, 20.0, 10.0, 5.0, 2.0, 1.5,
+            20.0, 10.0, 5.0, 2.0, 1.5, 20.0, 10.0, 5.0, 2.0, 1.5
         )
 
+        fun testPrices(pricesStart: Instant): List<NpPrice> = List(TEST_PRICES_LIST.size) {
+            val startOffset: Long = (it.toLong() * 15)
+            NpPrice(
+                startTime = pricesStart.plusMinutes(startOffset).toTimestamp(),
+                endTime = pricesStart.plusMinutes(startOffset + 15).toTimestamp(),
+                value = TEST_PRICES_LIST[it]
+            )
+        }
     }
-
 
 }
 
-private fun Instant.plusHours(i: Long): Instant =
-    atZone(ZoneId.systemDefault()).plusHours(i).toInstant()
+private fun Instant.plusMinutes(i: Long): Instant =
+    atZone(ZoneId.systemDefault()).plusMinutes(i).toInstant()
 

@@ -17,6 +17,7 @@ import com.folkmanis.laiks.utilities.MarketZoneNotSetException
 import com.folkmanis.laiks.utilities.ext.eurMWhToCentsKWh
 import com.folkmanis.laiks.utilities.ext.hoursFrom
 import com.folkmanis.laiks.utilities.ext.toLocalDateTime
+import com.folkmanis.laiks.utilities.ext.toLocalTime
 import com.folkmanis.laiks.utilities.hourTicks
 import com.folkmanis.laiks.utilities.minuteTicks
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +28,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -76,13 +76,13 @@ class PricesViewModel @Inject constructor(
                         hour.truncatedTo(ChronoUnit.DAYS)
                     )
                         .map { prices ->
-                            val groupedPrices = prices
-                                .eurMWhToCentsKWh()
-                                .groupBy { it.startTime.toLocalDateTime().toLocalDate() }
+                            val listItemsData = createListItemsData(prices.eurMWhToCentsKWh())
+                            val currentOffsetIndex = currentOffsetIndex(listItemsData, hour)
+
                             PricesUiState.Success(
-                                groupedPrices = groupedPrices,
-                                hour = hour,
-                                currentOffsetIndex = currentOffsetIndex(groupedPrices, hour)
+                                listItemsData,
+                                hour,
+                                currentOffsetIndex
                             )
                         }
                 }.collect {
@@ -105,22 +105,26 @@ class PricesViewModel @Inject constructor(
         private const val TAG = "PricesViewModel"
 
         fun currentOffsetIndex(
-            groupedPrices: Map<LocalDate, List<NpPrice>>,
+            listItemsData: List<PricesListItemData>,
             hour: LocalDateTime,
         ): Int {
-            var zeroIdx = 0
-            groupedPrices.forEach { (_, prices) ->
-                zeroIdx++
-                val idx = prices.indexOfFirst { it.startTime.hoursFrom(hour) == 0 }
-                if (idx != -1) {
-                    zeroIdx += idx
-                    return zeroIdx
-                } else {
-                    zeroIdx += prices.size
-                }
+            val idx = listItemsData.indexOfFirst {
+                it is PricesListItemData.HourlyPrice && it.npPrices.first().startTime.hoursFrom(hour) == 0
             }
-            return 0
+            return if (idx == -1) 0 else idx
         }
+
+        fun createListItemsData(npPrices: List<NpPrice>): List<PricesListItemData> =
+            buildList {
+                npPrices.groupBy { it.startTime.toLocalDateTime().toLocalDate() }
+                    .forEach { (date, prices) ->
+                        add(PricesListItemData.DateHeader(date))
+                        prices.groupBy { it.startTime.toLocalTime().hour }.forEach { (_, prices) ->
+                            add(PricesListItemData.HourlyPrice(prices))
+                        }
+                    }
+            }
+
 
     }
 }

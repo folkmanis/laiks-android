@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
-import com.folkmanis.laiks.ui.screens.user_settings.appliance_edit.NumberInput
+import com.folkmanis.laiks.utilities.composables.NumberLongInput
 import com.folkmanis.laiks.utilities.composables.DialogWithSaveAndCancel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,7 +75,7 @@ fun VatInputScreen(
         headingText = R.string.vat_amount
     ) {
 
-        NumberInput(
+        NumberLongInput(
             value = vatPercent,
             onValueChange = onVatChange,
             suffix = { Text(text = "%") },

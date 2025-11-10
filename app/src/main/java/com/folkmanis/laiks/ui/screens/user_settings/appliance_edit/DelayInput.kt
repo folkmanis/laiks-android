@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
 import com.folkmanis.laiks.model.PowerApplianceDelay
+import com.folkmanis.laiks.utilities.composables.NumberLongInput
 
 
 @Composable
@@ -40,7 +41,7 @@ fun DelayInput(
             modifier = Modifier.weight(1f),
         )
 
-        NumberInput(
+        NumberLongInput(
             value = minimumDelay,
             onValueChange = onSetMinimumDelay,
             modifier = Modifier.weight(1f),

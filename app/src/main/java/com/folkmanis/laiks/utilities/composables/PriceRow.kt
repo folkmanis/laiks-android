@@ -36,7 +36,7 @@ import com.folkmanis.laiks.utilities.ext.toSignedString
 import java.time.LocalTime
 import kotlin.math.absoluteValue
 
-private val largeNumberStyle = TextStyle(
+val largeNumberStyle = TextStyle(
     fontSize = 24.sp,
     fontWeight = FontWeight.Bold
 )
@@ -57,6 +57,7 @@ fun scoreColor(score: Double, background: Color): Color {
         0.8f * score.absoluteValue.toFloat()
     return Color.hsv(hue, 1f, value)
 }
+
 
 @Composable
 fun PriceRow(
@@ -176,6 +177,7 @@ private val previewAppliances = listOf(
         cost = 0.185,
     ),
     PowerApplianceHour(),
+    PowerApplianceHour(isBest = false),
 )
 
 @Preview(showBackground = true)

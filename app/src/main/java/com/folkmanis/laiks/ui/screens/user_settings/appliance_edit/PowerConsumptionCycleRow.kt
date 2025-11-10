@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.folkmanis.laiks.R
+import com.folkmanis.laiks.utilities.composables.NumberLongInput
 
 private fun Long.toMinutes(): Long =
     this / 60_000
@@ -54,7 +55,7 @@ fun PowerConsumptionCycleRow(
                 .width(32.dp)
         )
 
-        NumberInput(
+        NumberLongInput(
             value = cycle.length?.toMinutes(),
             onValueChange = {
                 onCycleChange(
@@ -70,7 +71,7 @@ fun PowerConsumptionCycleRow(
             enabled = enabled,
         )
 
-        NumberInput(
+        NumberLongInput(
             value = cycle.consumption,
             onValueChange = {
                 onCycleChange(

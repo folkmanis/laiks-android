@@ -1,4 +1,4 @@
-package com.folkmanis.laiks.ui.screens.user_settings.appliance_edit
+package com.folkmanis.laiks.utilities.composables
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 private const val TAG = "NumberInput"
 
 @Composable
-fun NumberInput(
+fun NumberLongInput(
     value: Long?,
     onValueChange: (Long?) -> Unit,
     modifier: Modifier = Modifier,
@@ -81,14 +81,14 @@ fun NumberInput(
 
 @Preview
 @Composable
-fun NumberInputPreview() {
+fun NumberLongInputPreview() {
     var value by remember {
         mutableStateOf<Long?>(5L)
     }
 
     MaterialTheme {
         Box {
-            NumberInput(
+            NumberLongInput(
                 value = value,
                 onValueChange = { value = it },
                 label = { Text("Test") }

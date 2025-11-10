@@ -22,3 +22,5 @@
 
 # keep the class and specified members from being removed or renamed
 -keep class com.folkmanis.laiks.model.** { *; }
+-dontwarn android.media.LoudnessCodecController$OnLoudnessCodecUpdateListener
+-dontwarn android.media.LoudnessCodecController

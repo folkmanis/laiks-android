@@ -19,19 +19,6 @@ import java.time.ZoneId
 
 
 private val pricesStart = LocalDateTime.of(2023, 3, 24, 23, 0)
-val prices: List<NpPrice> = testPrices(pricesStart.atZone(ZoneId.systemDefault()).toInstant())
-
-private val dishWasherCosts = mapOf(
-    0L to 0.0195,
-    1L to 0.00975,
-    2L to 17070000.0.sWtoMWh(),
-    3L to 7500000.0.sWtoMWh(),
-)
-private val washerCosts = mapOf(
-    3L to 19140000.0.sWtoMWh(),
-    4L to 7845000.0.sWtoMWh(),
-)
-
 val after30min: Instant = pricesStart
     .plusMinutes(30)
     .atZone(ZoneId.systemDefault())
@@ -40,6 +27,19 @@ val after4h: Instant = pricesStart
     .plusHours(4)
     .atZone(ZoneId.systemDefault())
     .toInstant()
+
+val prices: List<NpPrice> = testPrices(pricesStart.atZone(ZoneId.systemDefault()).toInstant())
+
+private val dishWasherCosts = mapOf(
+    0L to 0.004087,
+    1L to 0.00975,
+    2L to 17070000.0.sWtoMWh(),
+    3L to 7500000.0.sWtoMWh(),
+)
+private val washerCosts = mapOf(
+    3L to 19140000.0.sWtoMWh(),
+    4L to 7845000.0.sWtoMWh(),
+)
 
 class ConsumptionCalculatorTest {
 
@@ -57,7 +57,7 @@ class ConsumptionCalculatorTest {
             prices,
             after30min.epochSecond
         )
-        val expected = 600000.0
+        val expected = 150000.0
         assertEquals(expected, cost)
     }
 
@@ -68,7 +68,7 @@ class ConsumptionCalculatorTest {
             after30min.epochSecond,
             dishWasher
         )
-        val expected = 0.0195
+        val expected = 0.004087
         assertEquals(expected, cost!!, 0.0001)
     }
 
